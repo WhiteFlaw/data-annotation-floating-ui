@@ -1,6 +1,7 @@
 
 .login-container {
   width: 100%;
+  min-height: 900px;
   height: 100%;
   background: linear-gradient(270deg, #2B53B8 1%, #0A0C81 100%);
 }
@@ -12,12 +13,14 @@
 
 .box {
   position: relative;
-  min-width: 1920px;
+  //min-width: 1920px;
+  width: 100%;
   height: 100%;
 }
 
 header img {
-  width: 389px;
+  //width: 389px;
+  width: 22%;
   height: 114px;
   margin: 30px 0 0 30px;
   opacity: 0.8;
@@ -25,46 +28,63 @@ header img {
 
 main {
   min-width: 1990px;
+  width: 100%;
 }
 
 main .imgFirst {
   position: absolute;
-  width: 1277px;
-  height: 830px;
-  top: 112px;
-  left: 81px;
+  //height: 830px;
+  //width: 1277px;
+  //top: 112px;
+  //left: 81px;
+  width: 64%;
+  height: 100%;
+  //height: 100%;
+  top: 100%;
+  left: 5%;
   z-index: 199;
 }
 
 main .imgSecond {
   position: absolute;
-  width: 1127px;
-  height: 680px;
-  top: 202px;
-  left: 30px;
+  width: 62%;
+  top: 130%;
+  left: 2%;
   z-index: 999;
+  //width: 1127px;
+  //height: 680px;
+  //top: 202px;
+  //left: 30px;
 }
 
 main .logBox {
   padding: 0 60px 0 60px;
-  width: 500px;
-  height: 550px;
+  width: 27%;
+  min-width: 400px;
+  min-height: 300px;
+  //width: 500px;
+  //height: 550px;
+  //top: 268px;
+  //left: 1165px;
   background: #fff;
   position: absolute;
-  top: 268px;
-  left: 1165px;
+  top: 180%;
+  right: 7%;
   border-radius: 30px;
   box-sizing: border-box;
   z-index: 1111;
 }
 
 .logBox h2 {
-  width: 550px;
+  //width: 550px;
+  width: 100%;
   text-align: center;
   font-weight: 400;
   position: absolute;
-  top: -65px;
-  left: -30px;
+  //top: -65px;
+  //left: -30px;
+  top: -12%;
+  left: -6%;
   font-size: 36px;
   color: #fff
 }
@@ -77,8 +97,9 @@ main .logBox {
 }
 
 ::v-deep .logBox .login-input .el-input__inner{
-  width: 360px;
+  //width: 360px;
   height: 60px;
+  width: 100%;
   border: 1px solid #EEEEEE;
   border-radius: 10px;
   padding-left: 20px;
@@ -87,7 +108,8 @@ main .logBox {
 }
 
 .logBox p .inputBtn1 {
-  width: 380px;
+  //width: 380px;
+  width: 100%;
   height: 60px;
   color: #fff;
   font-size: 22px;
@@ -99,9 +121,11 @@ main .logBox {
 .logBox p .inputBtn2 {
   background: #fff;
   border: none;
-  width: 380px;
+  //width: 380px;
+  width: 100%;
   height: 60px;
   margin-top: 12px;
+  margin-bottom: 50px;
   font-size: 18px;
   color: #B9BED1;
   text-align: center;
