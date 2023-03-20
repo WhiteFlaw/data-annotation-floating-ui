@@ -37,6 +37,20 @@ module.exports = {
       errors: true
     },
     proxy: {
+      [process.env.VUE_APP_PYTHON_API]: {
+        target: `http://101.42.38.16`,
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_PYTHON_API]: ''
+        }
+      },
+      [process.env.VUE_APP_STATIC_URL]: {
+        target: `http://101.42.38.16`,
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_STATIC_URL]: '/data'
+        }
+      },
       [process.env.VUE_APP_BASE_API]: {
         target: `https://ytxgk.work/relax`,
         changeOrigin: true,

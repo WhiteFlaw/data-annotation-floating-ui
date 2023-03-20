@@ -36,7 +36,6 @@ export const constantRoutes = [
     component: () => import('@/views/login/index'),
     hidden: true
   },
-
   {
     path: '/404',
     component: () => import('@/views/404'),
@@ -53,6 +52,15 @@ export const constantRoutes = [
       component: () => import('@/views/dashboard/index'),
       meta: { title: '任务管理', icon: 'dashboard' }
     }]
+  },
+  {
+    path: '/3d-annotate',
+    component: () => import('@/views/annotate/index'),
+    name: 'Annotation',
+    meta: {
+      title: '开始3D标注',
+      icon: 'link'
+    }
   },
   // {
   //   path: 'external-link',

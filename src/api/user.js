@@ -1,17 +1,20 @@
-import request from '@/utils/request'
+import { POST, GET } from '@/utils/http-client'
 
+/**
+  * 登录
+  * @param points
+  * @returns { AxiosPromise }
+  */
 export function login(data) {
-  return request({
-    url: '/admin/auth/login',
-    method: 'post',
-    data
-  })
+  return POST(`/admin/auth/login`, data)
 }
 
+/**
+  * ???
+  * @param script
+  * @returns { AxiosPromise }
+  */
 export function getInfo(token) {
-  return request({
-    url: '/web/user/info',
-    method: 'get',
-    params: { token }
-  })
+  return GET(`/web/user/info`, { token })
 }
+
