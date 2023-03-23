@@ -45,13 +45,13 @@
 }
 
 
-a {
+.editor-container a {
 	color: var(--font-color);
 	text-decoration: none;
 	/* pointer-events: auto; */
 }
 
-a:hover {
+.editor-container a:hover {
 	text-decoration: underline;
 }
 

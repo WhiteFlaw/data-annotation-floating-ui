@@ -829,7 +829,6 @@ function Lidar(sceneMeta, world, frameInfo) {
 
     let minZ = 1000
 
-    this.points
     translated_cand_points.forEach((tp, i) => {
       if (Math.abs(tp[0]) < box.scale.x * init_scale_ratio.x / 2 &&
                 Math.abs(tp[1]) < box.scale.y * init_scale_ratio.y / 2 &&

@@ -38,6 +38,7 @@
 // import { validUsername } from '@/utils/validate'
 
 import HomePageSelection from '@/components/HomePageSelection'
+import {mapGetters} from 'vuex'
 export default {
   name: 'Login',
   components: {HomePageSelection},
@@ -71,6 +72,11 @@ export default {
       showLogin: true // 判断账号密码是否正确
     }
   },
+  computed: {
+    ...mapGetters([
+      'token'
+    ])
+  },
   watch: {
     $route: {
       handler: function(route) {
@@ -78,6 +84,9 @@ export default {
       },
       immediate: true
     }
+  },
+  created() {
+    this.showLogin = !this.token
   },
   methods: {
     showPwd() {

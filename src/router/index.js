@@ -34,7 +34,8 @@ export const constantRoutes = [
   {
     path: '/login',
     component: () => import('@/views/login/index'),
-    hidden: true
+    hidden: true,
+    alias: '/switch-platform'
   },
   {
     path: '/404',
@@ -61,6 +62,16 @@ export const constantRoutes = [
       title: '开始3D标注',
       icon: 'link'
     }
+  },
+  {
+    path: '/annotate',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: '3d',
+      component: () => import('@/views/annotate/index'),
+      meta: { title: '标注-內', icon: 'dashboard' }
+    }]
   },
   // {
   //   path: 'external-link',

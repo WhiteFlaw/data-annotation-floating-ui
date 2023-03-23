@@ -90,7 +90,7 @@ class ObjectIdManager {
         }
       }
 
-      xhr.open('GET', '/objs_of_scene?scene=' + scene, true)
+      xhr.open('GET', '/dev-ann-api/objs_of_scene?scene=' + scene, true)
       xhr.send()
     }
 
