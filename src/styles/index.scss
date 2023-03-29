@@ -9,7 +9,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, Arial, sans-serif;
 }
 
 label {
@@ -53,7 +54,7 @@ div:focus {
     visibility: hidden;
     display: block;
     font-size: 0;
-    content: " ";
+    content: ' ';
     clear: both;
     height: 0;
   }
@@ -73,6 +74,35 @@ div:focus {
 }
 
 .el-menu-item,
-.el-submenu__title{
+.el-submenu__title {
   font-weight: bold;
+}
+
+// pageContainer组件公共样式
+.page-container {
+  height: 100%;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+
+
+  .page-title {
+    padding:10px 15px;
+    border-bottom: 1px solid #dddddd;
+    margin-bottom:20px;
+
+    svg{
+      margin-right:10px;
+    }
+  }
+  .page-content-area {
+    padding:15px;
+    flex-grow: 1;
+  }
+  .page-search-area {
+    padding:15px 15px 0;
+    &+.page-content-area{
+      padding-top:0;
+    }
+  }
 }
