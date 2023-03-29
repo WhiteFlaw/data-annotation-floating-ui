@@ -42,17 +42,30 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
-
+  {
+    path: '/data-management',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'DataManagement',
+        component: () => import('@/views/dataManagement/index'),
+        meta: { title: '数据导入', icon: 'data-management' }
+      }
+    ]
+  },
   {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '任务管理', icon: 'dashboard' }
-    }]
+    children: [
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: '任务管理', icon: 'dashboard' }
+      }
+    ]
   },
   {
     path: '/3d-annotate',
@@ -66,13 +79,16 @@ export const constantRoutes = [
   {
     path: '/annotate',
     component: Layout,
-    children: [{
-      path: 'index',
-      name: '3d',
-      component: () => import('@/views/annotate/index'),
-      meta: { title: '标注-內', icon: 'dashboard' }
-    }]
+    children: [
+      {
+        path: 'index',
+        name: '3d',
+        component: () => import('@/views/annotate/index'),
+        meta: { title: '标注-內', icon: 'dashboard' }
+      }
+    ]
   },
+
   // {
   //   path: 'external-link',
   //   component: Layout,
@@ -88,12 +104,13 @@ export const constantRoutes = [
   { path: '*', redirect: '/404', hidden: true }
 ]
 
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  base: '/admin/',
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
-})
+const createRouter = () =>
+  new Router({
+    // mode: 'history', // require service support
+    base: '/admin/',
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRoutes
+  })
 
 const router = createRouter()
 
