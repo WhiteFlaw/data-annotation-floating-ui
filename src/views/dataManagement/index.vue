@@ -9,7 +9,8 @@
         <el-form-item label="项目名称" prop="projectName">
           <el-input
             v-model="dataForm.projectName"
-            placeholder="请输入项目名称" />
+            placeholder="请输入项目名称"
+            clearable />
         </el-form-item>
         <el-form-item label="客户名称" prop="customerInfo">
           <el-select
@@ -66,10 +67,20 @@
           <el-input-number v-model="dataForm.chunkSize" :min="1" />
         </el-form-item>
         <el-form-item label="项目描述">
-          <el-input v-model="dataForm.description" type="textarea" placeholder="请输入项目描述" :rows="8" resize="none" show-word-limit maxlength="300" />
+          <el-input
+            v-model="dataForm.description"
+            type="textarea"
+            placeholder="请输入项目描述"
+            :rows="8"
+            resize="none"
+            show-word-limit
+            maxlength="300" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" :loading="confirmLoading" @click="confirmDataInit('dataForm')">
+          <el-button
+            type="primary"
+            :loading="confirmLoading"
+            @click="confirmDataInit('dataForm')">
             导入初始化
           </el-button>
           <el-button type="primary" plain @click="resetForm('dataForm')">
@@ -104,9 +115,9 @@ export default {
         selectedDataRange: [],
         selectedGroup: [],
         chunkSize: 10,
-        description:''
+        description: ''
       },
-      confirmLoading:false
+      confirmLoading: false
     }
   },
   computed: {
@@ -186,7 +197,6 @@ export default {
       }
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(3333)
           confirmInitData({ ...postData }).then((res) => {
             if (res.success) {
               this.$message.success(res.msg)
