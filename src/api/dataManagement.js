@@ -1,7 +1,7 @@
 /*
  * @Author: M.Ming
  * @Date: 2023-03-28 14:54:19
- * @LastEditTime: 2023-03-29 09:07:54
+ * @LastEditTime: 2023-03-30 09:54:50
  * @FilePath: \3d-data-admin\src\api\dataManagement.js
  * @Description: 数据导入功能接口封装
  */
@@ -39,6 +39,7 @@ const getTeamsList = () => {
  * @param {string} [projectName=''] 项目名称
  * @param {string} [startDate=''] 起始日期
  * @param {*} [teamIds=[]] 团队id，多选
+ * @param {string} [description=''] 项目描述
  * @return {*}
  */
 const confirmInitData = ({
@@ -49,7 +50,8 @@ const confirmInitData = ({
   projectFolderName = '',
   projectName = '',
   startDate = '',
-  teamIds = []
+  teamIds = [],
+  description = ''
 }) => {
   return POST('/admin/project/inc', {
     chunkSize,
@@ -59,7 +61,8 @@ const confirmInitData = ({
     projectFolderName,
     projectName,
     startDate,
-    teamIds
+    teamIds,
+    description
   })
 }
 

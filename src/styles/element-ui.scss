@@ -47,3 +47,17 @@
 .el-range-separator {
   box-sizing: content-box;
 }
+
+.el-table{
+  .el-table__header-wrapper{
+    .el-table__header{
+      thead{
+        tr{
+          th{
+            background: #f5f7fa!important;
+          }
+        }
+      }
+    }
+  }
+}

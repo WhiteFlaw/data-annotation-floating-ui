@@ -55,6 +55,30 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/customer-management',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'CustomerManagement',
+        component: () => import('@/views/customerManagement/index'),
+        meta: { title: '客户管理', icon: 'customer-management' }
+      }
+    ]
+  },
+  {
+    path: '/project-management',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'ProjectManagement',
+        component: () => import('@/views/projectManagement/index'),
+        meta: { title: '项目管理', icon: 'project-management' }
+      }
+    ]
+  },
+  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
