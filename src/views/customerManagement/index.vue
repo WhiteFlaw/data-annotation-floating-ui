@@ -6,16 +6,31 @@
           <el-form :model="customerSearchForm" inline>
             <el-form-item label="客户名称">
               <el-input
-                v-model="customerSearchForm.name"
-                placeholder="请输入客户名称" />
+                v-model="customerSearchForm.customerName"
+                placeholder="按客户名称查询"
+                clearable />
+            </el-form-item>
+            <el-form-item label="客户电话">
+              <el-input
+                v-model="customerSearchForm.customerPhone"
+                placeholder="按客户电话查询"
+                clearable />
+            </el-form-item>
+            <el-form-item label="客户邮件">
+              <el-input
+                v-model="customerSearchForm.customerEmail"
+                placeholder="按客户邮件查询"
+                clearable />
             </el-form-item>
             <el-form-item>
-              <el-button type="primary">查询</el-button>
+              <el-button type="primary" @click="queryCustomersData"> 查询 </el-button>
             </el-form-item>
           </el-form>
         </el-col>
         <el-col :span="4" class="text-align-right">
-          <el-button type="primary">新增客户信息</el-button>
+          <el-button type="primary" @click="addCustomer">
+            新增客户信息
+          </el-button>
         </el-col>
       </el-row>
     </template>
@@ -85,6 +100,65 @@
         :page-index="pageIndex"
         :page-size="pageSize"
         @pagination="changePage" />
+      <el-dialog
+        :visible="showEditDialog"
+        :title="dialogTitle"
+        width="480px"
+        top="10vh"
+        append-to-body
+        destroy-on-close
+        @close="closeEditDialog('customerInfoForm')">
+        <el-form
+          ref="customerInfoForm"
+          label-width="80px"
+          :close-on-click-modal="false"
+          :model="customerInfoForm"
+          :rules="customerInfoRules">
+          <el-form-item label="客户 ID">
+            <el-input
+              :value="customerInfoForm.id ? customerInfoForm.id : '系统自动生成'"
+              disabled />
+          </el-form-item>
+          <el-form-item label="客户名称" prop="name">
+            <el-input
+              v-model="customerInfoForm.name"
+              placeholder="请输入客户名称" clearable />
+          </el-form-item>
+          <el-form-item label="客户电话">
+            <el-input
+              v-model="customerInfoForm.phone"
+              placeholder="请输入客户电话号码" clearable />
+          </el-form-item>
+          <el-form-item label="客户邮件">
+            <el-input
+              v-model="customerInfoForm.email"
+              placeholder="请输入客户电子邮件地址" clearable />
+          </el-form-item>
+          <el-form-item label="客户描述">
+            <el-input
+              v-model="customerInfoForm.description"
+              type="textarea"
+              placeholder="请输入客户描述"
+              :rows="6"
+              resize="none"
+              show-word-limit
+              maxlength="300" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer">
+          <el-button
+            type="primary"
+            @click="confirmEditCustomerInfo('customerInfoForm')">
+            确定
+          </el-button>
+          <el-button
+            type="primary"
+            plain
+            @click="closeEditDialog('customerInfoForm')">
+            取消
+          </el-button>
+        </div>
+      </el-dialog>
     </template>
   </page-container>
 </template>
@@ -92,23 +166,50 @@
 <script>
 import PageContainer from '@/components/PageContainer'
 import PaginationComponent from '@/components/PaginationComponent'
-import { getCustomersList } from '@/api/customerManagement'
+import {
+  getCustomersList,
+  addOneCustomer,
+  updateCustomer,
+  deleteCustomer
+} from '@/api/customerManagement'
+import tableMixin from '@/utils/tableMixin'
 export default {
   name: 'CustomerManagement',
   components: {
     PageContainer,
     PaginationComponent
   },
+  mixins: [tableMixin],
   data() {
     return {
       customerSearchForm: {
-        name: ''
+        customerEmail: '',
+        customerName: '',
+        customerPhone: ''
       },
       customerList: [],
-      total: 0,
-      pageIndex: 1,
-      pageSize: 20,
-      tableMaxHeight: 0
+      showEditDialog: false,
+      ifAdd: false,
+      customerInfoForm: {
+        createdTime: '',
+        description: '',
+        email: '',
+        id: 0,
+        name: '',
+        phone: ''
+      },
+      confirmEditLoading: false
+    }
+  },
+  computed: {
+    dialogTitle() {
+      return `${this.isAdd ? '新增' : '编辑'}客户信息`
+    },
+    customerInfoRules() {
+      const rules = {
+        name: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }]
+      }
+      return rules
     }
   },
   mounted() {
@@ -117,17 +218,22 @@ export default {
   methods: {
     // 页面初始化
     async initPageData() {
-      await this.queryCustomersData()
-      this.$nextTick(()=>{
-        const pageContentBoxHeight = document.getElementById('page-content-area').offsetHeight
-        this.tableMaxHeight = pageContentBoxHeight - 42
-      })
+      this.queryCustomersData()
+      this.getTableMaxHeight()
     },
     // 查询客户列表
     async queryCustomersData() {
-      const res = await getCustomersList()
+      const data = {
+        customerEmail: this.customerSearchForm.customerEmail,
+        customerName: this.customerSearchForm.customerName,
+        customerPhone: this.customerSearchForm.customerPhone,
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize
+      }
+      const res = await getCustomersList({ ...data })
       if (res.success) {
-        this.customerList = [...res.data]
+        this.customerList = [...res.data.records]
+        this.total = res.data.total
       } else {
         this.$$message.error(res.msg)
       }
@@ -137,10 +243,73 @@ export default {
       this.pagIndex = page
       this.pageSize = limit
     },
-    addCustomer() {},
-    editCustomerInfo(row) {},
-    confirmEditCustomerInfo(info) {},
-    deleteCustomer(row) {}
+    addCustomer() {
+      console.log(3333)
+      this.customerInfoForm = {
+        createdTime: '',
+        description: '',
+        email: '',
+        id: 0,
+        name: '',
+        phone: ''
+      }
+      this.ifAdd = true
+      this.showEditDialog = true
+    },
+    editCustomerInfo(row) {
+      this.customerInfoForm = { ...row }
+      this.ifAdd = false
+      this.showEditDialog = true
+    },
+    confirmEditCustomerInfo(formName) {
+      this.confirmEditLoading = true
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (this.ifAdd) {
+            addOneCustomer({ ...this.customerInfoForm }).then((res) => {
+              if (res.success) {
+                this.$message.success(res.msg)
+              } else {
+                this.$message.error(res.msg)
+              }
+              this.confirmEditLoading = false
+              this.queryCustomersData()
+            })
+          } else {
+            updateCustomer({ ...this.customerInfoForm }).then((res) => {
+              if (res.success) {
+                this.$message.success(res.msg)
+              } else {
+                this.$message.error(res.msg)
+              }
+              this.confirmEditLoading = false
+              this.showEditDialog = false
+              this.queryCustomersData()
+            })
+          }
+        } else {
+          return false
+        }
+      })
+    },
+    closeEditDialog(formName) {
+      this.$refs[formName].resetFields()
+      this.showEditDialog = false
+    },
+    deleteCustomer(row) {
+      this.deleteLoading = true
+      deleteCustomer(row.id).then((res) => {
+        if (res.success) {
+          setTimeout(() => {
+            this.deleteLoading = false
+            this.$message.success(res.msg)
+            this.queryCustomersData()
+          }, 1000)
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    }
   }
 }
 </script>
