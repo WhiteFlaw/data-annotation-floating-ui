@@ -78,6 +78,14 @@ div:focus {
   font-weight: bold;
 }
 
+.text-align-center {
+  text-align: center;
+}
+
+.text-align-right {
+  text-align: right;
+}
+
 // pageContainer组件公共样式
 .page-container {
   height: 100%;
@@ -85,24 +93,27 @@ div:focus {
   display: flex;
   flex-direction: column;
 
-
   .page-title {
-    padding:10px 15px;
+    padding: 10px 15px;
     border-bottom: 1px solid #dddddd;
-    margin-bottom:20px;
+    margin-bottom: 20px;
 
-    svg{
-      margin-right:10px;
+    svg {
+      margin-right: 10px;
     }
   }
   .page-content-area {
-    padding:15px;
+    padding: 15px;
     flex-grow: 1;
+
+    &.overflow-y-auto{
+      overflow-y: auto;
+    }
   }
   .page-search-area {
-    padding:15px 15px 0;
-    &+.page-content-area{
-      padding-top:0;
+    padding: 0 15px;
+    & + .page-content-area {
+      padding-top: 0;
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <page-container>
+  <page-container is-scroll-y>
     <template slot="content">
       <el-form
         ref="dataForm"
@@ -15,7 +15,8 @@
           <el-select
             v-if="customerList.length"
             v-model="dataForm.customerInfo"
-            placeholder="请选择要导入的项目数据">
+            filterable
+            placeholder="请选择客户">
             <el-option
               v-for="o of customerList"
               :key="o.id"
@@ -30,6 +31,7 @@
         <el-form-item label="导入数据" prop="selectedProjectData">
           <el-select
             v-model="dataForm.selectedProjectData"
+            filterable
             placeholder="请选择要导入的项目数据">
             <el-option
               v-for="o of projectDataList"
@@ -47,7 +49,7 @@
             end-placeholder="结束日期"
             value-format="yyyy-MM-dd" />
         </el-form-item>
-        <el-form-item label="分配团队" prop="selectedGroup">
+        <el-form-item label="分配团队">
           <el-checkbox-group
             v-if="groupList.length"
             v-model="dataForm.selectedGroup">
@@ -63,8 +65,11 @@
         <el-form-item label="分包大小" prop="chunkSize">
           <el-input-number v-model="dataForm.chunkSize" :min="1" />
         </el-form-item>
+        <el-form-item label="项目描述">
+          <el-input v-model="dataForm.description" type="textarea" placeholder="请输入项目描述" :rows="8" resize="none" show-word-limit maxlength="300" />
+        </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="confirmDataInit('dataForm')">
+          <el-button type="primary" :loading="confirmLoading" @click="confirmDataInit('dataForm')">
             导入初始化
           </el-button>
           <el-button type="primary" plain @click="resetForm('dataForm')">
@@ -98,8 +103,10 @@ export default {
         selectedProjectData: '',
         selectedDataRange: [],
         selectedGroup: [],
-        chunkSize: 10
-      }
+        chunkSize: 10,
+        description:''
+      },
+      confirmLoading:false
     }
   },
   computed: {
@@ -125,9 +132,9 @@ export default {
             trigger: 'change'
           }
         ],
-        selectedGroup: [
-          { required: true, message: '请选择团队', trigger: 'change' }
-        ],
+        // selectedGroup: [
+        //   { required: true, message: '请选择团队', trigger: 'change' }
+        // ],
         chunkSize: [
           { required: true, message: '分包大小最小为1', trigger: 'blur' }
         ]
@@ -144,19 +151,28 @@ export default {
       getProjectDataList().then((res) => {
         if (res.success) {
           this.projectDataList = [...res.data]
+        } else {
+          this.$$message.error(res.msg)
         }
       })
       getCustomersList().then((res) => {
         if (res.success) {
           this.customerList = [...res.data]
+        } else {
+          this.$$message.error(res.msg)
         }
       })
       getTeamsList().then((res) => {
-        this.groupList = [...res.data]
+        if (res.success) {
+          this.groupList = [...res.data]
+        } else {
+          this.$$message.error(res.msg)
+        }
       })
     },
     // 确定提交初始化数据
     confirmDataInit(formName) {
+      this.confirmLoading = true
       const postData = {
         chunkSize: this.dataForm.chunkSize,
         customerId: Number(this.dataForm.customerInfo.split(':')[0]),
@@ -165,12 +181,20 @@ export default {
         projectFolderName: this.dataForm.selectedProjectData,
         projectName: this.dataForm.projectName,
         startDate: this.dataForm.selectedDataRange[0],
-        teamIds: this.dataForm.selectedGroup
+        teamIds: this.dataForm.selectedGroup,
+        description: this.dataForm.description
       }
       this.$refs[formName].validate((valid) => {
         if (valid) {
           console.log(3333)
-          confirmInitData({ ...postData })
+          confirmInitData({ ...postData }).then((res) => {
+            if (res.success) {
+              this.$message.success(res.msg)
+            } else {
+              this.$message.error(res.msg)
+            }
+            this.confirmLoading = false
+          })
         } else {
           return false
         }
