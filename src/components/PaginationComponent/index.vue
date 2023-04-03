@@ -45,10 +45,8 @@ export default {
   },
   watch: {
     changeData: {
-      handler(newVal, oldVal) {
-        if (newVal.page !== oldVal.page || newVal.limit !== oldVal.limit) {
-          this.$emit('pagination', { ...newVal })
-        }
+      handler(newVal) {
+        this.$emit('pagination', { ...newVal })
       },
       deep: true
     }

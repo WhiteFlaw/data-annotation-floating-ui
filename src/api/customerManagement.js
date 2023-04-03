@@ -5,7 +5,7 @@
  * @FilePath: \3d-data-admin\src\api\customerManagement.js
  * @Description: 客户管理功能接口API
  */
-const { POST, GET, PUT, DELETE } = require('@/utils/http-client')
+const { POST, PUT, DELETE } = require('@/utils/http-client')
 
 const getCustomersList = ({
   customerEmail = '',
@@ -89,7 +89,7 @@ const updateCustomer = ({
  * @return {*}
  */
 const deleteCustomer = (id) => {
-  return DELETE('/admin/customer/', { id })
+  return DELETE('/admin/customer/', {}, { id })
 }
 
 export { getCustomersList, addOneCustomer, updateCustomer, deleteCustomer }

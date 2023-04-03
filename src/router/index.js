@@ -113,6 +113,53 @@ export const constantRoutes = [
     ]
   },
 
+  {
+    path: '/teamManagement',
+    component: Layout,
+    meta: { title: '团队管理'},
+    children: [
+      {
+        path: 'userManagement',
+        name: 'userManagement',
+        component: () => import('@/views/teamManagement/userManagement'),
+        meta: { title: '用户管理'}
+      },
+      {
+        path: 'team',
+        component: () => import('@/views/teamManagement'),
+        redirect: '/teamList',
+        children: [
+          {
+            path: 'teamList',
+            name: 'teamList',
+            component: () => import('@/views/teamManagement/teamList'),
+            meta: {
+              title: '团队列表',
+              roles: ['teamList']
+            }
+          },
+          {
+            path: 'teamListDetail',
+            component: () => import('@/views/teamManagement'),
+            redirect: '/teamManagement/team/teamList',
+            meta: {
+              title: '团队列表',
+              roles: ['teamListDetail']
+            },
+            hidden: true,
+            children: [
+              {
+                path: 'teamDetail',
+                name: 'teamDetail',
+                component: () => import('@/views/teamManagement/teamList/components/teamDetail'),
+                meta: {title: '团队详情'}
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
   // {
   //   path: 'external-link',
   //   component: Layout,

@@ -6,7 +6,7 @@ import { POST, GET } from '@/utils/http-client'
   * @returns { AxiosPromise }
   */
 export function login(data) {
-  return POST(`/admin/auth/login`, data)
+  return POST(`/admin/login`, data)
 }
 
 /**
@@ -14,7 +14,7 @@ export function login(data) {
   * @param script
   * @returns { AxiosPromise }
   */
-export function getInfo(token) {
-  return GET(`/web/user/info`, { token })
+export function getInfo() {
+  return GET(`/admin/user/info`)
 }
 
