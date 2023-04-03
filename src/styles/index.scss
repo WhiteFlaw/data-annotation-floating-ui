@@ -117,3 +117,12 @@ div:focus {
     }
   }
 }
+// 弹窗公共加border
+.el-dialog-border{
+  .el-dialog__header{
+    border-bottom: 1px solid #F1F2F4;
+  }
+  .el-dialog__footer {
+    border-top: 1px solid #F1F2F4;
+  }
+}

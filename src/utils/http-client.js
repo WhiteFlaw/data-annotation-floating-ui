@@ -26,9 +26,10 @@ export function PUT(url, data = {}, params = {}) {
   })
 }
 
-export function DELETE(url, params = {}) {
+export function DELETE(url, data = {}, params = {}) {
   return request({
     url,
+    data,
     params,
     method: 'delete'
   })
