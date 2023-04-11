@@ -15,7 +15,6 @@ deploy-job:
     - echo "开始install--> build--> deploy 🔥🔥🔥"
     - whoami
     - pwd
-    - locate npm
     - echo ${PATH}
     - which npm
     - ls -lh $(which npm)
