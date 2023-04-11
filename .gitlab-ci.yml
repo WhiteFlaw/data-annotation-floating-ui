@@ -13,6 +13,12 @@ deploy-job:
     - /^release.*$/
   before_script:
     - echo "开始install--> build--> deploy 🔥🔥🔥"
+    - whoami
+    - pwd
+    - locate npm
+    - echo ${PATH}
+    - which npm
+    - ls -lh $(which npm)
   script:
     - echo "开始install🔥🔥🔥"
     - if [ ! -d "./node_modules/" ];then   npm install --registry=https://registry.npmmirror.com/;   else   echo "缓存存在,跳过install"; fi
