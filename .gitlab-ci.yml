@@ -3,9 +3,9 @@ stages: # 分段
 
 variables:
   BUILDDIR: dist # 打包文件名
-  PRODDIR: www # 线上文件名
+  PRODDIR: html # 线上文件名
   BACKUPDIR: dist_bak # 备份文件夹
-  UPLOADDIR: /home/nginx/html #nginx前端部署文件夹
+  UPLOADDIR: /home/nginx #nginx前端部署文件夹
 
 deploy-job:
   stage: deploy
