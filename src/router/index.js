@@ -87,7 +87,7 @@ export const constantRoutes = [
         path: 'dashboard',
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index'),
-        meta: { title: '任务管理', icon: 'dashboard' }
+        meta: { title: '我的工作台', icon: 'dashboard' }
       }
     ]
   },
@@ -178,7 +178,6 @@ export const constantRoutes = [
 const createRouter = () =>
   new Router({
     // mode: 'history', // require service support
-    base: '/admin/',
     scrollBehavior: () => ({ y: 0 }),
     routes: constantRoutes
   })

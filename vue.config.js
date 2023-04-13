@@ -52,10 +52,10 @@ module.exports = {
         }
       },
       [process.env.VUE_APP_BASE_API]: {
-        target: `https://ytxgk.work/relax`,
+        target: `http://10.30.211.214:8080/`,
         changeOrigin: true,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: '/api'
+          ['^' + process.env.VUE_APP_BASE_API]: ''
         }
       }
     },
