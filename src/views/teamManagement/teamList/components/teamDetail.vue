@@ -5,7 +5,7 @@
         <el-row>
           <el-col>
             <span class="team-name">{{ detailsData.name }}</span>
-            <i class="el-icon-edit icon-class" @click="addOrUpdateGroup()" />
+            <el-button :disabled="detailsData.status === 1" icon="el-icon-edit" type="text" @click="addOrUpdateGroup()" />
             <el-button type="text" @click="backPage">返回团队列表</el-button>
           </el-col>
           <el-col :span="8">
@@ -20,18 +20,16 @@
           <el-col>
             <el-tabs v-model="activeName" type="card" @tab-click="changeTabs">
               <el-tab-pane label="所有" name="0" />
-              <el-tab-pane label="质检员" name="3" />
-              <el-tab-pane label="标注员" name="4" />
+              <el-tab-pane v-for="item in teamRole" :key="item.id" :label="item.name" :name="item.id" />
               <el-form inline>
                 <el-row>
-                  <el-col>
-                    <el-form-item>
+                  <el-col :span="activeName === '0' ? 22 : 20">
+                    <el-form-item v-if="activeName === '0'">
                       <el-radio-group v-model="roleId">
-                        <el-radio :label="3">质检员</el-radio>
-                        <el-radio :label="4">标注员</el-radio>
+                        <el-radio v-for="item in teamRole" :key="item.id" :label="item.id">{{ item.name }}</el-radio>
                       </el-radio-group>
                     </el-form-item>
-                    <el-form-item>
+                    <el-form-item :class="activeName === '0' ? 'select-form' : 'select-width-100'">
                       <el-select v-model="checkList" filterable placeholder="请选择添加的成员" multiple>
                         <el-option
                           v-for="(item, i) in userList"
@@ -44,9 +42,11 @@
                         </el-option>
                       </el-select>
                     </el-form-item>
-                    <el-form-item>
-                      <el-button type="primary" @click="addUserRoles">添加</el-button>
-                    </el-form-item>
+                  </el-col>
+                  <el-col :span="activeName === '0' ? 2 : 4" class="text-align-right">
+                    <el-button type="primary" :disabled="detailsData.status === 1" @click="addUserRoles">
+                      {{ activeName === '0' ? '添加' : activeName === '3' ? '添加团队管理员': activeName === '4' ? '添加质检员' : '添加标注员' }}
+                    </el-button>
                   </el-col>
                 </el-row>
               </el-form>
@@ -75,8 +75,8 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="searchInformation(scope.row)">查看信息</el-button>
-            <el-button type="text" @click="updateData(scope.row)">修改角色</el-button>
-            <el-button type="text" @click="deleteRowData(scope.row)">删除</el-button>
+            <el-button type="text" :disabled="detailsData.status === 1" @click="updateData(scope.row)">修改角色</el-button>
+            <el-button type="text" :disabled="detailsData.status === 1" @click="deleteRowData(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -88,7 +88,7 @@
         @pagination="changeDetailsPage"
       />
       <template v-if="roleConfigurationVisible">
-        <role-configuration :row-data="memberDetails" :visible.sync="roleConfigurationVisible" @search-data-list="searchDetailData" />
+        <role-configuration :team-role="teamRole" :row-data="memberDetails" :visible.sync="roleConfigurationVisible" @search-data-list="searchDetailData" />
       </template>
       <template v-if="detailedVisible">
         <edit-information :row-data="detailedInformation" :visible.sync="detailedVisible" />
@@ -106,7 +106,7 @@ import PaginationComponent from '@/components/PaginationComponent'
 import EditInformation from '@/views/teamManagement/teamList/components/editInformation'
 import RoleConfiguration from '@/views/teamManagement/teamList/components/roleConfiguration'
 import tableMixin from '@/utils/tableMixin'
-import {deleteUserRoleData, queryRoleList} from '@/api/userManagement'
+import {deleteUserRoleData, getUserRole, queryRoleList} from '@/api/userManagement'
 import {addOrUpdateUserData, queryTeamDetail, queryTeamRolesData, queryUserData} from '@/api/teamList'
 import AddGroupData from '@/views/teamManagement/teamList/components/addGroupData'
 export default {
@@ -115,13 +115,14 @@ export default {
   mixins: [tableMixin],
   data() {
     return {
+      teamRole: [],
       tableLoading: false,
       addGroupVisible: false,
       tableData: [],
       total: 0,
       total1: 0,
       total2: 0,
-      roleId: 3, // 角色选择
+      roleId: '3', // 角色选择
       pageSize: 20,
       pageSize1: 20,
       pageSize2: 20,
@@ -165,6 +166,11 @@ export default {
     async searchTitleData() {
       const id = this.$route.query.id
       const row = await queryTeamDetail({teamId: id})
+      const res = await getUserRole(id) // 根据团队id获取角色配置
+      res.data.forEach(item => {
+        item.id = String(item.id)
+      })
+      this.teamRole = res.data
       this.detailsData = row.data
     },
     addOrUpdateGroup() { // 编辑
@@ -208,7 +214,7 @@ export default {
             teamId: this.detailsData.id,
             userId: Number(item.split(',')[0]),
             createdTime: item.split(',')[1],
-            roleId: this.roleId
+            roleId: this.activeName === '0' ? Number(this.roleId) : Number(this.activeName)
           }
         )
       })
@@ -268,14 +274,16 @@ export default {
       }).then(() => {
         const updateObject = {
           id: row.id,
-          roleId: 0,
+          roleId: row.roleId,
           teamId: row.teamId,
+          userId: row.userId,
           createdTime: row.createdTime
         }
         deleteUserRoleData(updateObject).then(res => {
           if (res.msg === 'success') {
             this.$message.success('操作成功！')
             this.searchDetailData()
+            this.searchUserData()
           } else {
             this.$message.error('操作失败！')
           }
@@ -309,8 +317,43 @@ export default {
   font-weight: bold;
   margin-right: 10px;
 }
-.icon-class{
-  cursor: pointer;
-  margin-right: 10px;
+::v-deep .el-form {
+  .el-row {
+    .el-col{
+      .el-form-item {
+        margin-bottom: 5px;
+      }
+      .select-form{
+        width: calc(100% - 306px);
+        .el-form-item__content{
+          width: 100%;
+          .el-select{
+            width: 100%;
+            .el-input {
+              width: 100%;
+              .el-input__inner {
+                width:100%;
+              }
+            }
+          }
+        }
+      }
+      .select-width-100{
+        width: 100%;
+        .el-form-item__content{
+          width: 100%;
+          .el-select{
+            width: 100%;
+            .el-input {
+              width: 100%;
+              .el-input__inner {
+                width:100%;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 </style>

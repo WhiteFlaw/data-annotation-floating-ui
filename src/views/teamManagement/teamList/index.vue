@@ -47,7 +47,8 @@
         <el-table-column label="操作" min-width="120px" fixed="right">
           <template slot-scope="scope">
             <el-button type="text" @click="details(scope.row)">详情</el-button>
-            <el-button type="text" @click="deleteTeam(scope.row)">删除团队</el-button>
+            <el-button type="text" :disabled="scope.row.status === 1" @click="deleteTeam(scope.row)">删除团队</el-button>
+            <el-button type="text" :disabled="scope.row.status === 1" @click="updateTeamNullification(scope.row)">团队无效化</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -67,7 +68,7 @@
 
 <script>
 import AddGroupData from '@/views/teamManagement/teamList/components/addGroupData'
-import {deleteTeamData, queryTeamListData} from '@/api/teamList'
+import {deleteTeamData, queryTeamListData, teamNullification} from '@/api/teamList'
 import PageContainer from '@/components/PageContainer'
 import PaginationComponent from '@/components/PaginationComponent'
 import tableMixin from '@/utils/tableMixin'
@@ -134,13 +135,43 @@ export default {
       })
     },
     deleteTeam(row) { // 删除团队
-      deleteTeamData(row).then(res => {
-        if (res.msg === 'success') {
-          this.$message.success('操作成功！')
-          this.searchData()
-        } else {
-          this.$message.error('操作失败！')
-        }
+      this.$confirm(`是否要删除团队：${row.name}`, {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteTeamData(row).then(res => {
+          if (res.msg === 'success') {
+            this.$message.success('操作成功！')
+            this.searchData()
+          } else {
+            this.$message.error('操作失败！')
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    updateTeamNullification(row) {
+      this.$confirm(`是否要无效化团队：${row.name}`, {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        teamNullification(row.id).then(res => {
+          if (res.msg === '无效化团队成功') {
+            this.$message.success(res.msg)
+            this.searchData()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     }
   }

@@ -82,3 +82,12 @@ export function queryDetailedInformation({teamId, userId}) {
 export function queryTeamDetail({teamId}) {
   return GET(`/admin/team/getTeam`, {teamId})
 }
+
+/**
+ * 团队无效化
+ * @param teamId 团队id
+ * @returns {*}
+ */
+export function teamNullification(teamId) {
+  return PUT(`/admin/team/nullification/${teamId}`)
+}

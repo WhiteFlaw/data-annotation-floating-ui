@@ -85,7 +85,7 @@
     </el-form>
     <div slot="footer">
       <el-button @click="dialogVisible = false">取消</el-button>
-      <el-button type="primary" @click="updateData">确定</el-button>
+      <el-button type="primary" :disabled="rowData.status === 1" @click="updateData">确定</el-button>
     </div>
   </el-dialog>
 </template>
