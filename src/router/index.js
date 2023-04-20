@@ -111,20 +111,7 @@ export const constantRoutes = [
         meta: { title: '标注-內', icon: 'dashboard' }
       }
     ]
-  },
-  // {
-  //   path: 'external-link',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-  //       meta: { title: 'External Link', icon: 'link' }
-  //     }
-  //   ]
-  // },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  }
 ]
 
 export const asyncRoutes = [
@@ -207,7 +194,7 @@ export const asyncRoutes = [
         path: 'taggingTask',
         name: 'taggingTask',
         component: () => import('@/views/myTask/index'),
-        meta: { title: '标注项目', icon: 'dashboard' },
+        meta: { title: '标注项目', roles: ['teamLeader', 'tagger']},
         redirect: '/myTask/taggingTask/project-list',
         children: [
           {
@@ -238,9 +225,57 @@ export const asyncRoutes = [
             ]
           }
         ]
+      },
+      {
+        path: '/roundOfInspection',
+        component: () => import('@/views/roundOfInspection'),
+        meta: { title: '一轮质检', roles: ['teamLeader', 'qc']},
+        redirect: '/roundOfInspection/itemList',
+        children: [
+          {
+            path: 'itemList',
+            name: 'itemList',
+            component: () => import('@/views/roundOfInspection/ItemList'),
+            meta: { title: '项目列表'},
+            hidden: true
+          },
+          {
+            path: 'projectDetails',
+            name: 'projectDetails',
+            component: () => import('@/views/roundOfInspection/projectDetails'),
+            meta: {title: '项目详情'},
+            hidden: true
+          }
+        ]
+      },
+      {
+        path: '/secondRoundOfInspection',
+        component: () => import('@/views/secondRoundOfInspection'),
+        meta: { title: '二轮质检', roles: ['teamLeader', 'qc']},
+        redirect: '/secondRoundOfInspection/secondItemList',
+        children: [
+          {
+            path: 'secondItemList',
+            name: 'secondItemList',
+            component: () => import('@/views/secondRoundOfInspection/secondItemList'),
+            meta: { title: '项目列表'},
+            hidden: true
+          },
+          {
+            path: 'secondProjectDetails',
+            name: 'secondProjectDetails',
+            component: () => import('@/views/secondRoundOfInspection/secondProjectDetails'),
+            meta: {title: '项目详情'},
+            hidden: true
+          }
+        ]
       }
     ]
   }
+]
+
+export const lastRoute = [
+  { path: '*', redirect: '/404', hidden: true } // 404 page must be placed at the end !!!
 ]
 
 const createRouter = () =>
