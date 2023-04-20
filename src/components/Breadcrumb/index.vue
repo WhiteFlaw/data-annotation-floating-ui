@@ -48,16 +48,25 @@ export default {
     pathCompile(path) {
       // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
       const { params } = this.$route
-      var toPath = pathToRegexp.compile(path)
+      const toPath = pathToRegexp.compile(path)
       return toPath(params)
     },
     handleLink(item) {
       const { redirect, path } = item
       if (redirect) {
-        this.$router.push(redirect)
-        return
+        this.$router.push(this.getRedirect(redirect))
+      } else {
+        this.$router.push(this.pathCompile(path))
       }
-      this.$router.push(this.pathCompile(path))
+    },
+    getRedirect(path) {
+      const startPos = path.indexOf(':')
+      if (startPos !== -1) {
+        const endPos = path.indexOf('/', startPos)
+        const key = path.substring(startPos + 1, endPos)
+        path = path.replace(':' + key, this.$route.params[key])
+      }
+      return path
     }
   }
 }
