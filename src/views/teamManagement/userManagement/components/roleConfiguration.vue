@@ -20,10 +20,10 @@
     <el-divider />
     <div class="radio-div">
       <span>角色:</span>
-      <el-radio-group v-model="roleId">
-        <el-radio :label="2">项目经理</el-radio>
-        <el-radio :label="0">普通用户</el-radio>
+      <el-radio-group v-if="roleId !== '1'" v-model="roleId">
+        <el-radio v-for="item in roleList" :key="item.id" :label="item.id">{{ item.name }}</el-radio>
       </el-radio-group>
+      <span v-else>超级管理员</span>
     </div>
     <div slot="footer">
       <el-button @click="dialogVisible = false">取消</el-button>
@@ -35,8 +35,7 @@
 <script>
 
 import {
-  configurationUserData,
-  deleteUserRoleData,
+  configurationUserData, getUserRole,
   queryUserRole
 } from '@/api/userManagement'
 
@@ -54,11 +53,12 @@ export default {
   },
   data() {
     return {
-      id: '', // 存放角色的id
       uploadLoading: false,
-      roleId: 0,
+      roleId: '0',
+      roleList: [],
       storeUserRoleData: [], // 储存用户角色信息
-      userRoleList: [] // 角色配置列表
+      userRoleList: [], // 角色配置列表
+      id: ''
     }
   },
   computed: {
@@ -72,57 +72,39 @@ export default {
     }
   },
   async mounted() {
-    const result = await queryUserRole(this.rowData.id)
-    const userRoleList = []
-    result.data.forEach(item => {
-      userRoleList.push(item.roleId)
-    })
-    this.roleId = userRoleList.indexOf(2) !== -1 ? 2 : 0
-    const position = userRoleList.indexOf(2)
-    this.id = position !== -1 ? result.data[position].id : ''
+    const result = await queryUserRole(this.rowData.id, 0)
+    this.id = result.data[0].id
+    this.roleId = String(result.data[0].roleId)
+    if (this.roleId !== '1') {
+      const res = await getUserRole(0) // 获取角色配置
+      res.data.forEach(item => {
+        item.id = String(item.id)
+      })
+      this.roleList = res.data
+    }
   },
   methods: {
     updateData() { // 配置用户角色
       this.uploadLoading = true
-      if (this.roleId) {
-        const updateObject = {
-          roleId: this.roleId,
-          userId: this.rowData.id,
-          createdTime: this.rowData.createdTime,
-          deleted: this.rowData.deleted
-        }
-        configurationUserData(updateObject).then(res => {
-          this.uploadLoading = false
-          if (res.msg === 'success') {
-            this.$message.success('操作成功！')
-            this.$emit('update-success')
-            this.dialogVisible = false
-          } else {
-            this.$message.error('操作失败！')
-          }
-        }).catch(() => {
-          this.uploadLoading = false
-        })
-      } else {
-        const updateObject = {
-          id: this.id,
-          roleId: this.roleId,
-          userId: this.rowData.id,
-          createdTime: this.rowData.createdTime,
-          deleted: this.rowData.deleted
-        }
-        deleteUserRoleData(updateObject).then(res => {
-          this.uploadLoading = false
-          if (res.msg === 'success') {
-            this.$message.success('操作成功！')
-            this.$emit('update-success')
-          } else {
-            this.$message.error('操作失败！')
-          }
-        }).catch(() => {
-          this.uploadLoading = false
-        })
+      const updateObject = {
+        id: this.id,
+        roleId: Number(this.roleId),
+        userId: this.rowData.id,
+        createdTime: this.rowData.createdTime,
+        deleted: this.rowData.deleted
       }
+      configurationUserData(updateObject).then(res => {
+        this.uploadLoading = false
+        if (res.msg === 'success') {
+          this.$message.success('操作成功！')
+          this.$emit('update-success')
+          this.dialogVisible = false
+        } else {
+          this.$message.error('操作失败！')
+        }
+      }).catch(() => {
+        this.uploadLoading = false
+      })
     }
   }
 }

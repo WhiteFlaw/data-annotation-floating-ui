@@ -6,5 +6,5 @@ export const USER_INFO_CONSTANT = {
   educationalBackground: ['', '中专', '大专', '本科', '硕士', '博士'], // 学历
   socialSeniority: ['', '0-5年', '6-10年', '10年以上'], // 社会工龄
   labelProjectExperience: ['', '文本类标注经验', '图片类标注经验', '视频类标注经验', '音频类标注经验'], // 标注项目经验
-  englishLevel: ['', '无', 'CET-4', 'CET-6', '专4', '专8', '托福', '雅思'] // 英语水平
+  englishLevel: ['无', 'CET-4', 'CET-6', '专4', '专8', '托福', '雅思'] // 英语水平
 }

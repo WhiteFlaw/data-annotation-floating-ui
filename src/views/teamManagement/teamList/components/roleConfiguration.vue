@@ -22,8 +22,7 @@
     <div class="checkbox-div">
       <span>角色:</span>
       <el-radio-group v-model="formData.roleId">
-        <el-radio :label="3">质检员</el-radio>
-        <el-radio :label="4">标注员</el-radio>
+        <el-radio v-for="item in teamRole" :key="item.id" :label="item.id">{{ item.name }}</el-radio>
       </el-radio-group>
     </div>
     <div slot="footer">
@@ -47,6 +46,10 @@ export default {
     rowData: {
       default: () => {},
       type: Object
+    },
+    teamRole: {
+      default: () => [],
+      type: Array
     }
   },
   data() {
@@ -66,10 +69,14 @@ export default {
   },
   mounted() {
     this.formData = {...this.rowData}
+    this.formData.roleId = String(this.formData.roleId)
+    this.teamRole.forEach(item => {
+      item.id = String(item.id)
+    })
   },
   methods: {
     updateUserRole() { // 修改用户角色
-      addOrUpdateUserData([this.formData]).then(res => {
+      addOrUpdateUserData([{...this.formData, roleId: Number(this.formData.roleId)}]).then(res => {
         if (res.msg === 'success') {
           this.$message.success('操作成功！')
           this.$emit('search-data-list')

@@ -8,7 +8,7 @@
     <template slot="search">
       <el-form inline>
         <el-row>
-          <el-col :span="20">
+          <el-col :span="18">
             <el-form-item label="成员:">
               <el-input
                 v-model="searchCondition.name"
@@ -28,7 +28,8 @@
               <el-button plain @click="resetQueryCondition">重置</el-button>
             </el-form-item>
           </el-col>
-          <el-col :span="4" class="text-align-right">
+          <el-col :span="6" class="text-align-right">
+            <el-button type="primary" icon="el-icon-plus" @click="addUser">新增</el-button>
             <el-button type="primary" icon="el-icon-upload" @click="openUploadDialog">批量导入用户信息</el-button>
           </el-col>
         </el-row>
@@ -43,19 +44,25 @@
         highlight-current-row
         :max-height="tableMaxHeight"
       >
-        <el-table-column prop="id" label="ID" min-width="150px" />
-        <el-table-column prop="nickname" label="用户名称" min-width="100px" />
-        <el-table-column prop="email" label="邮箱" min-width="200px" />
-        <el-table-column prop="createdTime" label="加入时间" min-width="160px">
+        <el-table-column header-align="center" prop="id" label="ID" min-width="150px" />
+        <el-table-column header-align="center" prop="nickname" label="用户名称" min-width="150px" />
+        <el-table-column header-align="center" prop="email" label="邮箱" min-width="200px" />
+        <el-table-column header-align="center" prop="createdTime" label="加入时间" min-width="160px">
           <template slot-scope="scope">
             {{ scope.row.createdTime.indexOf('T') !== -1 ? (scope.row.createdTime.split('T')[0] + ' ' + scope.row.createdTime.split('T')[1]) : scope.row.createdTime }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="200px" fixed="right">
+        <el-table-column label="账号是否有效" align="center" min-width="150">
+          <template slot-scope="scope">
+            {{ scope.row.status === 1 ? '无效' : '有效' }}
+          </template>
+        </el-table-column>
+        <el-table-column header-align="center" label="操作" min-width="300px" fixed="right">
           <template slot-scope="scope">
             <el-button type="text" @click="editInformation(scope.row)">编辑信息</el-button>
-            <el-button type="text" @click="roleConfiguration(scope.row)">角色配置</el-button>
-            <el-button type="text" @click="deleteData(scope.row)">删除</el-button>
+            <el-button type="text" :disabled="scope.row.status === 1" @click="roleConfiguration(scope.row)">角色配置</el-button>
+            <el-button type="text" :disabled="scope.row.status === 1" @click="deleteData(scope.row)">删除</el-button>
+            <el-button type="text" :disabled="scope.row.status === 1" @click="updateUserInvalidation(scope.row)">用户无效化</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -75,6 +82,9 @@
       <template v-if="uploadVisible"><!--批量上传-->
         <member-upload-dialog :visible.sync="uploadVisible" @upload-success="searchData" />
       </template>
+      <template v-if="addUserVisible">
+        <add-user-information :visible.sync="addUserVisible" @search-data="searchData" />
+      </template>
     </template>
   </page-container>
 </template>
@@ -83,13 +93,16 @@
 import RoleConfiguration from '@/views/teamManagement/userManagement/components/roleConfiguration'
 import EditInformation from '@/views/teamManagement/userManagement/components/editInformation'
 import MemberUploadDialog from '@/views/teamManagement/userManagement/components/userUploadDialog'
-import {deleteUserData, queryUserListData} from '@/api/userManagement'
+import {deleteUserData, queryUserListData, userInvalidation} from '@/api/userManagement'
 import PageContainer from '@/components/PageContainer'
 import PaginationComponent from '@/components/PaginationComponent'
 import tableMixin from '@/utils/tableMixin'
+import AddUserInformation from '@/views/teamManagement/userManagement/components/addUserInformation'
 export default {
   name: 'UserManagement',
-  components: {PaginationComponent, PageContainer, MemberUploadDialog, EditInformation, RoleConfiguration},
+  components: {
+    AddUserInformation,
+    PaginationComponent, PageContainer, MemberUploadDialog, EditInformation, RoleConfiguration},
   mixins: [tableMixin],
   data() {
     return {
@@ -106,7 +119,8 @@ export default {
       total: 0, // 总条数
       editInformationRowData: {}, // 编辑信息数据
       editInformationVisible: false, //  编辑信息visible
-      uploadVisible: false
+      uploadVisible: false,
+      addUserVisible: false
     }
   },
   mounted() {
@@ -158,13 +172,48 @@ export default {
       })
     },
     deleteData(row) { // 删除用户
-      deleteUserData(row).then(res => {
-        if (res.msg === 'success') {
-          this.$message.success('操作成功！')
-          this.searchData()
-        } else {
-          this.$message.error('操作失败！')
-        }
+      this.$confirm(`是否要删除用户：${row.nickname}`, {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteUserData(row).then(res => {
+          if (res.msg) {
+            this.$message.success(res.msg)
+            this.searchData()
+          } else {
+            this.$message.error('操作失败！')
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    addUser() { // 打开新增用户页面
+      this.addUserVisible = true
+    },
+    updateUserInvalidation(row) { // 用户无效化
+      this.$confirm(`是否要无效化用户：${row.nickname}`, {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const updateObject = {...row}
+        updateObject.status = 1
+        userInvalidation(updateObject).then(res => {
+          if (res.msg === '用户无效化成功') {
+            this.$message.success(res.msg)
+            this.searchData()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '无效化已取消'
+        })
       })
     }
   }
