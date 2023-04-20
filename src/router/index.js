@@ -172,6 +172,74 @@ export const asyncRoutes = [
         ]
       }
     ]
+  },
+  {
+    path: '/checkManagement',
+    component: Layout,
+    meta: {title: '交付验证', icon: 'dashboard', roles: ['admin']},
+    redirect: '/checkManagement/projectList',
+    children: [
+      {
+        path: 'projectList',
+        name: 'projectList',
+        component: () => import('@/views/checkManagement/projectList'),
+        meta: {title: '项目列表'},
+        hidden: true
+      },
+      {
+        path: 'projectDetail',
+        name: 'projectDetail',
+        component: () => import('@/views/checkManagement/projectDetail'),
+        meta: {title: '项目详情'},
+        hidden: true
+      }
+    ]
+  },
+  {
+    path: '/myTask',
+    name: 'myTask',
+    component: Layout,
+    meta: { title: '我的任务', icon: 'dashboard', roles: ['manager', 'teamLeader', 'qc', 'tagger']},
+    redirect: '/myTask/taggingTask',
+    alwaysShow: true,
+    children: [
+      {
+        path: 'taggingTask',
+        name: 'taggingTask',
+        component: () => import('@/views/myTask/index'),
+        meta: { title: '标注项目', icon: 'dashboard' },
+        redirect: '/myTask/taggingTask/project-list',
+        children: [
+          {
+            path: 'project-list',
+            component: () => import('@/views/myTask/taggingTask/index'),
+            meta: { title: '标注项目列表', icon: 'dashboard', roles: ['manager', 'teamLeader', 'tagger'] }
+          },
+          {
+            path: 'taskDetail/:projectId',
+            name: 'taskDetail',
+            component: () => import('@/views/myTask/index'),
+            meta: { title: '项目详情', icon: 'dashboard', roles: ['manager', 'teamLeader', 'tagger']},
+            redirect: '/myTask/taggingTask/taskDetail/:projectId/task-list',
+            hidden: true,
+            children: [
+              {
+                path: 'task-list',
+                component: () => import('@/views/myTask/taskDetail/index'),
+                meta: { title: '任务列表', icon: 'dashboard'}
+              },
+              {
+                path: 'jobDetail/:taskId',
+                name: 'jobDetail',
+                component: () => import('@/views/myTask/jobDetail/index'),
+                meta: { title: '作业列表', icon: 'dashboard' },
+                hidden: true
+              }
+            ]
+          }
+        ]
+      }
+    ]
   }
 ]
 

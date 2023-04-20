@@ -122,17 +122,20 @@
           <el-form-item label="客户名称" prop="name">
             <el-input
               v-model="customerInfoForm.name"
-              placeholder="请输入客户名称" clearable />
+              placeholder="请输入客户名称"
+              clearable />
           </el-form-item>
           <el-form-item label="客户电话">
             <el-input
               v-model="customerInfoForm.phone"
-              placeholder="请输入客户电话号码" clearable />
+              placeholder="请输入客户电话号码"
+              clearable />
           </el-form-item>
           <el-form-item label="客户邮件">
             <el-input
               v-model="customerInfoForm.email"
-              placeholder="请输入客户电子邮件地址" clearable />
+              placeholder="请输入客户电子邮件地址"
+              clearable />
           </el-form-item>
           <el-form-item label="客户描述">
             <el-input
