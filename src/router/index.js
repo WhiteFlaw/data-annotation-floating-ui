@@ -112,11 +112,26 @@ export const constantRoutes = [
       }
     ]
   },
+  // {
+  //   path: 'external-link',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
+  //       meta: { title: 'External Link', icon: 'link' }
+  //     }
+  //   ]
+  // },
 
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
+]
+
+export const asyncRoutes = [
   {
     path: '/teamManagement',
     component: Layout,
-    meta: { title: '团队管理'},
+    meta: { title: '团队管理', roles: ['admin']},
     children: [
       {
         path: 'userManagement',
@@ -134,8 +149,7 @@ export const constantRoutes = [
             name: 'teamList',
             component: () => import('@/views/teamManagement/teamList'),
             meta: {
-              title: '团队列表',
-              roles: ['teamList']
+              title: '团队列表'
             }
           },
           {
@@ -143,8 +157,7 @@ export const constantRoutes = [
             component: () => import('@/views/teamManagement'),
             redirect: '/teamManagement/team/teamList',
             meta: {
-              title: '团队列表',
-              roles: ['teamListDetail']
+              title: '团队列表'
             },
             hidden: true,
             children: [
@@ -159,20 +172,7 @@ export const constantRoutes = [
         ]
       }
     ]
-  },
-  // {
-  //   path: 'external-link',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-  //       meta: { title: 'External Link', icon: 'link' }
-  //     }
-  //   ]
-  // },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  }
 ]
 
 const createRouter = () =>

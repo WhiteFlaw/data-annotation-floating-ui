@@ -52,7 +52,7 @@ module.exports = {
         }
       },
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://10.30.211.214:8080/`,
+        target: `http://10.30.14.123:8080/`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
@@ -69,7 +69,8 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
-    }
+    },
+    devtool: 'source-map'
   },
   chainWebpack(config) {
     // it can improve the speed of the first screen, it is recommended to turn on preload

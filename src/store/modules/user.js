@@ -6,7 +6,8 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    roles: []
   }
 }
 
@@ -24,6 +25,9 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_ROLES: (state, roles) => {
+    state.roles = roles
   }
 }
 
@@ -46,21 +50,15 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      const mockUser = {
-        roles: ['admin'],
-        introduction: 'I am a super administrator',
-        avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-        name: 'Super Admin'
-      }
-      getInfo(state.token).then(({data}) => {
+      getInfo().then(({data}) => {
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
 
-        const { name } = data
-        data.roles = mockUser.roles
+        const { name, roles } = data
+        data.roles = roles
         commit('SET_NAME', name)
-        commit('SET_AVATAR', mockUser.avatar)
+        commit('SET_ROLES', roles)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -73,6 +71,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       // TODO: 现阶段仅移除前端token
       removeToken() // must remove  token  first
+      commit('SET_ROLES', [])
       resetRouter()
       commit('RESET_STATE')
       resolve()
@@ -83,6 +82,7 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       removeToken() // must remove  token  first
+      commit('SET_ROLES', [])
       commit('RESET_STATE')
       resolve()
     })
