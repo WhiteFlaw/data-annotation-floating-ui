@@ -44,6 +44,12 @@ export default {
     }
   },
   watch: {
+    pageIndex(newVal) {
+      this.changeData.page = newVal
+    },
+    pageSize(newVal) {
+      this.changeData.limit = newVal
+    },
     changeData: {
       handler(newVal) {
         this.$emit('pagination', { ...newVal })

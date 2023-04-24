@@ -141,8 +141,8 @@ export default {
         type: 'warning'
       }).then(() => {
         deleteTeamData(row).then(res => {
-          if (res.msg === 'success') {
-            this.$message.success('操作成功！')
+          if (res.msg === '删除团队成功') {
+            this.$message.success('删除团队成功！')
             this.searchData()
           } else {
             this.$message.error('操作失败！')
