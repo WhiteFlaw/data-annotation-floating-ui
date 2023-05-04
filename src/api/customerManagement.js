@@ -1,19 +1,23 @@
 /*
  * @Author: M.Ming
  * @Date: 2023-03-28 17:14:11
- * @LastEditTime: 2023-03-30 12:45:26
+ * @LastEditTime: 2023-03-31 11:42:41
  * @FilePath: \3d-data-admin\src\api\customerManagement.js
  * @Description: 客户管理功能接口API
  */
 const { POST, PUT, DELETE } = require('@/utils/http-client')
-
-const getCustomersList = ({
-  customerEmail = '',
-  customerName = '',
-  customerPhone = '',
-  pageIndex = 0,
-  pageSize = 0
-}) => {
+/**
+ * 获取带分页的客户列表
+ * @param {*} {
+ *   customerEmail = '',
+ *   customerName = '',
+ *   customerPhone = '',
+ *   pageIndex = 0,
+ *   pageSize = 0
+ * }
+ * @return {*}
+ */
+const getCustomersList = ({ customerEmail = '', customerName = '', customerPhone = '', pageIndex = 0, pageSize = 0 }) => {
   return POST('/admin/customer/page', {
     customerEmail,
     customerName,
@@ -35,15 +39,7 @@ const getCustomersList = ({
  * }
  * @return {*}
  */
-const addOneCustomer = ({
-  createdTime = '',
-  deleted = 0,
-  description = '',
-  email = '',
-  id = 0,
-  name = '',
-  phone = ''
-}) => {
+const addOneCustomer = ({ createdTime = '', deleted = 0, description = '', email = '', id = 0, name = '', phone = '' }) => {
   return POST('/admin/customer/', {
     createdTime,
     deleted,
@@ -66,14 +62,7 @@ const addOneCustomer = ({
  * }
  * @return {*}
  */
-const updateCustomer = ({
-  createdTime = '',
-  description = '',
-  email = '',
-  id = 0,
-  name = '',
-  phone = ''
-}) => {
+const updateCustomer = ({ createdTime = '', description = '', email = '', id = 0, name = '', phone = '' }) => {
   return PUT('/admin/customer/', {
     createdTime,
     description,
@@ -89,7 +78,7 @@ const updateCustomer = ({
  * @return {*}
  */
 const deleteCustomer = (id) => {
-  return DELETE('/admin/customer/', {}, { id })
+  return DELETE(`/admin/customer/${id}`)
 }
 
 export { getCustomersList, addOneCustomer, updateCustomer, deleteCustomer }

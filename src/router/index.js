@@ -48,53 +48,19 @@ export const constantRoutes = [
     component: () => import('@/components/HomePageSelection')
   },
   {
-    path: '/data-management',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'DataManagement',
-        component: () => import('@/views/dataManagement/index'),
-        meta: { title: '数据导入', icon: 'data-management' }
-      }
-    ]
-  },
-  {
-    path: '/customer-management',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'CustomerManagement',
-        component: () => import('@/views/customerManagement/index'),
-        meta: { title: '客户管理', icon: 'customer-management' }
-      }
-    ]
-  },
-  {
-    path: '/project-management',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'ProjectManagement',
-        component: () => import('@/views/projectManagement/index'),
-        meta: { title: '项目管理', icon: 'project-management' }
-      }
-    ]
-  },
-  {
     path: '/3d-annotate',
     component: () => import('@/views/annotate/index'),
     name: 'Annotation',
     meta: {
       title: '开始3D标注',
       icon: 'link'
-    }
+    },
+    hidden: true
   },
   {
     path: '/annotate',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'index',
@@ -121,16 +87,49 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/project-management',
+    component: Layout,
+    alwaysShow: true,
+    meta: { title: '项目管理', icon: 'project-management' },
+    redirect: '/project-management/index',
+    children: [
+      {
+        path: 'data-management',
+        name: 'DataManagement',
+        component: () => import('@/views/dataManagement/index'),
+        meta: { title: '数据导入', icon: '', roles: ['admin'] }
+      },
+      {
+        path: 'index',
+        name: 'ProjectManagement',
+        component: () => import('@/views/projectManagement/index'),
+        meta: { title: '项目列表', icon: '', roles: ['admin'] }
+      },
+      {
+        path: 'details',
+        name: 'ProjectManagementDetails',
+        component: () => import('@/views/projectManagement/ProjectManagementDetails'),
+        meta: { title: '项目详情', icon: '', roles: ['admin'] }
+      },
+      {
+        path: 'customer-management',
+        name: 'CustomerManagement',
+        component: () => import('@/views/customerManagement/index'),
+        meta: { title: '客户管理', icon: '', roles: ['admin'] }
+      }
+    ]
+  },
+  {
     path: '/teamManagement',
     component: Layout,
-    meta: { title: '团队管理', roles: ['admin']},
+    meta: { title: '团队管理', roles: ['admin'] },
     redirect: '/teamManagement/userManagement',
     children: [
       {
         path: 'userManagement',
         name: 'userManagement',
         component: () => import('@/views/teamManagement/userManagement'),
-        meta: { title: '用户管理'}
+        meta: { title: '用户管理' }
       },
       {
         path: 'team',
@@ -158,7 +157,7 @@ export const asyncRoutes = [
                 path: 'teamDetail',
                 name: 'teamDetail',
                 component: () => import('@/views/teamManagement/teamList/components/teamDetail'),
-                meta: {title: '团队详情'}
+                meta: { title: '团队详情' }
               }
             ]
           }
@@ -169,21 +168,21 @@ export const asyncRoutes = [
   {
     path: '/checkManagement',
     component: Layout,
-    meta: {title: '交付验证', icon: 'dashboard', roles: ['admin']},
+    meta: { title: '交付验证', icon: 'dashboard', roles: ['admin'] },
     redirect: '/checkManagement/projectList',
     children: [
       {
         path: 'projectList',
         name: 'projectList',
         component: () => import('@/views/checkManagement/projectList'),
-        meta: {title: '项目列表'},
+        meta: { title: '项目列表' },
         hidden: true
       },
       {
         path: 'projectDetail',
         name: 'projectDetail',
         component: () => import('@/views/checkManagement/projectDetail'),
-        meta: {title: '项目详情'},
+        meta: { title: '项目详情' },
         hidden: true
       }
     ]
@@ -192,7 +191,7 @@ export const asyncRoutes = [
     path: '/myTask',
     name: 'myTask',
     component: Layout,
-    meta: { title: '我的任务', icon: 'dashboard', roles: ['manager', 'teamLeader', 'qc', 'tagger']},
+    meta: { title: '我的任务', icon: 'dashboard', roles: ['manager', 'teamLeader', 'qc', 'tagger'] },
     redirect: '/myTask/taggingTask',
     alwaysShow: true,
     children: [
@@ -200,7 +199,7 @@ export const asyncRoutes = [
         path: 'taggingTask',
         name: 'taggingTask',
         component: () => import('@/views/myTask/index'),
-        meta: { title: '标注项目', roles: ['teamLeader', 'tagger']},
+        meta: { title: '标注项目', roles: ['teamLeader', 'tagger'] },
         redirect: '/myTask/taggingTask/project-list',
         children: [
           {
@@ -212,14 +211,14 @@ export const asyncRoutes = [
             path: 'taskDetail/:projectId',
             name: 'taskDetail',
             component: () => import('@/views/myTask/index'),
-            meta: { title: '项目详情', icon: 'dashboard', roles: ['manager', 'teamLeader', 'tagger']},
+            meta: { title: '项目详情', icon: 'dashboard', roles: ['manager', 'teamLeader', 'tagger'] },
             redirect: '/myTask/taggingTask/taskDetail/:projectId/task-list',
             hidden: true,
             children: [
               {
                 path: 'task-list',
                 component: () => import('@/views/myTask/taskDetail/index'),
-                meta: { title: '任务列表', icon: 'dashboard'}
+                meta: { title: '任务列表', icon: 'dashboard' }
               },
               {
                 path: 'jobDetail/:taskId',
@@ -242,14 +241,14 @@ export const asyncRoutes = [
             path: 'itemList',
             name: 'itemList',
             component: () => import('@/views/roundOfInspection/ItemList'),
-            meta: { title: '项目列表'},
+            meta: { title: '项目列表' },
             hidden: true
           },
           {
             path: 'projectDetails',
             name: 'projectDetails',
             component: () => import('@/views/roundOfInspection/projectDetails'),
-            meta: {title: '项目详情'},
+            meta: { title: '项目详情' },
             hidden: true
           }
         ]
@@ -264,14 +263,14 @@ export const asyncRoutes = [
             path: 'secondItemList',
             name: 'secondItemList',
             component: () => import('@/views/secondRoundOfInspection/secondItemList'),
-            meta: { title: '项目列表'},
+            meta: { title: '项目列表' },
             hidden: true
           },
           {
             path: 'secondProjectDetails',
             name: 'secondProjectDetails',
             component: () => import('@/views/secondRoundOfInspection/secondProjectDetails'),
-            meta: {title: '项目详情'},
+            meta: { title: '项目详情' },
             hidden: true
           }
         ]
