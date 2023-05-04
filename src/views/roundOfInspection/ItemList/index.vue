@@ -49,30 +49,40 @@
         <el-table-column prop="managerNickname" align="center" label="项目经理" min-width="120" />
         <el-table-column align="center" label="总进度" min-width="400">
           <template slot-scope="scope">
-            <span class="el-progress-class">待领取：<el-progress
-              :percentage="scope.row.taskCount !== 0 ? Number((((scope.row.toBeClaimedCount || 0 ) / scope.row.taskCount) * 100).toFixed(2)) : 0"
-              :format="format(scope.row.toBeClaimedCount, scope.row.taskCount)"
-            />
+            <span class="el-progress-class progress-container">
+              <span class="progress-label">待领取：</span>
+              <el-progress
+                :percentage="scope.row.taskCount !== 0 ? Number((((scope.row.toBeClaimedCount || 0 ) / scope.row.taskCount) * 100).toFixed(2)) : 0"
+                :format="format(scope.row.toBeClaimedCount, scope.row.taskCount)"
+              />
             </span>
-            <span class="el-progress-class">标注中：<el-progress
-              :percentage="scope.row.taskCount !== 0 ? Number((((scope.row.allAnnotatedCount || 0 ) / scope.row.taskCount) * 100).toFixed(2)) : 0"
-              :format="format(scope.row.allAnnotatedCount, scope.row.taskCount)"
-            />
+            <span class="el-progress-class progress-container">
+              <span class="progress-label">标注中：</span>
+              <el-progress
+                :percentage="scope.row.taskCount !== 0 ? Number((((scope.row.allAnnotatedCount || 0 ) / scope.row.taskCount) * 100).toFixed(2)) : 0"
+                :format="format(scope.row.allAnnotatedCount, scope.row.taskCount)"
+              />
             </span>
-            <span class="el-progress-class">一检：<el-progress
-              :percentage="scope.row.taskCount !== 0 ? Number((((scope.row.firstInspectionCount || 0 ) / scope.row.taskCount) * 100).toFixed(2)) : 0"
-              :format="format(scope.row.firstInspectionCount, scope.row.taskCount)"
-            />
+            <span class="el-progress-class progress-container">
+              <span class="progress-label">一检：</span>
+              <el-progress
+                :percentage="scope.row.taskCount !== 0 ? Number((((scope.row.firstInspectionCount || 0 ) / scope.row.taskCount) * 100).toFixed(2)) : 0"
+                :format="format(scope.row.firstInspectionCount, scope.row.taskCount)"
+              />
             </span>
-            <span class="el-progress-class">二检：<el-progress
-              :percentage="scope.row.taskCount !== 0 ? Number((((scope.row.secondInspectionCount || 0 ) / scope.row.taskCount) * 100).toFixed(2)) : 0"
-              :format="format(scope.row.secondInspectionCount, scope.row.taskCount)"
-            />
+            <span class="el-progress-class progress-container">
+              <span class="progress-label">二检：</span>
+              <el-progress
+                :percentage="scope.row.taskCount !== 0 ? Number((((scope.row.secondInspectionCount || 0 ) / scope.row.taskCount) * 100).toFixed(2)) : 0"
+                :format="format(scope.row.secondInspectionCount, scope.row.taskCount)"
+              />
             </span>
-            <span class="el-progress-class">待验收：<el-progress
-              :percentage="scope.row.taskCount !== 0 ? Number((((scope.row.atCount || 0 ) / scope.row.taskCount) * 100).toFixed(2)) : 0"
-              :format="format(scope.row.atCount, scope.row.taskCount)"
-            />
+            <span class="el-progress-class progress-container">
+              <span class="progress-label">待验收：</span>
+              <el-progress
+                :percentage="scope.row.taskCount !== 0 ? Number((((scope.row.atCount || 0 ) / scope.row.taskCount) * 100).toFixed(2)) : 0"
+                :format="format(scope.row.atCount, scope.row.taskCount)"
+              />
             </span>
           </template>
         </el-table-column>
@@ -206,18 +216,4 @@ export default {
 </script>
 
 <style scoped lang="scss">
-::v-deep {
-  .el-progress-class{
-    display: flex;
-    justify-content: space-between;
-    .el-progress{
-      width: 300px;
-      display: flex;
-      align-items: center;
-      .el-progress-bar{
-        width: 200px;
-      }
-    }
-  }
-}
 </style>

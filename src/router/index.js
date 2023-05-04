@@ -54,13 +54,11 @@ export const constantRoutes = [
     meta: {
       title: '开始3D标注',
       icon: 'link'
-    },
-    hidden: true
+    }
   },
   {
     path: '/annotate',
     component: Layout,
-    hidden: true,
     children: [
       {
         path: 'index',
@@ -82,7 +80,7 @@ export const asyncRoutes = [
         path: 'dashboard',
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index'),
-        meta: { title: '我的工作台', icon: 'dashboard', roles: ['manager', 'teamLeader']}
+        meta: { title: '我的工作台', icon: 'dashboad-index', roles: ['manager', 'teamLeader']}
       }
     ]
   },
@@ -90,7 +88,7 @@ export const asyncRoutes = [
     path: '/project-management',
     component: Layout,
     alwaysShow: true,
-    meta: { title: '项目管理', icon: 'project-management' },
+    meta: { title: '项目管理', icon: 'project-management', roles: ['admin'] },
     redirect: '/project-management/index',
     children: [
       {
@@ -122,7 +120,7 @@ export const asyncRoutes = [
   {
     path: '/teamManagement',
     component: Layout,
-    meta: { title: '团队管理', roles: ['admin'] },
+    meta: { title: '团队管理', roles: ['admin'], icon: 'team-manange' },
     redirect: '/teamManagement/userManagement',
     children: [
       {
@@ -168,7 +166,7 @@ export const asyncRoutes = [
   {
     path: '/checkManagement',
     component: Layout,
-    meta: { title: '交付验证', icon: 'dashboard', roles: ['admin'] },
+    meta: { title: '交付验证', icon: 'Delivery', roles: ['admin'] },
     redirect: '/checkManagement/projectList',
     children: [
       {
@@ -191,7 +189,7 @@ export const asyncRoutes = [
     path: '/myTask',
     name: 'myTask',
     component: Layout,
-    meta: { title: '我的任务', icon: 'dashboard', roles: ['manager', 'teamLeader', 'qc', 'tagger'] },
+    meta: { title: '我的任务', icon: 'task-manange', roles: ['manager', 'teamLeader', 'qc', 'tagger'] },
     redirect: '/myTask/taggingTask',
     alwaysShow: true,
     children: [
@@ -205,26 +203,26 @@ export const asyncRoutes = [
           {
             path: 'project-list',
             component: () => import('@/views/myTask/taggingTask/index'),
-            meta: { title: '标注项目列表', icon: 'dashboard', roles: ['manager', 'teamLeader', 'tagger'] }
+            meta: { title: '标注项目列表', roles: ['manager', 'teamLeader', 'tagger'] }
           },
           {
             path: 'taskDetail/:projectId',
             name: 'taskDetail',
             component: () => import('@/views/myTask/index'),
-            meta: { title: '项目详情', icon: 'dashboard', roles: ['manager', 'teamLeader', 'tagger'] },
+            meta: { title: '项目详情', roles: ['manager', 'teamLeader', 'tagger'] },
             redirect: '/myTask/taggingTask/taskDetail/:projectId/task-list',
             hidden: true,
             children: [
               {
                 path: 'task-list',
                 component: () => import('@/views/myTask/taskDetail/index'),
-                meta: { title: '任务列表', icon: 'dashboard' }
+                meta: { title: '任务列表' }
               },
               {
                 path: 'jobDetail/:taskId',
                 name: 'jobDetail',
                 component: () => import('@/views/myTask/jobDetail/index'),
-                meta: { title: '作业列表', icon: 'dashboard' },
+                meta: { title: '作业列表' },
                 hidden: true
               }
             ]

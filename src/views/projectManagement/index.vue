@@ -43,7 +43,7 @@
       </el-row>
     </template>
     <template slot="content">
-      <el-table :data="projectList" border v-loading="tableLoading" stripe highlight-current-row :max-height="tableMaxHeight">
+      <el-table v-loading="tableLoading" :data="projectList" border stripe highlight-current-row :max-height="tableMaxHeight">
         <el-table-column type="selection" width="40" align="center" header-align="center" />
         <el-table-column label="项目编号" prop="id" align="center" header-align="center" min-width="100" />
         <el-table-column label="项目名称" prop="name" align="center" header-align="center" min-width="140" />

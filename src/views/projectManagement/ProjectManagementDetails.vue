@@ -53,7 +53,7 @@ vue:
       </el-form>
     </template>
     <template slot="content">
-      <el-table :data="taskList" border v-loading="taskListLoading" stripe highlight-current-row :max-height="tableMaxHeight">
+      <el-table v-loading="taskListLoading" :data="taskList" border stripe highlight-current-row :max-height="tableMaxHeight">
         <el-table-column type="selection" width="40" align="center" header-align="center" />
         <el-table-column label="任务ID" prop="id" align="center" header-align="center" min-width="70" />
         <el-table-column label="任务名称" prop="name" align="center" header-align="center" min-width="120" />
