@@ -12,14 +12,14 @@
 }
 
 .box {
-  position: relative;
-  //min-width: 1920px;
   width: 100%;
   height: 100%;
+  background: no-repeat url('../../assets/images/backgroundImg.png');
+  background-size: contain;
+  object-fit: contain;
 }
 
 header img {
-  //width: 389px;
   width: 22%;
   height: 114px;
   margin: 30px 0 0 30px;
@@ -28,111 +28,74 @@ header img {
 }
 
 main {
-  min-width: 1990px;
-  width: 100%;
-}
-
-main .imgFirst {
+  height: calc(100% - 149px);
+  background: no-repeat url("../../assets/images/backImg.png");
+  background-size: contain;
   object-fit: contain;
-  position: absolute;
-  //height: 830px;
-  //width: 1277px;
-  //top: 112px;
-  //left: 81px;
-  width: 64%;
-  height: 100%;
-  //height: 100%;
-  top: 100%;
-  left: 5%;
-  z-index: 199;
-}
-
-main .imgSecond {
-  object-fit: contain;
-  position: absolute;
-  width: 62%;
-  top: 130%;
-  left: 2%;
-  z-index: 999;
-  //width: 1127px;
-  //height: 680px;
-  //top: 202px;
-  //left: 30px;
-}
-
-main .logBox {
-  padding: 109px 70px;
-  width: 500px;
-  height: 550px;
-  background: #fff;
-  position: absolute;
-  top: 115%;
-  right: 7%;
-  border-radius: 30px;
-  box-sizing: border-box;
-  z-index: 1111;
-}
-
-main .logBoxChoose {
-  padding: 109px 70px;
-  width: 500px;
-  height: 550px;
-  background: #fff;
-  position: absolute;
-  top: 120%;
-  right: 7%;
-  border-radius: 30px;
-  box-sizing: border-box;
-  z-index: 1111;
-  opacity: 0.8;
   display: flex;
-  flex-direction: column ;
   align-items: center;
-  justify-content: center;
+  flex: 1;
+  .logBox {
+    margin-right: 6%;
+    margin-left: auto;
+    display: flex;
+    background: #fff;
+    border-radius: 30px;
+    box-sizing: border-box;
+    flex-direction: column;
+    width: 500px;
+    height: 550px;
+
+    h2 {
+      width: 100%;
+      height: 36px;
+      text-align: center;
+      font-size: 36px;
+      transform: translateY(50px);
+    }
+
+    ::v-deep .el-form {
+      padding: 60px;
+
+      .el-row {
+        .el-col {
+          .el-form-item {
+            width: 100%;
+
+            .el-form-item__content {
+              width: 100%;
+
+              .login-input .el-input__inner {
+                height: 60px;
+                width: 100%;
+                border: 1px solid #EEEEEE;
+                color: #B9BED1;
+                margin-top: 40px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
-.logBox h2 {
-  width: 100%;
-  text-align: center;
-  font-weight: 400;
-  font-size: 36px;
-  margin-top: -50px;
-}
-
-.logBox h3 {
-  font-weight: 400;
-  padding: 57px 0 0 0px;
-  font-size: 36px;
-  color: #08284C;
-}
-
-::v-deep .logBox .login-input .el-input__inner{
-  height: 60px;
-  width: 100%;
-  border: 1px solid #EEEEEE;
-  color: #B9BED1;
-  margin-top: 40px;
-}
-
-.logBox p .inputBtn1 {
-  //width: 380px;
-  width: 100%;
-  height: 60px;
-  color: #fff;
-  font-size: 22px;
-  text-align: center;
-  margin-top: 80px;
-  background: linear-gradient(90deg, #243DF8 1%, #0C7CF9 98%);
-}
-
-.logBox p .inputBtn2 {
-  background: #fff;
-  border: none;
-  //width: 380px;
-  width: 100%;
-  margin-top: 30px;
-  margin-bottom: 48px;
-  font-size: 18px;
-  color: #B9BED1;
-  text-align: center;
+.logBox p {
+  .el-button {
+    width: 100%;
+    text-align: center;
+  }
+  .inputBtn1 {
+    height: 60px;
+    font-size: 22px;
+    margin-top: 80px;
+    background: linear-gradient(90deg, #243DF8 1%, #0C7CF9 98%);
+  }
+  .inputBtn2 {
+    border: none;
+    margin-top: 30px;
+    margin-bottom: 48px;
+    font-size: 18px;
+    color: #B9BED1;
+  }
 }

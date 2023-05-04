@@ -145,7 +145,7 @@ export default {
     },
     openProjectDetails(row) { // 打开详情
       this.$router.push({
-        path: '/roundOfInspection/projectDetails',
+        path: '/myTask/roundOfInspection/projectDetails',
         query: {
           projectId: row.id // 点击详情进入详情页面，根据项目id查询任务列表
         }
