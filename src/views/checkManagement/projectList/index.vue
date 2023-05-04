@@ -139,7 +139,7 @@ export default {
         name: '', // 项目名称
         pageIndex: 1, // 查询页码
         pageSize: 20, // 每页条数
-        status: 0, // 状态
+        status: 2, // 状态
         type: 0 // 项目类型
       }
       this.page = 1
@@ -149,7 +149,7 @@ export default {
     acceptProject(info) {
       this.$confirm('确认一键验收此项目吗？')
         .then(_ => {
-          checkProject(info.id, {acceptType: 1}).then(res => {
+          checkProject(info.id, {acceptType: 1}).then(() => {
             this.search()
           })
         })
@@ -158,7 +158,7 @@ export default {
     rejectProject(info) {
       this.$confirm('确认一键驳回本项目吗？')
         .then(_ => {
-          checkProject(info.id, {acceptType: 2}).then(res => {
+          checkProject(info.id, {acceptType: 2}).then(() => {
             this.search()
           })
         })

@@ -7,7 +7,8 @@ const getDefaultState = () => {
     token: getToken(),
     name: '',
     avatar: '',
-    roles: []
+    roles: [],
+    nickname: '' // 账号名称
   }
 }
 
@@ -28,6 +29,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_NICK_NAME: (state, nickname) => {
+    state.nickname = nickname
   }
 }
 
@@ -57,8 +61,10 @@ const actions = {
 
         const { name, roles } = data
         data.roles = roles
+        const nickname = data.nickname
         commit('SET_NAME', name)
         commit('SET_ROLES', roles)
+        commit('SET_NICK_NAME', nickname)
         resolve(data)
       }).catch(error => {
         reject(error)

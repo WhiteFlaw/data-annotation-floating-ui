@@ -11,12 +11,18 @@
 
 <script>
 import pathToRegexp from 'path-to-regexp'
+import {mapGetters} from 'vuex'
 
 export default {
   data() {
     return {
       levelList: null
     }
+  },
+  computed: {
+    ...mapGetters([
+      'roles'
+    ])
   },
   watch: {
     $route() {
@@ -54,7 +60,11 @@ export default {
     handleLink(item) {
       const { redirect, path } = item
       if (redirect) {
-        this.$router.push(this.getRedirect(redirect))
+        if (redirect === '/myTask/taggingTask' && this.roles.indexOf('tagger') === -1 && this.roles.indexOf('teamLeader') === -1) { // 如果角色不包含是标注员
+          this.$router.push(this.getRedirect('/myTask/roundOfInspection'))
+        } else {
+          this.$router.push(this.getRedirect(redirect))
+        }
       } else {
         this.$router.push(this.pathCompile(path))
       }

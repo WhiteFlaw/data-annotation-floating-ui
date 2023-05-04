@@ -43,6 +43,11 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/homePageSelection',
+    name: 'homePageSelection',
+    component: () => import('@/components/HomePageSelection')
+  },
+  {
     path: '/data-management',
     component: Layout,
     children: [
@@ -79,19 +84,6 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [
-      {
-        path: 'dashboard',
-        name: 'Dashboard',
-        component: () => import('@/views/dashboard/index'),
-        meta: { title: '我的工作台', icon: 'dashboard' }
-      }
-    ]
-  },
-  {
     path: '/3d-annotate',
     component: () => import('@/views/annotate/index'),
     name: 'Annotation',
@@ -116,9 +108,23 @@ export const constantRoutes = [
 
 export const asyncRoutes = [
   {
+    path: '/',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: '我的工作台', icon: 'dashboard', roles: ['manager', 'teamLeader']}
+      }
+    ]
+  },
+  {
     path: '/teamManagement',
     component: Layout,
     meta: { title: '团队管理', roles: ['admin']},
+    redirect: '/teamManagement/userManagement',
     children: [
       {
         path: 'userManagement',
@@ -227,10 +233,10 @@ export const asyncRoutes = [
         ]
       },
       {
-        path: '/roundOfInspection',
+        path: 'roundOfInspection',
         component: () => import('@/views/roundOfInspection'),
         meta: { title: '一轮质检', roles: ['teamLeader', 'qc']},
-        redirect: '/roundOfInspection/itemList',
+        redirect: '/myTask/roundOfInspection/itemList',
         children: [
           {
             path: 'itemList',
@@ -249,10 +255,10 @@ export const asyncRoutes = [
         ]
       },
       {
-        path: '/secondRoundOfInspection',
+        path: 'secondRoundOfInspection',
         component: () => import('@/views/secondRoundOfInspection'),
         meta: { title: '二轮质检', roles: ['teamLeader', 'qc']},
-        redirect: '/secondRoundOfInspection/secondItemList',
+        redirect: '/myTask/secondRoundOfInspection/secondItemList',
         children: [
           {
             path: 'secondItemList',

@@ -41,7 +41,7 @@
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="search">筛选</el-button>
-              <el-button plain>重置</el-button>
+              <el-button plain @click="handleReset">重置</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -169,6 +169,11 @@ export default {
     },
     handleDetail() {
       this.$message.info('查看')
+    },
+    // 重置
+    handleReset() {
+      this.searchCondition = this.$options.data().searchCondition
+      this.search()
     }
   }
 }
