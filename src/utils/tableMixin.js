@@ -14,14 +14,15 @@ export default {
     window.removeEventListener('resize', this.resizedHeight)
   },
   methods: {
+    // 页面尺寸变化时重新获取
     resizedHeight() {
       this.getTableMaxHeight()
     },
-    getTableMaxHeight() {
+    // 获取table最大高度
+    getTableMaxHeight(hasTab = false) {
       this.$nextTick(() => {
-        const pageContentBoxHeight =
-          document.getElementById('page-content-area').offsetHeight
-        this.tableMaxHeight = pageContentBoxHeight - 42
+        const pageContentBoxHeight = document.getElementById('page-content-area').offsetHeight
+        this.tableMaxHeight = !hasTab ? pageContentBoxHeight - 42 : pageContentBoxHeight - 42 - 56
       })
     }
   }

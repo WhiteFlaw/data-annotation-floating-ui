@@ -1,7 +1,7 @@
 /*
  * @Author: M.Ming
  * @Date: 2023-03-28 14:54:19
- * @LastEditTime: 2023-03-30 09:54:50
+ * @LastEditTime: 2023-04-23 08:38:41
  * @FilePath: \3d-data-admin\src\api\dataManagement.js
  * @Description: 数据导入功能接口封装
  */
@@ -14,20 +14,6 @@ const { POST, GET } = require('@/utils/http-client')
  */
 const getProjectDataList = (projectStatus = 0) => {
   return GET('/admin/project/list', { projectStatus })
-}
-/**
- * 获取所有客户列表
- * @return {*}
- */
-const getCustomersList = () => {
-  return GET('/admin/customer/list')
-}
-/**
- * 获取所有团队列表
- * @return {*}
- */
-const getTeamsList = () => {
-  return GET('/admin/team/getTeamList')
 }
 /**
  * 确认导入数据
@@ -44,14 +30,17 @@ const getTeamsList = () => {
  */
 const confirmInitData = ({
   chunkSize = 0,
-  customerId = '',
+  customerId = 0,
   customerName = '',
   endDate = '',
   projectFolderName = '',
   projectName = '',
   startDate = '',
   teamIds = [],
-  description = ''
+  description = '',
+  type = 0,
+  managerId = 0,
+  managerNickname = ''
 }) => {
   return POST('/admin/project/inc', {
     chunkSize,
@@ -62,8 +51,11 @@ const confirmInitData = ({
     projectName,
     startDate,
     teamIds,
-    description
+    description,
+    type,
+    managerId,
+    managerNickname
   })
 }
 
-export { getProjectDataList, getCustomersList, getTeamsList, confirmInitData }
+export { getProjectDataList, confirmInitData }

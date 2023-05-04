@@ -64,9 +64,9 @@ export default {
       // TODO 根据选择入口不同跳转不同对页面
       console.log(val)
       if (this.roles.indexOf('admin') !== -1) {
-        this.$router.push({path: '/data-management/index'})
+        this.$router.push({name: 'DataManagement'})
       } else if ((this.roles.indexOf('manager') !== -1 || this.roles.indexOf('teamLeader') !== -1) && this.roles.indexOf('admin') === -1) {
-        this.$router.push({path: '/dashboard'})
+        this.$router.push({name: 'Dashboard'})
       } else if (this.roles.indexOf('tagger') !== -1) {
         this.$router.push({path: '/myTask/taggingTask/project-list'})
       } else if (this.roles.indexOf('qc') !== -1) {
