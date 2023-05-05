@@ -11,12 +11,12 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link to="/">
+          <router-link :to="homePage">
             <el-dropdown-item>
               主页
             </el-dropdown-item>
           </router-link>
-          <router-link to="/switch-platform">
+          <router-link to="/homePageSelection">
             <el-dropdown-item>
               切换2D/3D入口
             </el-dropdown-item>
@@ -42,16 +42,32 @@ export default {
   },
   data() {
     return {
-      avatarUrl: require('@/assets/images/logo.png')
+      avatarUrl: require('@/assets/images/logo.png'),
+      homePage: ''
     }
   },
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'roles'
     ])
   },
+  mounted() {
+    this.getHomePage()
+  },
   methods: {
+    getHomePage() { // 根据账号权限选择主页
+      if (this.roles.indexOf('admin') !== -1) {
+        this.homePage = '/project-management/data-management'
+      } else if ((this.roles.indexOf('manager') !== -1 || this.roles.indexOf('teamLeader') !== -1) && this.roles.indexOf('admin') === -1) {
+        this.homePage = '/dashboard'
+      } else if (this.roles.indexOf('tagger') !== -1) {
+        this.homePage = '/myTask/taggingTask/project-list'
+      } else if (this.roles.indexOf('qc') !== -1) {
+        this.homePage = '/myTask/roundOfInspection'
+      }
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },

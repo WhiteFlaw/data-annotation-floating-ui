@@ -36,11 +36,12 @@ const getRoleOptions = () => {
   return GET('/admin/common/getRoleList')
 }
 /**
- * 获取所有项目经理下拉列表，仅返回id和name
- * @return {*}
+ * 获取所有项目经理下拉列表，仅返回id和nickname
+ * @param type 是否仅查询有效
+ * @returns {*}
  */
-const getProjectManagerOptions = () => {
-  return GET('/admin/common/managerList')
+const getProjectManagerOptions = (type) => {
+  return GET(`/admin/common/managerList/${type}`)
 }
 /**
  * 获取所有团队下拉列表，仅返回id和name

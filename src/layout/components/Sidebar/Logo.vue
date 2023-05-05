@@ -1,11 +1,11 @@
 <template>
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
-      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
+      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" :to="homePage">
         <img v-if="logo" :src="logo" class="sidebar-logo">
         <h1 v-else class="sidebar-title">{{ title }} </h1>
       </router-link>
-      <router-link v-else key="expand" class="sidebar-logo-link" to="/">
+      <router-link v-else key="expand" class="sidebar-logo-link" :to="homePage">
         <img v-if="logo" :src="logo" class="sidebar-logo">
         <h1 class="sidebar-title">{{ title }} </h1>
       </router-link>
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
+
 export default {
   name: 'SidebarLogo',
   props: {
@@ -25,7 +27,29 @@ export default {
   data() {
     return {
       title: '标注平台',
-      logo: require('@/assets/images/sidebar-logo.svg')
+      logo: require('@/assets/images/sidebar-logo.svg'),
+      homePage: ''
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'roles'
+    ])
+  },
+  mounted() {
+    this.getHomePage()
+  },
+  methods: {
+    getHomePage() { // 根据账号权限选择主页
+      if (this.roles.indexOf('admin') !== -1) {
+        this.homePage = '/project-management/data-management'
+      } else if ((this.roles.indexOf('manager') !== -1 || this.roles.indexOf('teamLeader') !== -1) && this.roles.indexOf('admin') === -1) {
+        this.homePage = '/dashboard'
+      } else if (this.roles.indexOf('tagger') !== -1) {
+        this.homePage = '/myTask/taggingTask/project-list'
+      } else if (this.roles.indexOf('qc') !== -1) {
+        this.homePage = '/myTask/roundOfInspection'
+      }
     }
   }
 }

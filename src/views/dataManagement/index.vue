@@ -7,7 +7,7 @@
         </el-form-item>
         <el-form-item label="客户名称" prop="customerInfo">
           <el-select v-if="customerList.length" v-model="dataForm.customerInfo" filterable placeholder="请选择客户">
-            <el-option v-for="o of customerList" :key="o.id" :value="`${o.id}:${o.name}`" :label="o.name" />
+            <el-option v-for="customer of customerList" :key="customer.id" :value="`${customer.id}:${customer.name}`" :label="customer.name" />
           </el-select>
           <div v-else class="has-no-group">
             <span>尚未创建客户列表</span>
@@ -16,7 +16,7 @@
         </el-form-item>
         <el-form-item label="项目经理" prop="managerInfo">
           <el-select v-if="projectManagerList.length" v-model="dataForm.managerInfo" filterable placeholder="请选择项目经理">
-            <el-option v-for="o of projectManagerList" :key="o.id" :value="`${o.id}:${o.name}`" :label="o.name" />
+            <el-option v-for="manager of projectManagerList" :key="manager.id" :value="`${manager.id}:${manager.nickname}`" :label="manager.nickname" />
           </el-select>
           <div v-else class="has-no-group">
             <span>尚未指定项目经理</span>
@@ -25,12 +25,12 @@
         </el-form-item>
         <el-form-item label="导入数据" prop="selectedProjectData">
           <el-select v-model="dataForm.selectedProjectData" filterable placeholder="请选择要导入的项目数据">
-            <el-option v-for="o of projectDataList" :key="o.projectFolderName" :value="o.projectFolderName" :label="o.projectFolderName" />
+            <el-option v-for="project of projectDataList" :key="project.projectFolderName" :value="project.projectFolderName" :label="project.projectFolderName" />
           </el-select>
         </el-form-item>
         <el-form-item label="项目类型" prop="type">
           <el-select v-model="dataForm.type" placeholder="请选择项目类型">
-            <el-option v-for="t of projectTypeList" :key="t.name" :label="t.name" :value="t.id" />
+            <el-option v-for="projectType of projectTypeList" :key="projectType.name" :label="projectType.name" :value="projectType.id" />
           </el-select>
         </el-form-item>
         <!-- <el-form-item label="项目周期" prop="selectedDataRange">
@@ -44,7 +44,7 @@
         </el-form-item> -->
         <el-form-item label="分配团队">
           <el-checkbox-group v-if="groupList.length" v-model="dataForm.selectedGroup">
-            <el-checkbox v-for="g of groupList" :key="g.name" :label="g.id">{{ g.name }}</el-checkbox>
+            <el-checkbox v-for="team of groupList" :key="team.name" :label="team.id">{{ team.name }}</el-checkbox>
           </el-checkbox-group>
           <div v-else class="has-no-group">
             <span>尚未创建团队</span>
@@ -70,9 +70,11 @@
 import PageContainer from '@/components/PageContainer'
 import { getProjectDataList, confirmInitData } from '@/api/dataManagement'
 import { getCustomersOptions, getGroupOptions, projectTypeOptions, getProjectManagerOptions } from '@/api/common'
+import {EFFECTIVE_MANAGER_LIST} from '@/utils/constant'
 export default {
   name: 'DataManagement',
   components: { PageContainer },
+  mixins: [EFFECTIVE_MANAGER_LIST],
   data() {
     return {
       groupList: [],
@@ -151,7 +153,7 @@ export default {
           this.$$message.error(res.msg)
         }
       })
-      getProjectManagerOptions().then((res) => {
+      getProjectManagerOptions(EFFECTIVE_MANAGER_LIST).then((res) => {
         if (res.success) {
           this.projectManagerList = [...res.data]
         } else {
@@ -166,11 +168,13 @@ export default {
         chunkSize: this.dataForm.chunkSize,
         customerId: Number(this.dataForm.customerInfo.split(':')[0]),
         customerName: this.dataForm.customerInfo.split(':')[1],
-        endDate: this.dataForm.selectedDataRange[1],
+        // endDate: this.dataForm.selectedDataRange[1],
+        endDate: null,
         projectFolderName: this.dataForm.selectedProjectData,
         type: this.dataForm.type,
         projectName: this.dataForm.projectName,
-        startDate: this.dataForm.selectedDataRange[0],
+        // startDate: this.dataForm.selectedDataRange[0],
+        startDate: null,
         teamIds: this.dataForm.selectedGroup,
         description: this.dataForm.description,
         managerId: Number(this.dataForm.managerInfo.split(':')[0]),
@@ -181,9 +185,13 @@ export default {
           confirmInitData(postData).then((res) => {
             if (res.success) {
               this.$message.success(res.msg)
+              this.initPageData()
+              this.dataForm.selectedProjectData = ''
             } else {
               this.$message.error(res.msg)
             }
+            this.confirmLoading = false
+          }).catch(() => {
             this.confirmLoading = false
           })
         } else {
