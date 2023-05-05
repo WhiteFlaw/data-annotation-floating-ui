@@ -9,27 +9,27 @@
             </el-form-item>
             <el-form-item label="客户名称" prop="customerInfo">
               <el-select v-model="projectSearchForm.customerId" filterable placeholder="按客户查询">
-                <el-option v-for="o of customerList" :key="o.id" :value="`${o.id}:${o.name}`" :label="o.name" />
+                <el-option v-for="customer of customerList" :key="customer.id" :value="`${customer.id}:${customer.name}`" :label="customer.name" />
               </el-select>
             </el-form-item>
             <el-form-item label="项目团队">
               <el-select v-model="projectSearchForm.teamId" filterable placeholder="按团队查询">
-                <el-option v-for="g of groupList" :key="g.name" :value="g.id" :label="g.name" />
+                <el-option v-for="team of groupList" :key="team.name" :value="team.id" :label="team.name" />
               </el-select>
             </el-form-item>
             <el-form-item label="项目经理">
               <el-select v-model="projectSearchForm.managerId" filterable placeholder="按项目经理查询">
-                <el-option v-for="p of projectManagerList" :key="p.name" :value="p.id" :label="p.name" />
+                <el-option v-for="manager of projectManagerList" :key="manager.id" :value="manager.id" :label="manager.nickname" />
               </el-select>
             </el-form-item>
             <el-form-item label="项目状态">
               <el-select v-model="projectSearchForm.status" filterable placeholder="按项目状态查询">
-                <el-option v-for="s of projectStatusList" :key="s.name" :value="s.id" :label="s.name" />
+                <el-option v-for="status of projectStatusList" :key="status.name" :value="status.id" :label="status.name" />
               </el-select>
             </el-form-item>
             <el-form-item label="项目类型">
               <el-select v-model="projectSearchForm.type" filterable placeholder="按项目类型查询">
-                <el-option v-for="t of projectTypeList" :key="t.name" :value="t.id" :label="t.name" />
+                <el-option v-for="projectType of projectTypeList" :key="projectType.name" :value="projectType.id" :label="projectType.name" />
               </el-select>
             </el-form-item>
             <el-form-item>
@@ -47,7 +47,7 @@
         <el-table-column type="selection" width="40" align="center" header-align="center" />
         <el-table-column label="项目编号" prop="id" align="center" header-align="center" min-width="100" />
         <el-table-column label="项目名称" prop="name" align="center" header-align="center" min-width="140" />
-        <el-table-column label="项目经理" prop="description" align="left" header-align="center" min-width="120" />
+        <el-table-column label="项目经理" prop="managerNickname" align="left" header-align="center" min-width="120" />
         <el-table-column align="center" label="任务状态" min-width="300">
           <template slot-scope="scope">
             <span class="el-progress-class progress-container">
@@ -124,6 +124,7 @@ import AssignToGroupDialog from '@/views/projectManagement/components/AssignToGr
 import tableMixin from '@/utils/tableMixin'
 import { getProjectsList, deleteProjectsList, releaseProjectData, getProjectDetail } from '@/api/projectManagement'
 import { getCustomersOptions, getProjectManagerOptions, getGroupOptions, projectStatusOptions, projectTypeOptions } from '@/api/common'
+import {ALL_PROJECT_MANAGER_LIST} from '@/utils/constant'
 export default {
   name: 'ProjectManagement',
   components: {
@@ -132,7 +133,7 @@ export default {
     EditProjectDialog,
     AssignToGroupDialog
   },
-  mixins: [tableMixin],
+  mixins: [tableMixin, ALL_PROJECT_MANAGER_LIST],
   data() {
     return {
       projectSearchForm: {
@@ -172,7 +173,7 @@ export default {
           this.$$message.error(res.msg)
         }
       })
-      getProjectManagerOptions().then((res) => {
+      getProjectManagerOptions(ALL_PROJECT_MANAGER_LIST).then((res) => {
         if (res.success) {
           this.projectManagerList = [...res.data]
         } else {
@@ -222,7 +223,7 @@ export default {
           'userNickname',
           'workCount'
         ]
-        res.data.records.forEach((item, index) => {
+        res.data.records.forEach(item => {
           standardDataKeys.forEach((key) => {
             item[key] = item[key] || ''
             item.createdTime = item.createdTime ? item.createdTime.replace('T', ' ') : ''
@@ -240,7 +241,7 @@ export default {
     },
     // 切换分页
     changePage({ page, limit }) {
-      this.pagIndex = page
+      this.pageIndex = page
       this.pageSize = limit
       this.queryProjectsData()
     },
@@ -295,6 +296,8 @@ export default {
         } else {
           this.$$message.error(res.msg)
         }
+      }).catch(() => {
+        this.editProjectGroupDialogShow = true
       })
     },
     // 释放项目

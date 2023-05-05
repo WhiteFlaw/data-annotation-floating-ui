@@ -7,7 +7,7 @@ vue:
           <el-col :span="12">
             <el-form-item label="项目名称：">
               <el-select v-model="searchForm.projectId" filterable placeholder="按项目名称查询" @change="changeProject">
-                <el-option v-for="o of projectList" :key="o.id" :value="o.id" :label="o.name" />
+                <el-option v-for="project of projectList" :key="project.id" :value="project.id" :label="project.name" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -238,6 +238,7 @@ export default {
       this.taskListLoading = true
       getProjectChildTaskDetail({ pageIndex: this.pageIndex, pageSize: this.pageSize, projectId: this.searchForm.projectId }).then((res) => {
         if (res.success) {
+          this.total = res.data.total
           res.data.records.forEach((item) => {
             item.toBeClaimedCount = this.projectStatisticsData.toBeClaimedCount
             item.allAnnotatedCount = this.projectStatisticsData.allAnnotatedCount
@@ -254,7 +255,7 @@ export default {
     },
     // 子任务列表分页切换
     changePage({ page, limit }) {
-      this.pagIndex = page
+      this.pageIndex = page
       this.pageSize = limit
       this.queryChildTasksData()
     },

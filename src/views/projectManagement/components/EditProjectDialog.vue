@@ -15,12 +15,12 @@
       </el-form-item>
       <el-form-item label="客户名称" prop="customerInfo">
         <el-select v-model="projectInfoEditForm.customerInfo" filterable placeholder="请选择客户">
-          <el-option v-for="o of customerList" :key="o.id" :value="`${o.id}:${o.name}`" :label="o.name" />
+          <el-option v-for="customer of customerList" :key="customer.id" :value="`${customer.id}:${customer.name}`" :label="customer.name" />
         </el-select>
       </el-form-item>
       <el-form-item label="项目经理" prop="managerInfo">
         <el-select v-model="projectInfoEditForm.managerInfo" filterable placeholder="请选择项目经理">
-          <el-option v-for="o of projectManagerList" :key="o.id" :value="`${o.id}:${o.name}`" :label="o.name" />
+          <el-option v-for="manager of projectManagerList" :key="manager.id" :value="`${manager.id}:${manager.nickname}`" :label="manager.nickname" />
         </el-select>
       </el-form-item>
       <el-form-item label="导入数据" prop="originalFolder">
@@ -28,21 +28,21 @@
       </el-form-item>
       <el-form-item label="项目类型" prop="type">
         <el-select v-model="projectInfoEditForm.type" placeholder="请选择项目类型">
-          <el-option v-for="t of projectTypeList" :key="t.name" :label="t.name" :value="t.id" />
+          <el-option v-for="projectType of projectTypeList" :key="projectType.name" :label="projectType.name" :value="projectType.id" />
         </el-select>
       </el-form-item>
-      <el-form-item label="项目周期" prop="selectedDataRange">
-        <el-date-picker
-          v-model="projectInfoEditForm.selectedDataRange"
-          type="daterange"
-          format="yyyy-MM-dd"
-          start-placeholder="起始日期"
-          end-placeholder="结束日期"
-          value-format="yyyy-MM-dd" />
-      </el-form-item>
+      <!--      <el-form-item label="项目周期" prop="selectedDataRange">-->
+      <!--        <el-date-picker-->
+      <!--          v-model="projectInfoEditForm.selectedDataRange"-->
+      <!--          type="daterange"-->
+      <!--          format="yyyy-MM-dd"-->
+      <!--          start-placeholder="起始日期"-->
+      <!--          end-placeholder="结束日期"-->
+      <!--          value-format="yyyy-MM-dd" />-->
+      <!--      </el-form-item>-->
       <el-form-item label="分配团队">
         <el-checkbox-group v-model="projectInfoEditForm.selectedGroup">
-          <el-checkbox v-for="g of groupList" :key="g.name" :label="g.id">{{ g.name }}</el-checkbox>
+          <el-checkbox v-for="team of groupList" :key="team.name" :label="team.id">{{ team.name }}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="分包大小" prop="chunkSize">
@@ -69,8 +69,10 @@
 <script>
 import { assignToGroup, updateProjectsList } from '@/api/projectManagement'
 import { getCustomersOptions, getProjectManagerOptions, getGroupOptions, projectStatusOptions, projectTypeOptions } from '@/api/common'
+import { EFFECTIVE_MANAGER_LIST} from '@/utils/constant'
 export default {
   name: 'EditProjectDialog',
+  mixins: [EFFECTIVE_MANAGER_LIST],
   props: {
     visible: {
       type: Boolean,
@@ -103,7 +105,7 @@ export default {
           this.$$message.error(res.msg)
         }
       })
-      getProjectManagerOptions().then((res) => {
+      getProjectManagerOptions(EFFECTIVE_MANAGER_LIST).then((res) => {
         if (res.success) {
           this.projectManagerList = [...res.data]
         } else {
@@ -142,6 +144,8 @@ export default {
             }
             this.confirmEditLoading = false
             this.closeDialog('projectInfoForm')
+          }).catch(() => {
+            this.confirmEditLoading = false
           })
         } else {
           this.confirmEditLoading = false

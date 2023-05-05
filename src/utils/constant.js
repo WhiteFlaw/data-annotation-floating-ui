@@ -8,3 +8,6 @@ export const USER_INFO_CONSTANT = {
   labelProjectExperience: ['', '文本类标注经验', '图片类标注经验', '视频类标注经验', '音频类标注经验'], // 标注项目经验
   englishLevel: ['无', 'CET-4', 'CET-6', '专4', '专8', '托福', '雅思'] // 英语水平
 }
+
+export const EFFECTIVE_MANAGER_LIST = 1 // 有效项目经理
+export const ALL_PROJECT_MANAGER_LIST = 0 // 全部项目经理

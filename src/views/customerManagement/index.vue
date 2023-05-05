@@ -160,8 +160,7 @@ export default {
     },
     // 切换分页
     changePage({ page, limit }) {
-      console.log(333)
-      this.pagIndex = page
+      this.pageIndex = page
       this.pageSize = limit
       this.queryCustomersData()
     },

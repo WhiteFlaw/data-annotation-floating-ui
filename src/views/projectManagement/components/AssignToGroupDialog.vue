@@ -12,7 +12,7 @@
     <el-form ref="groupInfoForm" :model="projectGroupEditForm">
       <el-form-item label="选择团队">
         <el-checkbox-group v-model="projectGroupEditForm.teamIds">
-          <el-checkbox v-for="g of groupList" :key="g.name" :label="g.id">{{ g.name }}</el-checkbox>
+          <el-checkbox v-for="team of groupList" :key="team.name" :label="team.id">{{ team.name }}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
     </el-form>
