@@ -12,10 +12,10 @@
     highlight-current-row
     :max-height="tableMaxHeight"
   >
-    <el-table-column header-align="center" prop="name" label="项目名称" min-width="150" />
+    <el-table-column align="center" prop="name" label="项目名称" min-width="150" />
     <el-table-column align="center" prop="status" label="项目状态" min-width="100">
       <template slot-scope="scope">
-        {{ changeProjectStatus(scope.row.status) }}
+        <el-tag :type="scope.row.status === 3?'success' : ''">{{ changeProjectStatus(scope.row.status) }}</el-tag>
       </template>
     </el-table-column>
     <el-table-column align="center" label="项目进度" min-width="350">

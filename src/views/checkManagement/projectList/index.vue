@@ -36,15 +36,15 @@
         highlight-current-row
         :max-height="tableMaxHeight"
       >
-        <el-table-column prop="id" header-align="center" label="项目ID" min-width="150" />
-        <el-table-column prop="name" header-align="center" label="项目名称" min-width="150" />
-        <el-table-column prop="managerNickname" align="center" label="项目经理" min-width="120" />
-        <el-table-column prop="createdTime" align="center" label="创建时间" min-width="160">
+        <el-table-column prop="id" align="center" label="项目ID" width="120" />
+        <el-table-column prop="name" align="center" label="项目名称" min-width="150" />
+        <el-table-column prop="managerNickname" align="center" label="项目经理" width="100" />
+        <el-table-column prop="createdTime" align="center" label="创建时间" width="160">
           <template slot-scope="scope">
             {{ scope.row.createdTime.indexOf('T') !== -1 ? (scope.row.createdTime.split('T')[0] + ' ' + scope.row.createdTime.split('T')[1]) : scope.row.createdTime }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" fixed="right" min-width="200">
+        <el-table-column align="center" label="操作" fixed="right" width="200">
           <template slot-scope="scope">
             <el-button type="text" @click="openProjectDetails(scope.row)">详情</el-button>
             <el-button type="text" @click="acceptProject(scope.row)">一键验收</el-button>

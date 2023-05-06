@@ -39,7 +39,7 @@ export function queryTaskList(data) {
  * @returns {*}
  */
 export function getTeamUserList(projectId) {
-  return GET(`/admin/common/teamUserList/${projectId}`)
+  return GET(`/admin/common/listTagUser/${projectId}`)
 }
 
 /**

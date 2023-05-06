@@ -56,7 +56,7 @@ export default {
         if (res.success) {
           this.groupList = [...res.data]
         } else {
-          this.$$message.error(res.msg)
+          this.$message.error(res.msg)
         }
       })
     },

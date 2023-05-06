@@ -25,18 +25,18 @@
     </template>
     <template slot="content">
       <el-table v-loading="tableLoading" :data="customerList" border stripe highlight-current-row :max-height="tableMaxHeight">
-        <el-table-column type="selection" width="40" align="center" header-align="center" />
-        <el-table-column label="客户ID" prop="id" align="center" header-align="center" min-width="60" />
-        <el-table-column label="客户名称" prop="name" align="left" header-align="center" min-width="120" />
-        <el-table-column label="客户详情" prop="description" align="left" header-align="center" min-width="200" />
-        <el-table-column label="电话" prop="phone" align="center" header-align="center" />
-        <el-table-column label="Email" prop="email" align="center" header-align="center" />
-        <el-table-column label="创建时间" prop="createdTime" align="center" header-align="center" min-width="100">
+        <el-table-column type="selection" width="40" align="center" />
+        <el-table-column label="客户ID" prop="id" align="center" width="100" />
+        <el-table-column label="客户名称" prop="name" align="center" width="120" />
+        <el-table-column label="客户详情" prop="description" align="center" min-width="200" />
+        <el-table-column label="电话" prop="phone" align="center" min-width="100" />
+        <el-table-column label="Email" prop="email" align="center" min-width="150" />
+        <el-table-column label="创建时间" prop="createdTime" align="center" width="160">
           <template slot-scope="scope">
             {{ scope.row.createdTime.replace('T', ' ') }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="left" header-align="center" min-width="70">
+        <el-table-column label="操作" align="center" header-align="center" min-width="100" flixd="right">
           <template slot-scope="scope">
             <el-button type="text" @click="editCustomerInfo(scope.row)"> 编辑 </el-button>
             <el-button type="text" @click="deleteCustomer(scope.row)"> 删除 </el-button>
@@ -77,8 +77,9 @@
           </el-form-item>
         </el-form>
         <div slot="footer">
-          <el-button type="primary" @click="confirmEditCustomerInfo('customerInfoForm')"> 确定 </el-button>
           <el-button type="primary" plain @click="closeEditDialog('customerInfoForm')"> 取消 </el-button>
+          <el-button type="primary" @click="confirmEditCustomerInfo('customerInfoForm')"> 确定 </el-button>
+          <el-button v-if="dialogTitle === '新增客户信息'" type="primary" @click="nueAddCustomer('customerInfoForm')"> 添加并添加下一个 </el-button>
         </div>
       </el-dialog>
     </template>
@@ -121,7 +122,7 @@ export default {
   },
   computed: {
     dialogTitle() {
-      return `${this.isAdd ? '新增' : '编辑'}客户信息`
+      return `${this.ifAdd ? '新增' : '编辑'}客户信息`
     },
     customerInfoRules() {
       const rules = {
@@ -152,7 +153,7 @@ export default {
         this.customerList = [...res.data.records]
         this.total = res.data.total
       } else {
-        this.$$message.error(res.msg)
+        this.$message.error(res.msg)
       }
       setTimeout(() => {
         this.tableLoading = false
@@ -196,6 +197,7 @@ export default {
                 this.$message.error(res.msg)
               }
               this.confirmEditLoading = false
+              this.showEditDialog = false
               this.queryCustomersData()
             })
           } else {
@@ -223,12 +225,37 @@ export default {
     },
     // 删除客户
     deleteCustomer(row) {
-      deleteCustomer(row.id).then((res) => {
-        if (res.success) {
-          this.$message.success(res.msg)
-          this.queryCustomersData()
-        } else {
-          this.$message.error(res.msg)
+      this.$confirm(`确定要删除客户（${row.name}）吗?`, '温馨提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteCustomer(row.id).then((res) => {
+          if (res.success) {
+            this.$message.success(res.msg)
+            this.queryCustomersData()
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      }).catch(() => {
+        this.$message.info('已取消删除操作')
+      })
+    },
+    nueAddCustomer(formName) { // 添加并添加下一个
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.confirmEditLoading = true
+          addOneCustomer({...this.customerInfoForm}).then((res) => {
+            if (res.success) {
+              this.$message.success(res.msg)
+            } else {
+              this.$message.error(res.msg)
+            }
+            this.$refs[formName].resetFields()
+            this.confirmEditLoading = false
+            this.queryCustomersData()
+          })
         }
       })
     }

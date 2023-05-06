@@ -35,9 +35,12 @@
         :data="tableData"
         style="width: 100%"
         :max-height="tableMaxHeight"
+        border
+        stripe
+        highlight-current-row
       >
-        <el-table-column prop="id" label="项目编号" min-width="180" />
-        <el-table-column prop="name" label="项目名称" min-width="180" />
+        <el-table-column prop="id" label="项目编号" min-width="180" align="center" />
+        <el-table-column prop="name" label="项目名称" min-width="180" align="center" />
         <el-table-column prop="type" label="项目类型" min-width="100" align="center">
           <template slot-scope="scope">
             {{ scope.row.type === 1 ? '2D' : '3D' }}
@@ -48,7 +51,7 @@
             <el-tag :type="handleStatus(scope.row.status, 'type')">{{ handleStatus(scope.row.status, 'value') }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="toBeClaimedCount" label="待领取" min-width="100" align="center" sortable />
+        <el-table-column prop="toBeClaimedCount" label="待领取" min-width="100" align="center" />
         <el-table-column label="我的标注" align="center">
           <el-table-column prop="toBeRepairedCount" label="待返修" min-width="80" align="center">
             <template slot-scope="scope">
@@ -132,13 +135,13 @@ export default {
       let type = ''
       if (val === 0) {
         value = '未领取'
-        type = 'danger'
+        type = ''
       } else if (val === 1) {
         value = '进行中'
-        type = 'info'
+        type = ''
       } else if (val === 2) {
         value = '验收中'
-        type = 'danger'
+        type = ''
       } else if (val === 3) {
         value = '已完成'
         type = 'success'

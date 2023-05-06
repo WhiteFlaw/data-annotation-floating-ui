@@ -64,15 +64,15 @@
         highlight-current-row
         :max-height="tableMaxHeight"
       >
-        <el-table-column prop="userId" label="用户ID" />
-        <el-table-column prop="nickName" label="昵称" />
-        <el-table-column prop="email" label="用户邮箱" />
-        <el-table-column prop="roleId" label="角色">
+        <el-table-column align="center" prop="userId" label="用户ID" />
+        <el-table-column align="center" prop="nickName" label="昵称" />
+        <el-table-column align="center" prop="email" label="用户邮箱" />
+        <el-table-column align="center" prop="roleId" label="角色">
           <template slot-scope="scope">
             {{ changeRoles(scope.row.roleId) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="searchInformation(scope.row)">查看信息</el-button>
             <el-button type="text" :disabled="detailsData.status === 1" @click="updateData(scope.row)">修改角色</el-button>

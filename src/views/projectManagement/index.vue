@@ -45,10 +45,10 @@
     <template slot="content">
       <el-table v-loading="tableLoading" :data="projectList" border stripe highlight-current-row :max-height="tableMaxHeight">
         <el-table-column type="selection" width="40" align="center" header-align="center" />
-        <el-table-column label="项目编号" prop="id" align="center" header-align="center" min-width="100" />
+        <el-table-column label="项目编号" prop="id" align="center" header-align="center" width="100" />
         <el-table-column label="项目名称" prop="name" align="center" header-align="center" min-width="140" />
-        <el-table-column label="项目经理" prop="managerNickname" align="left" header-align="center" min-width="120" />
-        <el-table-column align="center" label="任务状态" min-width="300">
+        <el-table-column label="项目经理" prop="managerNickname" align="center" header-align="center" width="110" />
+        <el-table-column align="center" label="任务状态" width="300">
           <template slot-scope="scope">
             <span class="el-progress-class progress-container">
               <span class="progress-label">待领取：</span>
@@ -96,10 +96,10 @@
         <!-- <el-table-column label="创建人" prop="userNickname" align="center" header-align="center" min-width="100" /> -->
         <!-- <el-table-column label="任务总数" prop="taskCount" align="center" header-align="center" min-width="80" /> -->
         <!-- <el-table-column label="作业总数" prop="workCount" align="center" header-align="center" min-width="80" /> -->
-        <el-table-column label="项目创建时间" prop="createdTime" align="center" header-align="center" min-width="135" />
+        <el-table-column label="项目创建时间" prop="createdTime" align="center" width="160" />
         <!-- <el-table-column label="开始日期" prop="startDate" align="center" header-align="center" min-width="100" /> -->
         <!-- <el-table-column label="结束日期" prop="endDate" align="center" header-align="center" min-width="100" /> -->
-        <el-table-column label="操作" align="center" header-align="center" min-width="140">
+        <el-table-column label="操作" align="center" header-align="center" width="220">
           <template slot-scope="scope">
             <el-button type="text" @click="viewProjectDetail(scope.row)"> 详情 </el-button>
             <el-button type="text" @click="showEditProjectDialog(scope.row)"> 编辑 </el-button>
@@ -110,7 +110,7 @@
         </el-table-column>
       </el-table>
       <pagination-component :total="total" :page-index="pageIndex" :page-size="pageSize" @pagination="changePage" />
-      <edit-project-dialog :visible.sync="editProjectDialogShow" :edit-form-data="projectInfoEditForm" />
+      <edit-project-dialog :visible.sync="editProjectDialogShow" :edit-form-data="projectInfoEditForm" @shut-down-dialog="shutDownDialog" />
       <assign-to-group-dialog :visible.sync="editProjectGroupDialogShow" :edit-form-data="projectGroupEditForm" />
     </template>
   </page-container>
@@ -170,21 +170,21 @@ export default {
         if (res.success) {
           this.customerList = [...res.data]
         } else {
-          this.$$message.error(res.msg)
+          this.$message.error(res.msg)
         }
       })
       getProjectManagerOptions(ALL_PROJECT_MANAGER_LIST).then((res) => {
         if (res.success) {
           this.projectManagerList = [...res.data]
         } else {
-          this.$$message.error(res.msg)
+          this.$message.error(res.msg)
         }
       })
       getGroupOptions().then((res) => {
         if (res.success) {
           this.groupList = [...res.data]
         } else {
-          this.$$message.error(res.msg)
+          this.$message.error(res.msg)
         }
       })
       this.projectStatusList = [...projectStatusOptions]
@@ -233,7 +233,7 @@ export default {
         this.projectList = [...res.data.records]
         this.total = res.data.total
       } else {
-        this.$$message.error(res.msg)
+        this.$message.error(res.msg)
       }
       setTimeout(() => {
         this.tableLoading = false
@@ -280,7 +280,7 @@ export default {
             oldTeamsId: res.data.teamInfoList?.map((item) => item.teamId) ?? []
           }
         } else {
-          this.$$message.error(res.msg)
+          this.$message.error(res.msg)
         }
       })
     },
@@ -294,7 +294,7 @@ export default {
             teamIds: res.data.teamInfoList?.map((item) => item.teamId) ?? []
           }
         } else {
-          this.$$message.error(res.msg)
+          this.$message.error(res.msg)
         }
       }).catch(() => {
         this.editProjectGroupDialogShow = true
@@ -313,7 +313,7 @@ export default {
               this.$message.success(res.msg)
               this.queryProjectsData()
             } else {
-              this.$$message.error(res.msg)
+              this.$message.error(res.msg)
             }
           })
         })
@@ -334,7 +334,7 @@ export default {
               this.$message.success(res.msg)
               this.queryProjectsData()
             } else {
-              this.$$message.error(res.msg)
+              this.$message.error(res.msg)
             }
           })
         })
@@ -345,6 +345,10 @@ export default {
     // 跳转数据导入页面
     toImportData() {
       this.$router.push({ name: 'DataManagement' })
+    },
+    shutDownDialog() {
+      this.editProjectDialogShow = false
+      this.queryProjectsData()
     }
   }
 }
