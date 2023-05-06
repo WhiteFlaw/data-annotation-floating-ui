@@ -5,35 +5,38 @@
 -->
 <template>
   <PageContainer has-search>
-    <div slot="search">
+    <template slot="search">
       <!--      表单显示待调整-->
       <el-form inline>
         <el-row>
-          <el-col :span="8">
-            <el-form-item label="项目编号">
+          <el-col :span="6">
+            <el-form-item label="项目编号:">
               <el-tag size="mini" effect="dark" type="success">正式</el-tag>{{ info.id }}
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="项目名称">
-              {{ projectName }}
+            <el-form-item label="项目名称:">
+              {{ projectInformation.name }}
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="项目类型">
-              {{ projectName }}
+            <el-form-item label="项目类型:">
+              {{ projectInformation.type === 1 ? '2D' : projectInformation.type === 2 ? '3D' : '' }}
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="创建时间">
+          <el-col :span="6">
+            <el-form-item label="项目状态:">
+              <el-tag :type="projectInformation.status === 3 ? 'success' : ''">{{ changeStatus(projectInformation.status) }}</el-tag>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="创建时间:">
               {{ createdTime }}
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="创建人">
-              {{ createdName }}
+            <el-form-item label="创建人:">
+              {{ projectInformation.userNickname }}
             </el-form-item>
           </el-col>
           <el-col :span="2">
@@ -43,8 +46,8 @@
           </el-col>
         </el-row>
       </el-form>
-    </div>
-    <div slot="content">
+    </template>
+    <template slot="content">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="标注中" name="0">
           <!--          表格字段待调整-->
@@ -53,10 +56,13 @@
             :data="markTableData"
             :max-height="tableMaxHeight"
             style="width: 100%"
+            border
+            stripe
+            highlight-current-row
           >
-            <el-table-column prop="id" label="任务ID" min-width="120" />
-            <el-table-column prop="name" label="任务名称" min-width="120" />
-            <el-table-column prop="status" label="任务状态" min-width="100" align="center">
+            <el-table-column align="center" prop="id" label="任务ID" min-width="120" />
+            <el-table-column align="center" prop="name" label="任务名称" min-width="120" />
+            <el-table-column align="center" prop="status" label="任务状态" min-width="100">
               <template slot-scope="scope">
                 <text v-if="scope.row.status === 0">-</text>
                 <el-tag v-else :type="scope.row.status === 1 ? '' : 'success'">{{ scope.row.status === 1 ? '标注中' : '已完成' }}</el-tag>
@@ -70,7 +76,7 @@
             <el-table-column label="操作" min-width="180" align="center">
               <template slot-scope="scope">
                 <el-button type="text" size="small" @click="handleDetail(scope.row)">详情</el-button>
-                <el-button type="primary" size="small" @click="handleDo(scope.row)">{{ scope.row.status ==1?'开始标注':'继续标注' }}</el-button>
+                <el-button type="primary" size="small" @click="handleDo(scope.row)">{{ scope.row.status ===1?'开始标注':'继续标注' }}</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -82,10 +88,13 @@
             :data="repairTableData"
             style="width: 100%"
             :max-height="tableMaxHeight"
+            border
+            stripe
+            highlight-current-row
           >
-            <el-table-column prop="id" label="任务ID" min-width="120" />
-            <el-table-column prop="name" label="任务名称" min-width="120" />
-            <el-table-column label="操作" min-width="180" align="center">
+            <el-table-column align="center" prop="id" label="任务ID" min-width="120" />
+            <el-table-column align="center" prop="name" label="任务名称" min-width="120" />
+            <el-table-column align="center" label="操作" min-width="180">
               <template slot-scope="scope">
                 <el-button type="primary" size="small" @click="handleRepair(scope.row)">继续标注</el-button>
               </template>
@@ -99,11 +108,14 @@
             :data="recordTableData"
             style="width: 100%"
             :max-height="tableMaxHeight"
+            border
+            stripe
+            highlight-current-row
           >
-            <el-table-column prop="id" label="任务ID" min-width="180" />
-            <el-table-column prop="name" label="任务名称" min-width="120" />
-            <el-table-column prop="endTime" label="标注完成时间" min-width="180" />
-            <el-table-column label="操作" min-width="180" align="center">
+            <el-table-column align="center" prop="id" label="任务ID" min-width="120" />
+            <el-table-column align="center" prop="name" label="任务名称" min-width="180" />
+            <el-table-column align="center" prop="endTime" label="标注完成时间" min-width="180" />
+            <el-table-column align="center" label="操作" min-width="180">
               <template slot-scope="scope">
                 <el-button type="text" size="small" @click="handleDetail(scope.row)">详情</el-button>
               </template>
@@ -112,7 +124,7 @@
           <PaginationComponent v-if="recordQueryCondition.total" :page-index="recordQueryCondition.pageIndex" :page-size="recordQueryCondition.pageSize" :total="recordQueryCondition.total" @pagination="handleClick" />
         </el-tab-pane>
       </el-tabs>
-    </div>
+    </template>
   </PageContainer>
 </template>
 
@@ -154,9 +166,8 @@ export default {
       repairTableData: [], // 待返修表格数据
       recordTableData: [], // 我的标注记录表格数据
       createdTime: '', // 项目创建时间
-      createdName: '', // 项目创建人
-      projectName: '', // 项目名称
-      projectIdInPath: null
+      projectIdInPath: null,
+      projectInformation: {} // 接收项目信息
     }
   },
   async mounted() {
@@ -165,17 +176,15 @@ export default {
   },
   methods: {
     initPageData() {
-      this.getTableMaxHeight()
+      this.getTableMaxHeight(true)
     },
     // 处理初始化代码
     async handleCreate() {
       this.info.id = this.$route.params.projectId
       await this.handleClick()
       getProjectDetailInfo(this.info.id).then(res => {
-        console.log(res)
         this.createdTime = res.data.createdTime.replace('T', ' ')
-        this.createdName = res.data.userNickname
-        this.projectName = res.data.name
+        this.projectInformation = {...res.data}
       })
     },
     // TAB点击事件 查询表格数据
@@ -223,10 +232,7 @@ export default {
     handleBegin() {
       beginLabel(this.info.id).then(res => {
         if (res) {
-          this.$message({
-            message: '开始标注',
-            type: 'success'
-          })
+          this.$message.success('操作成功')
           this.handleClick()
           this.taskId = res.data.id
         } else {
@@ -240,7 +246,9 @@ export default {
     handleDo(info) {
       // this.beginMark(); 暂时隐藏功能未开发 目前是一个模拟标注完成接口，后续删除
       imitateDoneMark(info.id).then(res => {
-        this.handleBegin()
+        if (res.msg === 'success') {
+          this.handleBegin()
+        }
       }).catch(() => {
         this.handleClick()
       })
@@ -248,6 +256,9 @@ export default {
     // 待验收状态下继续标注不需要领任务
     handleRepair(info) {
       imitateDoneMark(info.id).then(res => {
+        if (res.msg === 'success') {
+          this.$message.success('操作成功')
+        }
         this.handleClick()
       }).catch(() => {
         this.handleClick()
@@ -256,6 +267,22 @@ export default {
     // 开始标注动作
     beginMark() {
 
+    },
+    changeStatus(val) { // 判断项目状态
+      let status
+      switch (val) {
+        case 0 : status = '未领取'
+          break
+        case 1 : status = '进行中'
+          break
+        case 2 : status = '验收中'
+          break
+        case 3 : status = '已完成'
+          break
+        default:status = ''
+          break
+      }
+      return status
     }
   }
 }

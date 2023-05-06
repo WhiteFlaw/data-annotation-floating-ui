@@ -44,20 +44,20 @@
         highlight-current-row
         :max-height="tableMaxHeight"
       >
-        <el-table-column header-align="center" prop="id" label="ID" min-width="150px" />
-        <el-table-column header-align="center" prop="nickname" label="用户名称" min-width="150px" />
-        <el-table-column header-align="center" prop="email" label="邮箱" min-width="200px" />
-        <el-table-column header-align="center" prop="createdTime" label="加入时间" min-width="160px">
+        <el-table-column align="center" prop="id" label="ID" width="100" />
+        <el-table-column align="center" prop="nickname" label="用户名称" min-width="160" />
+        <el-table-column align="center" prop="email" label="邮箱" width="200" />
+        <el-table-column align="center" label="加入时间" width="160">
           <template slot-scope="scope">
             {{ scope.row.createdTime.indexOf('T') !== -1 ? (scope.row.createdTime.split('T')[0] + ' ' + scope.row.createdTime.split('T')[1]) : scope.row.createdTime }}
           </template>
         </el-table-column>
-        <el-table-column label="账号是否有效" align="center" min-width="150">
+        <el-table-column align="center" label="账号是否有效" width="130">
           <template slot-scope="scope">
-            {{ scope.row.status === 1 ? '无效' : '有效' }}
+            <el-tag :type="scope.row.status === 1 ? 'info' : 'success'">{{ scope.row.status === 1 ? '无效':'有效' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column header-align="center" label="操作" min-width="300px" fixed="right">
+        <el-table-column align="center" label="操作" min-width="300">
           <template slot-scope="scope">
             <el-button type="text" @click="editInformation(scope.row)">编辑信息</el-button>
             <el-button type="text" :disabled="scope.row.status === 1" @click="roleConfiguration(scope.row)">角色配置</el-button>
@@ -172,7 +172,7 @@ export default {
       })
     },
     deleteData(row) { // 删除用户
-      this.$confirm(`是否要删除用户：${row.nickname}`, {
+      this.$confirm(`是否要删除用户：${row.nickname}`, '温馨提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -196,7 +196,7 @@ export default {
       this.addUserVisible = true
     },
     updateUserInvalidation(row) { // 用户无效化
-      this.$confirm(`是否要无效化用户：${row.nickname}`, {
+      this.$confirm(`是否要无效化用户：${row.nickname}`, '温馨提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

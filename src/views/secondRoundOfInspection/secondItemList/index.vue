@@ -44,10 +44,15 @@
         highlight-current-row
         :max-height="tableMaxHeight"
       >
-        <el-table-column prop="id" header-align="center" label="项目ID" min-width="150" />
-        <el-table-column prop="name" header-align="center" label="项目名称" min-width="150" />
-        <el-table-column prop="managerNickname" align="center" label="项目经理" min-width="120" />
-        <el-table-column align="center" label="总进度" min-width="400">
+        <el-table-column prop="id" align="center" label="项目ID" width="120" />
+        <el-table-column prop="name" align="center" label="项目名称" min-width="150" />
+        <el-table-column prop="managerNickname" align="center" label="项目经理" width="100" />
+        <el-table-column prop="status" align="center" label="项目状态" width="100">
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.status === 3?'success' : ''">{{ changeProjectStatus(scope.row.status) }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="总进度" min-width="300">
           <template slot-scope="scope">
             <span class="el-progress-class progress-container">
               <span class="progress-label">待领取：</span>
@@ -86,14 +91,9 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="createdTime" header-align="center" label="创建时间" min-width="150">
+        <el-table-column prop="createdTime" header-align="center" label="创建时间" width="160">
           <template slot-scope="scope">
             {{ scope.row.createdTime.indexOf('T') !== -1 ? (scope.row.createdTime.split('T')[0] + ' ' + scope.row.createdTime.split('T')[1]) : scope.row.createdTime }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="status" align="center" label="项目状态" min-width="100">
-          <template slot-scope="scope">
-            {{ changeProjectStatus(scope.row.status) }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作" min-width="100">

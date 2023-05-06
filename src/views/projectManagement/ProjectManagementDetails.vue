@@ -43,7 +43,9 @@ vue:
             <el-form-item label="作业总数："> {{ projectInfoEditForm.workCount }} </el-form-item>
           </el-col>
           <el-col :md="12" :lg="8" :xl="6">
-            <el-form-item label="项目状态："> {{ filterProjectStatus(projectInfoEditForm.status) }} </el-form-item>
+            <el-form-item label="项目状态：">
+              <el-tag v-if="projectInfoEditForm.status" :type="projectInfoEditForm.status === 3?'success' : ''">{{ filterProjectStatus(projectInfoEditForm.status) }}</el-tag>
+            </el-form-item>
           </el-col>
 
           <el-col>
@@ -54,18 +56,18 @@ vue:
     </template>
     <template slot="content">
       <el-table v-loading="taskListLoading" :data="taskList" border stripe highlight-current-row :max-height="tableMaxHeight">
-        <el-table-column type="selection" width="40" align="center" header-align="center" />
-        <el-table-column label="任务ID" prop="id" align="center" header-align="center" min-width="70" />
-        <el-table-column label="任务名称" prop="name" align="center" header-align="center" min-width="120" />
-        <el-table-column label="团队进度(待领取/标注中/一检/二检/待验收)" prop="" align="center" header-align="center" min-width="160">
+        <el-table-column type="selection" width="40" align="center" />
+        <el-table-column label="任务ID" prop="id" align="center" width="100" />
+        <el-table-column label="任务名称" prop="name" align="center" min-width="120" />
+        <el-table-column label="团队进度(待领取/标注中/一检/二检/待验收)" align="center" width="290">
           <template slot-scope="scope">
             {{
               `${scope.row.toBeClaimedCount}/${scope.row.allAnnotatedCount}/${scope.row.firstInspectionCount}/${scope.row.secondInspectionCount}/${scope.row.atCount}`
             }}
           </template>
         </el-table-column>
-        <el-table-column label="标注数据统计(2D/3D框数)" prop="" align="left" header-align="center" />
-        <el-table-column label="驳回次数" prop="" align="center" header-align="center" min-width="70" />
+        <el-table-column label="标注数据统计(2D/3D框数)" prop="" align="center" width="190" />
+        <el-table-column label="驳回次数" prop="" align="center" min-width="70" />
         <el-table-column label="操作" align="left" header-align="center" fixed="right" width="100">
           <template slot-scope="scope">
             <el-button type="text" @click="viewTaskDetail(scope.row)"> 查看 </el-button>
@@ -74,7 +76,7 @@ vue:
         </el-table-column>
       </el-table>
       <pagination-component :total="total" :page-index="pageIndex" :page-size="pageSize" @pagination="changePage" />
-      <edit-project-dialog :visible.sync="editProjectDialogShow" :edit-form-data="projectInfoEditForm" />
+      <edit-project-dialog :visible.sync="editProjectDialogShow" :edit-form-data="projectInfoEditForm" @shut-down-dialog="shutDownDialog" />
       <assign-to-group-dialog :visible.sync="editProjectGroupDialogShow" :edit-form-data="projectGroupEditForm" />
     </template>
   </page-container>
@@ -182,14 +184,26 @@ export default {
     },
     // 打开编辑项目弹窗
     showEditProjectDialog() {
+      if (this.searchForm.projectId === '') {
+        this.$message.error('请先选择项目！')
+        return
+      }
       this.editProjectDialogShow = true
     },
     // 打开团队编辑弹窗
     showAssignToGroupDialog() {
+      if (this.searchForm.projectId === '') {
+        this.$message.error('请先选择项目！')
+        return
+      }
       this.editProjectGroupDialogShow = true
     },
     // 释放项目
     releaseProject() {
+      if (this.searchForm.projectId === '') {
+        this.$message.error('请先选择项目！')
+        return
+      }
       this.$confirm(`确定释放项目（${this.projectInfoEditForm.name}）吗?`, '温馨提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -201,7 +215,7 @@ export default {
               this.$message.success(res.msg)
               this.getProjectDetails(this.searchForm.projectId)
             } else {
-              this.$$message.error(res.msg)
+              this.$message.error(res.msg)
             }
           })
         })
@@ -211,6 +225,10 @@ export default {
     },
     // 删除项目
     deleteProject() {
+      if (this.searchForm.projectId === '') {
+        this.$message.error('请先选择项目！')
+        return
+      }
       this.$confirm(`确定删除项目（${this.projectInfoEditForm.name}）吗?`, '温馨提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -224,7 +242,7 @@ export default {
                 name: 'ProjectManagementDetails'
               })
             } else {
-              this.$$message.error(res.msg)
+              this.$message.error(res.msg)
             }
           })
         })
@@ -280,6 +298,10 @@ export default {
     filterProjectType(typeId) {
       const value = this.projectTypeList.find((item) => item.id === typeId)
       return value?.name
+    },
+    shutDownDialog(val) {
+      this.editProjectDialogShow = false
+      this.changeProject(val)
     }
   }
 }

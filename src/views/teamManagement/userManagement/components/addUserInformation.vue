@@ -120,6 +120,7 @@
     <div slot="footer">
       <el-button @click="dialogVisible = false">取消</el-button>
       <el-button type="primary" :loading="addUserLoading" @click="confirmTheAddition">确定</el-button>
+      <el-button type="primary" @click="newAddUser">添加并添加下一个</el-button>
     </div>
   </el-dialog>
 </template>
@@ -220,6 +221,36 @@ export default {
             if (res.msg === '用户添加成功') {
               this.$message.success(res.msg)
               this.$emit('search-data')
+              this.dialogVisible = false
+            }
+          }).catch(() => {
+            this.addUserLoading = false
+          })
+        }
+      })
+    },
+    newAddUser() { // 添加并新增下一个用户
+      this.$refs['addUserForm'].validate((valid) => {
+        if (valid) {
+          this.addUserLoading = true
+          addUserManagement(this.addUserData).then(res => {
+            this.addUserLoading = false
+            if (res.msg === '用户添加成功') {
+              this.$message.success(res.msg)
+              this.$emit('search-data')
+              this.addUserData = {
+                email: '', // 邮箱
+                age: 0, // 年龄
+                education: 0, // 学历
+                englishLevel: 0, // 英语水平
+                gender: 0, // 性别
+                labelProExp: 0, // 标注项目经验
+                labelSeniority: 0, //	标注工龄
+                name: '', // 账号
+                nickname: '', // 昵称
+                password: '', // 密码
+                socialSeniority: 0 // 社会工龄
+              }
             }
           }).catch(() => {
             this.addUserLoading = false

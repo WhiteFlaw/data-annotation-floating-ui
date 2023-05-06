@@ -13,9 +13,9 @@
     :max-height="tableMaxHeight"
     class="member-list-table"
   >
-    <el-table-column header-align="center" prop="userNickName" label="成员名称" />
-    <el-table-column header-align="center" prop="userRole" label="角色" />
-    <el-table-column header-align="center" label="工作量">
+    <el-table-column align="center" prop="userNickName" label="成员名称" />
+    <el-table-column align="center" prop="userRole" label="角色" />
+    <el-table-column align="center" label="工作量">
       <template slot-scope="scope">
         <p v-show="scope.row.userRole === '标注员' || scope.row.userRole === '团队管理员'">标注数量 ： {{ scope.row.tagCount }}</p>
         <p v-show="scope.row.userRole === '质检员' || scope.row.userRole === '团队管理员'">一检数量 ： {{ scope.row.checkCount }}</p>

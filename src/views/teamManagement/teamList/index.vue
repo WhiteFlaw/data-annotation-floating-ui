@@ -36,15 +36,15 @@
         highlight-current-row
         :max-height="tableMaxHeight"
       >
-        <el-table-column prop="id" label="团队编号" />
-        <el-table-column prop="name" label="团队名称" />
-        <el-table-column prop="userNickname" label="创建人" />
-        <el-table-column prop="createdTime" label="创建时间">
+        <el-table-column align="center" prop="id" label="团队编号" />
+        <el-table-column align="center" prop="name" label="团队名称" />
+        <el-table-column align="center" prop="userNickname" label="创建人" />
+        <el-table-column align="center" prop="createdTime" label="创建时间">
           <template slot-scope="scope">
             {{ scope.row.createdTime.indexOf('T') !== -1 ? (scope.row.createdTime.split('T')[0] + ' ' + scope.row.createdTime.split('T')[1]) : scope.row.createdTime }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="120px" fixed="right">
+        <el-table-column align="center" label="操作" min-width="120px" fixed="right">
           <template slot-scope="scope">
             <el-button type="text" @click="details(scope.row)">详情</el-button>
             <el-button type="text" :disabled="scope.row.status === 1" @click="deleteTeam(scope.row)">删除团队</el-button>
@@ -135,7 +135,7 @@ export default {
       })
     },
     deleteTeam(row) { // 删除团队
-      this.$confirm(`是否要删除团队：${row.name}`, {
+      this.$confirm(`是否要删除团队：${row.name}`, '温馨提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -156,7 +156,7 @@ export default {
       })
     },
     updateTeamNullification(row) {
-      this.$confirm(`是否要无效化团队：${row.name}`, {
+      this.$confirm(`是否要无效化团队：${row.name}`, '温馨提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

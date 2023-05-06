@@ -25,65 +25,11 @@ const getProjectsList = ({ customerId = 0, managerId = 0, pageIndex = 0, pageSiz
 }
 /**
  * 编辑项目
- * @param {*} {
- *   createdTime = '', 创建时间
- *   customerId = 0, 客户ID
- *   customerName = '', 客户名称
- *   description = '', 项目描述
- *   endDate = '', 项目结束时间
- *   fromPath = '', 项目原路径
- *   id = 0, 项目ID
- *   name = '', 项目名称
- *   originalFolder = '', 项目原文件夹名称
- *   startDate = '', 项目开始时间
- *   status = 0, 项目状态(0:未领取;1:进行中;2:验收中;3:已完成;)
- *   taskCount = 0, 任务总数
- *   toPath = '', 生成项目路径
- *   type = 0, 项目类型(0:未设定;1:2D;2:3D;)
- *   userId = 0, 创建超管ID
- *   userNickname = '', 创建超管名称
- *   workCount = 0 作业总数
- * }
- * @return {*}
+ * @param data 创建时间 客户ID 客户名称 项目描述 项目结束时间 项目原路径 项目ID 项目名称 项目原文件夹名称 项目开始时间 项目状态(0:未领取;1:进行中;2:验收中;3:已完成;) 任务总数 生成项目路径 项目类型(0:未设定;1:2D;2:3D;) 创建超管ID 创建超管名称 作业总数
+ * @returns {*}
  */
-const updateProjectsList = ({
-  createdTime = '',
-  customerId = 0,
-  customerName = '',
-  description = '',
-  endDate = '',
-  fromPath = '',
-  id = 0,
-  name = '',
-  originalFolder = '',
-  startDate = '',
-  status = 0,
-  taskCount = 0,
-  toPath = '',
-  type = 0,
-  userId = 0,
-  userNickname = '',
-  workCount = 0
-}) => {
-  return PUT('/admin/project/', {
-    createdTime,
-    customerId,
-    customerName,
-    description,
-    endDate,
-    fromPath,
-    id,
-    name,
-    originalFolder,
-    startDate,
-    status,
-    taskCount,
-    toPath,
-    type,
-    userId,
-    userNickname,
-    workCount
-  })
+const updateProjectsList = (data) => {
+  return PUT('/admin/project/', data)
 }
 /**
  * 删除项目

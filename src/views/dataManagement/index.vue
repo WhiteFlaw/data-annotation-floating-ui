@@ -136,28 +136,28 @@ export default {
         if (res.success) {
           this.projectDataList = [...res.data]
         } else {
-          this.$$message.error(res.msg)
+          this.$message.error(res.msg)
         }
       })
       getCustomersOptions().then((res) => {
         if (res.success) {
           this.customerList = [...res.data]
         } else {
-          this.$$message.error(res.msg)
+          this.$message.error(res.msg)
         }
       })
       getGroupOptions().then((res) => {
         if (res.success) {
           this.groupList = [...res.data]
         } else {
-          this.$$message.error(res.msg)
+          this.$message.error(res.msg)
         }
       })
       getProjectManagerOptions(EFFECTIVE_MANAGER_LIST).then((res) => {
         if (res.success) {
           this.projectManagerList = [...res.data]
         } else {
-          this.$$message.error(res.msg)
+          this.$message.error(res.msg)
         }
       })
     },
@@ -186,7 +186,8 @@ export default {
             if (res.success) {
               this.$message.success(res.msg)
               this.initPageData()
-              this.dataForm.selectedProjectData = ''
+              this.$refs[formName].resetFields()
+              this.dataForm.selectedGroup = []
             } else {
               this.$message.error(res.msg)
             }
@@ -203,6 +204,7 @@ export default {
     // 清空表单
     resetForm(formName) {
       this.$refs[formName].resetFields()
+      this.dataForm.selectedGroup = []
     }
   }
 }

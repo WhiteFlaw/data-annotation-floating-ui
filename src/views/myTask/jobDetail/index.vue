@@ -10,13 +10,18 @@
       <el-form inline>
         <el-row>
           <el-col :span="6">
+            <el-form-item label="项目名称">
+              {{ projectData.projectName }}
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
             <el-form-item label="任务ID">
               {{ info.id }}
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="任务名称">
-              {{ taskName }}
+              {{ projectData.name }}
             </el-form-item>
           </el-col>
         </el-row>
@@ -25,9 +30,13 @@
     <div slot="content">
       <!--      表格字段待调整-->
       <el-table
+        v-loading="tableLoading"
         :data="tableData"
         style="width: 100%"
         :max-height="tableMaxHeight"
+        border
+        stripe
+        highlight-current-row
       >
         <el-table-column prop="id" label="作业ID" min-width="180" align="center" />
         <el-table-column prop="name" label="作业名称" min-width="180" align="center" />
@@ -35,7 +44,7 @@
           <el-table-column prop="" label="标注已用时" min-width="180" align="center" />
           <el-table-column prop="status" label="状态" min-width="180" align="center">
             <template slot-scope="scope">
-              {{ handleStatus(scope.row.status) }}
+              <el-tag :type="scope.row.status !== 3? '' : 'success'">{{ handleStatus(scope.row.status) }}</el-tag>
             </template>
           </el-table-column>
         </el-table-column>
@@ -72,9 +81,10 @@ export default {
         taskId: ''
       },
       info: {},
-      taskName: '',
+      projectData: {}, // 接收项目数据
       tableData: [],
-      total: 0
+      total: 0,
+      tableLoading: false
     }
   },
   mounted() {
@@ -104,16 +114,20 @@ export default {
     },
     // 分页信息
     handlePage() {
+      this.tableLoading = true
       getjobTableData(this.queryCondition).then(res => {
         this.tableData = res.data.records
         this.total = res.data.total
+        this.tableLoading = false
       }).catch(() => {
-
+        this.tableData = []
+        this.total = 0
+        this.tableLoading = false
       })
     },
     jobDetail() {
       getJobDetailInfo(this.info.id).then(res => {
-        this.taskName = res.data.name
+        this.projectData = {...res.data}
       })
     }
   }

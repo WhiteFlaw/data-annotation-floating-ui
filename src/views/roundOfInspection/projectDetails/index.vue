@@ -71,7 +71,7 @@
         <el-table-column min-width="150" align="center" prop="name" label="任务名称" />
         <el-table-column min-width="100" align="center" prop="status" label="任务状态">
           <template slot-scope="scope">
-            {{ changeStatus(scope.row.status) }}
+            <el-tag :type="scope.row.status === 3?'success' : ''">{{ changeStatus(scope.row.status) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column min-width="100" align="center" label="任务执行进度">

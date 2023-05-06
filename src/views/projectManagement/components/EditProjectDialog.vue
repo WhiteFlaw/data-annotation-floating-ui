@@ -97,26 +97,26 @@ export default {
   methods: {
     // 弹窗初始化
     initDialog() {
-      this.projectInfoEditForm = { ...this.editFormData }
+      this.projectInfoEditForm = { ...this.editFormData, startDate: null, endDate: null }
       getCustomersOptions().then((res) => {
         if (res.success) {
           this.customerList = [...res.data]
         } else {
-          this.$$message.error(res.msg)
+          this.$message.error(res.msg)
         }
       })
       getProjectManagerOptions(EFFECTIVE_MANAGER_LIST).then((res) => {
         if (res.success) {
           this.projectManagerList = [...res.data]
         } else {
-          this.$$message.error(res.msg)
+          this.$message.error(res.msg)
         }
       })
       getGroupOptions().then((res) => {
         if (res.success) {
           this.groupList = [...res.data]
         } else {
-          this.$$message.error(res.msg)
+          this.$message.error(res.msg)
         }
       })
       this.projectStatusList = [...projectStatusOptions]
@@ -136,7 +136,12 @@ export default {
               }
             })
           }
-          updateProjectsList(this.projectInfoEditForm).then((res) => {
+          updateProjectsList({...this.projectInfoEditForm,
+            managerId: Number(this.projectInfoEditForm.managerInfo?.split(':')[0]),
+            managerNickname: this.projectInfoEditForm.managerInfo?.split(':')[1],
+            customerId: Number(this.projectInfoEditForm.customerInfo?.split(':')[0]),
+            customerName: this.projectInfoEditForm.customerInfo?.split(':')[1]
+          }).then((res) => {
             if (res.success) {
               this.$message.success(res.msg)
             } else {
@@ -156,7 +161,7 @@ export default {
     // 关闭弹窗
     closeDialog(formName) {
       this.$refs[formName].resetFields()
-      this.$emit('update:visible', false)
+      this.$emit('shut-down-dialog', this.projectInfoEditForm.id)
     }
   }
 }
