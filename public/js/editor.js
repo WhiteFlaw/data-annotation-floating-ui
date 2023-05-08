@@ -6,6 +6,7 @@ import { Mouse } from "./mouse.js";
 import { BoxEditor, BoxEditorManager } from "./box_editor.js";
 import { ImageContextManager } from "./image.js";
 import { ImageContext } from "./image.js";
+import { LabelPanel } from "./label_panel.js";
 import { globalObjectCategory } from "./obj_cfg.js";
 import { backupManager } from "./backup/manager.js";
 import { FrameManager } from './frame_list.js';
@@ -67,10 +68,13 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
     };
     this.calib = new Calib(this.data, this);
 
-    this.header = null;
-    this.imageContextManager = null;
     this.boxOp = null;
+    this.header = null;
+    this.labelPanel = null;
+    this.viewManager = null;
+    this.frameManager = null;
     this.boxEditorManager = null;
+    this.imageContextManager = null;
     this.params = {};
 
     this.currentMainEditor = this;  // who is on focus, this or batch-editor-manager?
@@ -79,8 +83,6 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
         let self = this;
         this.editorUi = editorUi;
-
-
 
         this.playControl = new PlayControl(this.data);
 
@@ -94,11 +96,17 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
             (e) => { this.frame_changed(e) },
             (e) => { this.object_changed(e) },
             (e) => { this.camera_changed(e) },
-            () => { this.use_attribute_changed() }, // enable the default attribute.
-            () => { this.use_category_changed() }, // enable the default category.
             () => { this.use_previous_frame_click() }, // use previous frame.
             () => { this.undo_click() },
             () => { this.redo_click() }
+        );
+
+        this.labelPanel = new LabelPanel(
+            editorUi.querySelector("#content"),
+            this.data,
+            () => { this.use_category_changed() }, // enable the default category.
+            () => { this.use_trunk_changed() }, // enable the default attribute.
+            () => { this.use_occl_changed() } // enable the default category.
         );
 
         this.frameManager = new FrameManager(
@@ -127,7 +135,12 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         this.container.appendChild(this.renderer.domElement);
 
         this.boxOp = new BoxOp(this.data);
-        this.viewManager = new ViewManager(this.container, this.scene, this.mainScene, this.renderer,
+
+        this.viewManager = new ViewManager(
+            this.container,
+            this.scene,
+            this.mainScene,
+            this.renderer,
             function () { self.render(); },
             function (box) { self.on_box_changed(box) },
             this.editorCfg
@@ -282,6 +295,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         this.imageContextManager.init_image_op(() => this.selected_box);
 
         this.add_global_obj_type();
+        this.add_global_obj_occl();
+        this.add_global_obj_trunk();
     };
 
     this.hide = function () {
@@ -1126,7 +1141,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         this.hideGridLines();
         //this.controlGui.hide();
         this.editorUi.querySelector("#tools").style.display = 'none';
-        this.editorUi.querySelector("#object-selector").style.display='none';
+        this.editorUi.querySelector("#object-selector").style.display = 'none';
         this.currentMainEditor = this.boxEditorManager;
 
         this.boxEditorManager.edit(this.data,
@@ -2212,29 +2227,42 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         }
     };
 
-    this.use_attribute_changed = function () {
-        var use = this.header.ui.querySelector('#if-default-attribute-use').checked;
-        this.header.ui.querySelector("#attribute-selector").disabled = !use;
-
-        var attribute_label = this.header.ui.querySelector('#if-default-attribute-label');
-        if (use) {
-            attribute_label.style.color = '#fff';
-        } else {
-            attribute_label.style.color = 'rgb(173, 173, 173)';
-        }
-    }
-
     this.use_category_changed = function () {
-        var use = this.header.ui.querySelector('#if-default-category-use').checked;
-        this.header.ui.querySelector("#category-selector").disabled = !use;
+        var category_label = this.labelPanel.ui.querySelector("#if-default-category-label");
+        var use = this.labelPanel.ui.querySelector('#if-default-category-use').checked;
+        this.labelPanel.ui.querySelector("#category-selector").disabled = !use;
 
-        var category_label = this.header.ui.querySelector("#if-default-category-label");
         if (use) {
             category_label.style.color = '#fff';
         } else {
             category_label.style.color = 'rgb(173, 173, 173)';
         }
     }
+
+    this.use_trunk_changed = function () {
+        const trunk_label = this.labelPanel.ui.querySelector('#if-default-trunk-label');
+        const use = this.labelPanel.ui.querySelector('#if-default-trunk-use').checked;
+        this.labelPanel.ui.querySelector("#trunk-selector").disabled = !use;
+
+        if (use) {
+            trunk_label.style.color = '#fff';
+        } else {
+            trunk_label.style.color = 'rgb(173, 173, 173)';
+        }
+    }
+
+    this.use_occl_changed = function () {
+        const occlusion_label = this.labelPanel.ui.querySelector('#if-default-occlusion-label');
+        const use = this.labelPanel.ui.querySelector('#if-default-occlusion-use').checked;
+        this.labelPanel.ui.querySelector("#occlusion-selector").disabled = !use;
+
+        if (use) {
+            occlusion_label.style.color = '#fff';
+        } else {
+            occlusion_label.style.color = 'rgb(173, 173, 173)';
+        }
+    }
+
 
     this.use_previous_frame_click = async function () {
         var old_frame = this.frameManager.frame;
@@ -2779,8 +2807,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         for (var o in obj_type_map) {
             options += '<option value="' + o + '" class="' + o + '">' + o + '</option>';
         }
-        document.querySelector('#category-selector').innerHTML = options;
 
+        this.editorUi.querySelector('#category-selector').innerHTML = options;
         this.editorUi.querySelector("#floating-things #object-category-selector").innerHTML = options;
         // this.editorUi.querySelector("#batch-editor-tools-wrapper #object-category-selector").innerHTML = options;
 
@@ -2832,6 +2860,24 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         // }
 
     };
+
+    this.add_global_obj_occl = function () {
+        let obj_occl_arr = globalObjectCategory.obj_occl_arr;
+        const options = obj_occl_arr.reduce((prev, curr) => {
+            return `${prev}<option value="${curr}">${curr}</option>`;
+        }, '')
+        this.editorUi.querySelector('#occlusion-selector').innerHTML = options;
+        this.editorUi.querySelector("#floating-things #object-occlusion-selector").innerHTML = options;
+    }
+
+    this.add_global_obj_trunk = function () {
+        let obj_trunk_arr = globalObjectCategory.obj_trunk_arr;
+        const options = obj_trunk_arr.reduce((prev, curr) => {
+            return `${prev}<option value="${curr}">${curr}</option>`;
+        }, '')
+        this.editorUi.querySelector('#trunk-selector').innerHTML = options;
+        this.editorUi.querySelector("#floating-things #object-trunk-selector").innerHTML = options;
+    }
 
     this.setDefaultObjType = function (currVal) {
         if (this.selected_box) {

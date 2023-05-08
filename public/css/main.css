@@ -118,7 +118,8 @@ canvas {
 }
 
 #category-selector,
-#attribute-selector {
+#trunk-selector,
+#occlusion-selector {
 	border: none;
 	color: inherit;
 	display: inline-flex;
@@ -133,8 +134,9 @@ canvas {
 	width: 70px;
 }
 
-#if-default-attribute-label,
-#if-default-category-label {
+#if-default-category-label,
+#if-default-trunk-label,
+#if-default-occlusion-label {
 	color: rgb(173, 173, 173);
 }
 

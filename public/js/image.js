@@ -431,7 +431,6 @@ class ImageViewer { // 2D视图区
                 if (!calib[this.names[j]]) {
                     return;
                 }
-                console.log(calib[this.names[j]]);
                 var imgfinal = box_to_2d_points(box, calib[this.names[j]]);
 
                 if (!imgfinal) {
@@ -691,7 +690,6 @@ class ImageViewer { // 2D视图区
     }
 
     hide_canvas() { // 切帧后不该执行
-        console.trace();
         // this.ui.style.display = "none";
     }
 
@@ -1450,8 +1448,6 @@ class ImageContextManager { // 图片管理器
 }
 
 function box_to_2d_points(box, calib) {
-    console.trace();
-    console.log(calib);
     var scale = box.scale;
     var pos = box.position;
     var rotation = box.rotation;

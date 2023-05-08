@@ -1,7 +1,7 @@
 import * as THREE from './lib/three.module.js';
 
 import { psr_to_xyz } from "./util.js"
-import { globalObjectCategory } from "./obj_cfg.js";
+import { globalObjectCategory } from './obj_cfg.js';
 
 class FastToolBox {
     constructor(ui, eventHandler) {
@@ -69,53 +69,18 @@ class FastToolBox {
 
     setValue(obj_type, obj_track_id, obj_trunk, obj_occlu) {
         this.ui.querySelector("#object-category-selector").value = obj_type;
-
-        this.setOcclOptions();
-        if (document.querySelector("#if-default-attribute-use").checked === false) this.setAttrOptions();
-
         this.ui.querySelector("#object-track-id-editor").value = obj_track_id;
-
-        if (obj_trunk) {
-            this.ui.querySelector("#object-trunk-selector").value = obj_trunk;
-        } else {
-            this.ui.querySelector("#object-trunk-selector").value = "";
-        }
-
+        this.ui.querySelector("#object-trunk-selector").value = obj_trunk;
         this.ui.querySelector("#object-occlusion-selector").value = obj_occlu;
     }
 
+    /* if () this.setOcclOptions();
+        if (document.querySelector("#if-default-trunk-use").checked === false) this.setTrunkOptions(); */
     setPos(pos) {
         if (pos) {
             this.ui.style.top = pos.top;
             this.ui.style.left = pos.left;
         }
-    }
-
-    setAttrOptions() {
-
-        let attrs = [ -1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 ]; // object-trunk-selector
-
-        let items = ``;
-
-        attrs.forEach(a => {
-            items += `<option class='attr-item'>${a}</option>`
-        });
-
-        this.ui.querySelector("#object-trunk-selector").innerHTML = items;
-        document.querySelector("#attribute-selector").innerHTML = items; // also set options for header attribute-selector
-
-    }
-
-    setOcclOptions() {
-
-        let attrs = [ -1, 0, 1, 2, 3 ]; // object-trunk-selector
-
-        let items = ``;
-
-        attrs.forEach(a => items += `<option class='attr-item'>${a}</option>`);
-
-        this.ui.querySelector("#object-occlusion-selector").innerHTML = items;
-
     }
 
     installEventHandler() {
@@ -406,17 +371,17 @@ class FloatLabelManager {
             label_text += this.obj_type;
             label_text += '</div>';
 
-            if (this.obj_trunk) {
+            label_text += '<div class="label-obj-id-text">';
+            label_text += this.obj_track_id;
+            label_text += '</div>';
+
+            if (this.obj_trunk !== undefined) {
                 label_text += '<div class="label-obj-attr-text">';
                 label_text += this.obj_trunk;
                 label_text += '</div>';
             }
 
-            label_text += '<div class="label-obj-id-text">';
-            label_text += this.obj_track_id;
-            label_text += '</div>';
-
-            if (this.obj_occlu) {
+            if (this.obj_occlu !== undefined) {
                 label_text += '<div class="label-obj-occl-text">';
                 label_text += this.obj_occlu;
                 label_text += '</div>';

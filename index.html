@@ -10,6 +10,7 @@
 	<link type="text/css" rel="stylesheet" href="/static/css/main.css">
 	<link type="text/css" rel="stylesheet" href="/static/css/frame-list.css">
 	<link type="text/css" rel="stylesheet" href="/static/css/image-manager.css">
+	<link type="text/css" rel="stylesheet" href="/static/css/label-panel.css">
 </head>
 
 <body>
@@ -74,14 +75,6 @@
 				<!-- <text id="ref-obj"></text> -->
 
 				<div id="buttons">
-					<input type="checkbox" id="if-default-attribute-use" name="if-default-attribute-use">
-					<label for="if-default-attribute-use" id="if-default-attribute-label" value="y">属性预设</label>
-					<select id="attribute-selector" disabled="true"></select>
-					<input type="checkbox" id="if-default-category-use" name="if-default-category-use">
-					<label for="if-default-category-use" id="if-default-category-label" value="y">分类预设</label>
-					<select id="category-selector" disabled="true">
-						<option value="">--category--</option>
-					</select>
 					<div id="dynamic-buttons-placeholder">
 					</div>
 
@@ -1548,7 +1541,7 @@
 			</div>
 		</div>
 	</template>
-	<template id="image-wrapper-template">
+	<template id="image-wrapper-template"> <!-- 2D标注区 -->
 		<div class="image-wrapper" id="image-board">
 			<svg id="maincanvas-svg" viewbox="0 0 2048 1536" preserveAspectRatio="none">
 				<image id="svg-image" x="0" y="0" width="2048" height="1536" preserveAspectRatio="none" href="" />
@@ -1570,6 +1563,36 @@
 					<div id="header-modify"></div>
 				</div>
 			</header>
+		</div>
+	</template>
+	<template id="label-panel-ui-template"> <!-- 标签面板 -->
+		<div id="label-panel-ui">
+			<div id="label-panel-tab">
+				<ul>
+					<li id="label-panel-label">标签预设</li>
+					<li id="label-panel-else">其他</li>
+				</ul>
+			</div>
+			<div id="label-panel-page">
+				<div class="label-panel-setting">
+					<input type="checkbox" id="if-default-category-use" name="if-default-category-use">
+					<label for="if-default-category-use" id="if-default-category-label" value="y">分类预设</label>
+					<select id="category-selector" disabled="true">
+						<option value="">--category--</option>
+					</select>
+					<input type="checkbox" id="if-default-trunk-use" name="if-default-trunk-use">
+					<label for="if-default-trunk-use" id="if-default-trunk-label" value="y">截断预设</label>
+					<select id="trunk-selector" disabled="true">
+						<option value="">--truncation--</option>
+					</select>
+					<input type="checkbox" id="if-default-occlusion-use" name="if-default-occlusion-use">
+					<label for="if-default-occlusion-use" id="if-default-occlusion-label" value="y">遮挡预设</label>
+					<select id="occlusion-selector" disabled="true">
+						<option value="">--occlusion--</option>
+					</select>
+				</div>
+				<div class="label-panel-else"></div>
+			</div>
 		</div>
 	</template>
 	<template id="frame-manager-ui-template"> <!-- 序列帧区 -->

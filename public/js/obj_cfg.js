@@ -69,7 +69,9 @@ class ObjectCategory {
         Unknown: { color: '#008888', size: [4.5, 1.8, 1.5] }
     };
 
+    obj_occl_arr = [-1, 0, 1, 2, 3];
 
+    obj_trunk_arr = [-1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
 
     constructor() {
 
@@ -85,6 +87,20 @@ class ObjectCategory {
         'Truck',
         'Tricycle'
     ];
+
+    get_default_obj_occlusion() {
+        if (document.querySelector("#if-default-occlusion-use").checked) {
+            return document.querySelector("#occlusion-selector").value;
+        }
+        return this.obj_occl_arr[1];
+    }
+
+    get_default_obj_trunk() {
+        if (document.querySelector("#if-default-trunk-use").checked) {
+            return document.querySelector("#trunk-selector").value;
+        }
+        return this.obj_trunk_arr[1];
+    }
 
     guess_obj_type_by_dimension(scale) {
         let max_name = 0;
