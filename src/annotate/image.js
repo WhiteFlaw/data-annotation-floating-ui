@@ -272,14 +272,11 @@ class ImageViewer { // 2D视图区
             x: img.naturalWidth,
             y: img.naturalHeight
         }
-        for (let i = 0; i < this.names.length; i++) {
-            d3.select(`#img-manager-${this.names[i]}-svg`).attr('viewBox', `0 0 ${size.x} ${size.y}`);
-            d3.select(`#svg-${this.names[i]}-image`).attr('width', size.x).attr('height', size.y);
-        }
+        d3.select(`#img-manager-${this.name}-svg`).attr('viewBox', `0 0 ${size.x} ${size.y}`);
+        d3.select(`#svg-${this.name}-image`).attr('width', size.x).attr('height', size.y);
         return size;
     }
 
-    // TODO 检查是否被调用
     get_trans_ratio() {
         var img = this.world.cameras.getImageByName(this.name);
 
