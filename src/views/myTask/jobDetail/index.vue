@@ -63,7 +63,7 @@
 <script>
 import PageContainer from '@/components/PageContainer'
 import PaginationComponent from '@/components/PaginationComponent'
-import {getJobDetailInfo, getjobTableData} from '@/api/task'
+import {getJobDetailInfo, getOperationDataList} from '@/api/task'
 import tableMixin from '@/utils/tableMixin'
 export default {
   name: 'JobDetail',
@@ -115,7 +115,7 @@ export default {
     // 分页信息
     handlePage() {
       this.tableLoading = true
-      getjobTableData(this.queryCondition).then(res => {
+      getOperationDataList(this.queryCondition).then(res => {
         this.tableData = res.data.records
         this.total = res.data.total
         this.tableLoading = false
