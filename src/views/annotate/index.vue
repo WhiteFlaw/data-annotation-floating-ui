@@ -6,8 +6,8 @@
 import { Data } from '@/annotate/data.js'
 import { Config } from '@/annotate/config.js'
 import { Editor } from '@/annotate/editor.js'
-import { analyseDomStr } from '@/annotate/util.js'
-import { manager } from '@/annotate/backup/manager.js'
+import { innerDOMString } from '@/annotate/util.js'
+import { backupManager } from '@/annotate/backup/manager.js'
 import { editorTemplate } from '@/annotate/template/editorTemplate'
 
 export default {
@@ -51,7 +51,7 @@ export default {
     },
     async createMainEditor() {
       const maindiv = document.querySelector('#main-editor')
-      analyseDomStr(editorTemplate, maindiv)
+      innerDOMString(editorTemplate, maindiv)
 
       const editorCfg = this.pointsGlobalConfig
       const dataCfg = this.pointsGlobalConfig
@@ -69,7 +69,7 @@ export default {
       window['editor'] = editor
       editor.run()
 
-      manager.initEditor(editor)
+      backupManager.initEditor(editor)
 
       return editor
     }
@@ -79,4 +79,6 @@ export default {
 
 <style scoped>
 @import "../../styles/annotate/main.css";
+@import "../../styles/annotate/frame-manager.css";
+@import "../../styles/annotate/image-manager.css";
 </style>

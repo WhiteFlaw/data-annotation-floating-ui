@@ -1,0 +1,3 @@
+export const frameManagerUiTemplate = `
+<div id="frame-manager-wrapper"> <div id="frame-manager-tools"> <div id="frame-manager-pagination"> <div id="frame-manager-previous"> <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="15" height="15"> <path d='M10,3 L10,12 L2,8 L10,3' style='fill: rgb(102, 107, 124);' /> </svg> </div> <input id="frame-manager-index" value="0"></input> / <div id="frame-manager-length">0</div> <div id="frame-manager-next"> <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="15" height="15"> <path d='M7,3 L7,12 L14,7 L7,3' style='fill: rgb(102, 107, 124)' /> </svg> </div> </div> </div> <div id="frame-manager-list"></div> </div>
+`
