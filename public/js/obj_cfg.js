@@ -3,14 +3,14 @@
 class ObjectCategory {
     
     obj_type_map = {
-        Car: { color: '#86af49', size: [4.5, 1.8, 1.5], attr: ["door open", "trunk open"] },
-        Pedestrian: { color: '#ff0000', size: [0.4, 0.5, 1.7], attr: ["umbrella", "sitting", "squating", "bending over", "luggage"] },
         Bus: { color: '#ffff00', size: [13, 3, 3.5] },
-        Truck: { color: '#00ffff', size: [10., 2.8, 3] },
         Bicycle: { color: '#fcaafc', size: [1.8, 0.7, 1] },
+        Car: { color: '#86af49', size: [4.5, 1.8, 1.5], attr: ["door open", "trunk open"] },
         Cyclist: { color: '#ff8800', size: [1.5, 0.6, 1] },
-        Tricycle: { color: '#00aaff', size: [2.8, 1.3, 1.5] },
         Others: { color: '#008888', size: [4.5, 1.8, 1.5] },
+        Pedestrian: { color: '#ff0000', size: [0.4, 0.5, 1.7], attr: ["umbrella", "sitting", "squating", "bending over", "luggage"] },
+        Truck: { color: '#00ffff', size: [10., 2.8, 3] },
+        Tricycle: { color: '#00aaff', size: [2.8, 1.3, 1.5] },
         // Van: { color: '#00ff00', size: [4.5, 1.8, 1.5], attr: ["door open", "trunk open"] },
 
         // ScooterRider: { color: '#ff8800', size: [1.6, 0.6, 1.6], attr: ["umbrella", "1 passenger", "2 passengers", "3 passengers"] },
@@ -65,31 +65,41 @@ class ObjectCategory {
         // person: { color: '#bc5090', size: [0.4, 0.5, 1.7] },
         // three_wheel: { color: '#ff6361', size: [4.5, 1.8, 1.5] },
         // 武汉项目 End
-        Unknown: { color: '#008888', size: [4.5, 1.8, 1.5] }, // 该项为必需
+        Unknown: { color: '#008888', size: [4.5, 1.8, 1.5] }
     };
+
+    obj_occl_arr = [-1, 0, 1, 2, 3];
+
+    obj_trunk_arr = [-1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
 
     constructor() {
 
     }
 
     popularCategories = [
-        "Pedestrian",
-        "Car",
-        "Bus",
-        "Cyclist",
-        "Truck",
-        "Bicycle",
-        "Tricycle",
-        "Others",
-        // "Van", 
-        // "ScooterRider", 
-        // "Scooter", 
-        // "BicycleRider",
-        // "vehicle_other",
-        // "two_wheel",
-        // "person",
-        // "three_wheel"
+        'Bus',
+        'Bicycle',
+        'Car',
+        'Cyclist',
+        'Others',
+        'Pedestrian',
+        'Truck',
+        'Tricycle'
     ];
+
+    get_default_obj_occlusion() {
+        if (document.querySelector("#if-default-occlusion-use").checked) {
+            return document.querySelector("#occlusion-selector").value;
+        }
+        return this.obj_occl_arr[1];
+    }
+
+    get_default_obj_trunk() {
+        if (document.querySelector("#if-default-trunk-use").checked) {
+            return document.querySelector("#trunk-selector").value;
+        }
+        return this.obj_trunk_arr[1];
+    }
 
     guess_obj_type_by_dimension(scale) {
         let max_name = 0;

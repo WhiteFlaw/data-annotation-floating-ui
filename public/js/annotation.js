@@ -296,8 +296,6 @@ function Annotation(sceneMeta, world, frameInfo) {
 
         //box.computeLineDistances();
 
-
-
         return box;
     };
 
@@ -330,14 +328,23 @@ function Annotation(sceneMeta, world, frameInfo) {
     */
 
     this.add_box = function (pos, scale, rotation, obj_type, track_id, obj_trunk, obj_occlu) {
-        let objAttr
-        if (document.querySelector("#if-default-attribute-use").checked) {
-            objAttr = document.querySelector("#attribute-selector").value
+        let trunk
+        let occlusion
+
+        if (obj_trunk) {
+            trunk = obj_trunk;
         } else {
-            objAttr = obj_trunk;
+            trunk = globalObjectCategory.get_default_obj_trunk();
         }
-        let mesh = this.createCuboid(pos, scale, rotation, obj_type, track_id, objAttr, obj_occlu);
-        mesh.draw =  true; // 解决新增的box不会及时更新到照片
+
+        if (obj_occlu) {
+            occlusion = obj_occlu;
+        } else {
+            occlusion = globalObjectCategory.get_default_obj_occlusion();
+        }
+
+        let mesh = this.createCuboid(pos, scale, rotation, obj_type, track_id, trunk, occlusion);
+        mesh.draw = true; // 解决新增的box不会及时更新到照片
 
         this.boxes.push(mesh);
         this.sort_boxes();
@@ -358,6 +365,7 @@ function Annotation(sceneMeta, world, frameInfo) {
     };
 
     this.remove_box = function (box) {
+        console.trace();
         console.log("removeBox");
         // this.world.data.dbg.free();
         box.geometry.dispose();
@@ -444,9 +452,9 @@ function Annotation(sceneMeta, world, frameInfo) {
         const scene = this.world.frameInfo.scene;
         const frame = this.world.frameInfo.frame;
         const data = {
+            obj_type: 'annotation_2d',
             scene: scene,
             frame: frame,
-            obj_type: 'annotation_2d',
             psr: []
         }
         for (let i = 0; i < boxList.length; i++) {
