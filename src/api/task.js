@@ -19,7 +19,7 @@ export function getProjectList(data) {
  * @param params 分页信息、状态、id
  * @returns {*}
  */
-export function getMarkTableData(params) {
+export function getTaskDataList(params) {
   return POST('/admin/tagging/getTaggingTaskPage', params)
 }
 
@@ -28,13 +28,13 @@ export function getMarkTableData(params) {
  * @param params 分页信息、id
  * @returns {*}
  */
-export function getjobTableData(params) {
+export function getOperationDataList(params) {
   return GET('/admin/tagging/getTaggingHomeworkPage', params)
 }
 
 /**
  * 开始标注接口
- * @param projecId
+ * @param projectId 项目ID
  * @returns {*}
  */
 export function beginLabel(projectId) {
@@ -43,7 +43,7 @@ export function beginLabel(projectId) {
 
 /**
  * 返修标注接口
- * @param params
+ * @param params 状态、任务ID
  * @returns {*}
  */
 export function repairMark(params) {
@@ -52,7 +52,7 @@ export function repairMark(params) {
 
 /**
  * 项目详情
- * @param id
+ * @param id 	项目ID
  * @returns {*}
  */
 export function getProjectDetailInfo(id) {
@@ -61,7 +61,7 @@ export function getProjectDetailInfo(id) {
 
 /**
  * 获取单个任务信息
- * @param taskId
+ * @param taskId 	任务ID
  * @returns {*}
  */
 export function getJobDetailInfo(taskId) {
@@ -70,7 +70,7 @@ export function getJobDetailInfo(taskId) {
 
 /**
  * 模拟完成任务接口
- * @param taskId
+ * @param taskId 	任务ID
  * @returns {*}
  */
 export function imitateDoneMark(taskId) {
