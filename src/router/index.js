@@ -43,7 +43,7 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/homePageSelection',
+    path: '/',
     name: 'homePageSelection',
     component: () => import('@/components/HomePageSelection')
   },
@@ -72,13 +72,14 @@ export const constantRoutes = [
 
 export const asyncRoutes = [
   {
-    path: '/',
+    path: '/dashboard',
+    name: 'Dashboard',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/dashboard/my-dashboard',
     children: [
       {
-        path: 'dashboard',
-        name: 'Dashboard',
+        path: 'my-dashboard',
+        name: 'MyDashboard',
         component: () => import('@/views/dashboard/index'),
         meta: { title: '我的工作台', icon: 'dashboad-index', roles: ['manager', 'teamLeader']}
       }

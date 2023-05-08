@@ -9,26 +9,31 @@
             </el-form-item>
             <el-form-item label="客户名称" prop="customerInfo">
               <el-select v-model="projectSearchForm.customerId" filterable placeholder="按客户查询">
-                <el-option v-for="customer of customerList" :key="customer.id" :value="`${customer.id}:${customer.name}`" :label="customer.name" />
+                <el-option :value="null" label="全部" />
+                <el-option v-for="customer of customerList" :key="customer.id" :value="customer.id" :label="customer.name" />
               </el-select>
             </el-form-item>
             <el-form-item label="项目团队">
               <el-select v-model="projectSearchForm.teamId" filterable placeholder="按团队查询">
+                <el-option :value="null" label="全部" />
                 <el-option v-for="team of groupList" :key="team.name" :value="team.id" :label="team.name" />
               </el-select>
             </el-form-item>
             <el-form-item label="项目经理">
               <el-select v-model="projectSearchForm.managerId" filterable placeholder="按项目经理查询">
+                <el-option :value="null" label="全部" />
                 <el-option v-for="manager of projectManagerList" :key="manager.id" :value="manager.id" :label="manager.nickname" />
               </el-select>
             </el-form-item>
             <el-form-item label="项目状态">
               <el-select v-model="projectSearchForm.status" filterable placeholder="按项目状态查询">
+                <el-option :value="null" label="全部" />
                 <el-option v-for="status of projectStatusList" :key="status.name" :value="status.id" :label="status.name" />
               </el-select>
             </el-form-item>
             <el-form-item label="项目类型">
               <el-select v-model="projectSearchForm.type" filterable placeholder="按项目类型查询">
+                <el-option :value="null" label="全部" />
                 <el-option v-for="projectType of projectTypeList" :key="projectType.name" :value="projectType.id" :label="projectType.name" />
               </el-select>
             </el-form-item>
@@ -201,43 +206,45 @@ export default {
     // 查询项目列表
     async queryProjectsData() {
       this.tableLoading = true
-      const data = { ...this.projectSearchForm, pageIndex: this.pageIndex, pageSize: this.pageSize }
-      const res = await getProjectsList({ ...data })
-      if (res.success) {
-        const standardDataKeys = [
-          'createdTime',
-          'customerId',
-          'customerName',
-          'description',
-          'endDate',
-          'fromPath',
-          'id',
-          'name',
-          'originalFolder',
-          'startDate',
-          'status',
-          'taskCount',
-          'toPath',
-          'type',
-          'userId',
-          'userNickname',
-          'workCount'
-        ]
-        res.data.records.forEach(item => {
-          standardDataKeys.forEach((key) => {
-            item[key] = item[key] || ''
-            item.createdTime = item.createdTime ? item.createdTime.replace('T', ' ') : ''
+      try {
+        const data = { ...this.projectSearchForm, pageIndex: this.pageIndex, pageSize: this.pageSize }
+        const res = await getProjectsList({ ...data })
+        if (res.success) {
+          const standardDataKeys = [
+            'createdTime',
+            'customerId',
+            'customerName',
+            'description',
+            'endDate',
+            'fromPath',
+            'id',
+            'name',
+            'originalFolder',
+            'startDate',
+            'status',
+            'taskCount',
+            'toPath',
+            'type',
+            'userId',
+            'userNickname',
+            'workCount'
+          ]
+          res.data.records.forEach(item => {
+            standardDataKeys.forEach((key) => {
+              item[key] = item[key] || ''
+              item.createdTime = item.createdTime ? item.createdTime.replace('T', ' ') : ''
+            })
           })
-        })
 
-        this.projectList = [...res.data.records]
-        this.total = res.data.total
-      } else {
-        this.$message.error(res.msg)
-      }
-      setTimeout(() => {
+          this.projectList = [...res.data.records]
+          this.total = res.data.total
+        } else {
+          this.$message.error(res.msg)
+        }
         this.tableLoading = false
-      }, 1000)
+      } catch {
+        this.tableLoading = false
+      }
     },
     // 切换分页
     changePage({ page, limit }) {
