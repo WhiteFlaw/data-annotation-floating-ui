@@ -1,8 +1,7 @@
 // size is the dimension of the object in x/y/z axis, with unit meter.
 
 class ObjectCategory {
-
-
+    
     obj_type_map = {
         Bus: { color: '#ffff00', size: [13, 3, 3.5] },
         Bicycle: { color: '#fcaafc', size: [1.8, 0.7, 1] },

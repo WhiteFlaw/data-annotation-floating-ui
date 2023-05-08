@@ -2325,6 +2325,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         var scene_meta = this.data.get_current_world_scene_meta();
 
         var frame_index = this.data.world.frameInfo.frame_index - 1;
+        console.log(frame_index);
 
         if (frame_index < 0) {
             console.log("first frame");
@@ -2335,11 +2336,10 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         console.log(scene_meta.scene, scene_meta.frames[frame_index])
         this.load_world(scene_meta.scene, scene_meta.frames[frame_index]);
 
+        this.updateCounting(scene_meta.scene, scene_meta.frames[frame_index]);
     };
 
     this.next_frame = function () {
-
-
 
         if (!this.data.meta)
             return;
@@ -2357,6 +2357,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         }
 
         this.load_world(scene_meta.scene, scene_meta.frames[frame_index]);
+        this.updateCounting(scene_meta.scene, scene_meta.frames[frame_index]);
     };
 
     this.certain_frame = function (frameIndex) {

@@ -449,8 +449,8 @@ function Annotation(sceneMeta, world, frameInfo) {
 
     this.create_annotation_2d = (boxList) => {
         const boxes_draw_no = [];
-        const scene = world.frameInfo.scene;
-        const frame = world.frameInfo.frame;
+        const scene = this.world.frameInfo.scene;
+        const frame = this.world.frameInfo.frame;
         const data = {
             obj_type: 'annotation_2d',
             scene: scene,
