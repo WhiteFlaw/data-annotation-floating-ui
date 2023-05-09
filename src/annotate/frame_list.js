@@ -73,17 +73,19 @@ const FrameManager = function (parentUi, data, onFrameChanged, toPreviousFrame, 
 
     this.update_frame_list = function () {
         let target = null;
+        if(this.eventList.length === 0) return;
         if(this.eventList.length === 1) {
-            target = this.frameManagerListUi.querySelector(`#frame-list-${this.eventList[0]}`)
+            target = this.frameManagerListUi.querySelector(`#frame-list-${this.eventList[0]}`);
         } else {
             this.frameManagerListUi.querySelector(`#frame-list-${this.eventList[0]}`).classList.remove('frame-manager-choosen', true);
-            target = this.frameManagerListUi.querySelector(`#frame-list-${this.eventList[1]}`)
+            target = this.frameManagerListUi.querySelector(`#frame-list-${this.eventList[1]}`);
         }
         target.classList.toggle('frame-manager-choosen', true);
         this.frame = target.getAttribute('value');
     }
 
     this.update_event_list = function(frameIndex) {
+        if(isNaN(frameIndex)) return;
         this.eventList.push(frameIndex);
         if (this.eventList.length > 2) {
             this.eventList.shift();
