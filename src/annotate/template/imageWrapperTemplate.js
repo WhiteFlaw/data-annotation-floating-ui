@@ -1,12 +1,3 @@
 export const imageWrapperTemplate = `
-<div class="image-wrapper">
-			<svg id="maincanvas-svg" viewbox="0 0 2048 1536" preserveAspectRatio="none">
-				<image id="svg-image" x="0" y="0" width="2048" height="1536" preserveAspectRatio="none" xlink:href="" />
-				<g id="svg-boxes"></g>
-				<g id="svg-points"></g>
-			</svg>
-			<div id="move-handle">
-			</div>
-			<header id="header"></header>
-		</div>
+<div class="image-wrapper" id="image-board"> <svg id="maincanvas-svg" viewbox="0 0 2048 1536" preserveAspectRatio="none"> <image id="svg-image" x="0" y="0" width="2048" height="1536" preserveAspectRatio="none" href="" /> <g id="svg-boxes"></g> <g id="svg-points"></g> </svg> <div id="svg-floating-labels"></div> <div id="move-handle"> </div> <header id="header"> <div id="header-title"></div> <div id="header-state"></div> <div id="header-action"> <select name="header-id-list" id="header-id-list"></select> <div id="header-show">显示全部</div> <div id="header-hide">隐藏</div> <div id="header-save">保存</div> <div id="header-delete">删除</div> <div id="header-modify"></div> </div> </header> </div>
 `

@@ -15,12 +15,11 @@ body {
 	color: #ffff00;
 	font-size: 10px;
 	text-align: left;
-	z-index: 1;
-	/* TODO Solve this in HTML */
+	z-index: 1; /* TODO Solve this in HTML */
 }
 
 td {
-	text-align: right;
+    text-align: right;   
 }
 
 .selectBox {
