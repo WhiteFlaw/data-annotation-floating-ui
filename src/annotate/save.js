@@ -1,137 +1,148 @@
-import { logger } from './log.js'
-import { copyWorld } from './util.js'
-import { checkScene } from './error_check.js'
-import { manager } from './backup/manager.js'
+import { logger } from "./log.js";
+import { copyWorld } from './util.js';
+import { checkScene } from "./error_check.js";
+import { backupManager } from "./backup/manager.js";
+
 
 function reloadWorldList(worldList, done) {
-  var xhr = new XMLHttpRequest()
-  // we defined the xhr
-  xhr.onreadystatechange = function() {
-    if (this.readyState != 4) return
+    var xhr = new XMLHttpRequest();
+    // we defined the xhr
+    xhr.onreadystatechange = function () {
+        if (this.readyState != 4) return;
 
-    if (this.status == 200) {
-      const anns = JSON.parse(this.responseText)
+        if (this.status == 200) {
+            let anns = JSON.parse(this.responseText);
 
-      // load annotations
-      anns.forEach(a => {
-        const world = worldList.find(w => {
-          return (w.frameInfo.scene == a.scene &&
-                        w.frameInfo.frame == a.frame)
-        })
-        if (world) {
-          world.annotation.reapplyAnnotation(a.annotation)
-        } else {
-          console.error('bug?')
+            // load annotations
+            anns.forEach(a => {
+                let world = worldList.find(w => {
+                    return (w.frameInfo.scene == a.scene &&
+                        w.frameInfo.frame == a.frame);
+                });
+                if (world) {
+                    world.annotation.reapplyAnnotation(a.annotation);
+                    // 在此处调用image的reapply
+                }
+                else {
+                    console.error("bug?");
+                }
+
+            });
+
+            if (done)
+                done();
         }
-      })
+    };
 
-      if (done) { done() }
-    }
-  }
+    xhr.open('POST', "/dev-ann-api/loadworldlist", true);
 
-  xhr.open('POST', '/dev-ann-api/loadworldlist', true)
+    let para = worldList.map(w => {
+        return {
+            //todo: we could add an id, so as to associate world easily
+            scene: w.frameInfo.scene,
+            frame: w.frameInfo.frame,
+        };
+    });
 
-  const para = worldList.map(w => {
-    return {
-      // todo: we could add an id, so as to associate world easily
-      scene: w.frameInfo.scene,
-      frame: w.frameInfo.frame
-    }
-  })
-
-  xhr.send(JSON.stringify(para))
+    xhr.send(JSON.stringify(para));
 }
 
-var saveDelayTimer = null
-var pendingSaveList = []
+
+var saveDelayTimer = null;
+var pendingSaveList = [];
 
 function saveToBackup(world) {
-  const action = {
-    name: 'saveWorld',
-    params: copyWorld(world)
-  }
+    const action = {
+        name: 'saveWorld',
+        params: copyWorld(world)
+    }
 
-  manager.do(action)
+    backupManager.do(action);
 }
 
 function saveWorldList(worldList, isManual = false) {
-  worldList.forEach(w => {
-    if (!pendingSaveList.includes(w)) { pendingSaveList.push(w) } // offline save
-  })
+    worldList.forEach(w => {
+        if (!pendingSaveList.includes(w))
+            pendingSaveList.push(w); // offline save
+    });
 
-  if (saveDelayTimer) {
-    clearTimeout(saveDelayTimer)
-  }
+    if (saveDelayTimer) {
+        clearTimeout(saveDelayTimer);
+    }
 
-  saveDelayTimer = setTimeout(() => { // 节流?
-    saveToBackup(worldList[0])
+    saveDelayTimer = setTimeout(() => { // 节流?
+        saveToBackup(worldList[0]);
 
-    logger.log('save delay expired.')
+        logger.log("save delay expired.");
 
-    // pandingSaveList will be cleared soon.
-    const scene = pendingSaveList[0].frameInfo.scene
+        //pandingSaveList will be cleared soon.
+        let scene = pendingSaveList[0].frameInfo.scene;
 
-    doSaveWorldList(pendingSaveList, () => {
-      if (isManual) {
-        window.editor.header.updateSaveFeedback(true)
-      }
-      window.editor.header.updateModifiedStatus() // 更新保存按钮状态
+        doSaveWorldList(pendingSaveList, () => {
+            if (isManual) {
+                window.editor.header.updateSaveFeedback(true);
+            }
+            window.editor.header.updateModifiedStatus(); // 更新保存按钮状态
 
-      checkScene(scene)
-    })
+            checkScene(scene);
+        });
 
-    // reset
+        //reset
 
-    saveDelayTimer = null
-    pendingSaveList = []
-  },
+        saveDelayTimer = null;
+        pendingSaveList = [];
+    },
 
-  500)
+        500);
 }
 
+
 function doSaveWorldList(worldList, done) {
-  if (worldList.length > 0) {
-    if (worldList[0].data.cfg.disableLabels) {
-      console.log('labels not loaded, save action is prohibitted.')
-      return
-    }
-  }
-
-  console.log(worldList.length, 'frames')
-  const ann = worldList.map(w => {
-    return {
-      scene: w.frameInfo.scene,
-      frame: w.frameInfo.frame,
-      annotation: w.annotation.toBoxAnnotations()
-    }
-  })
-
-  var xhr = new XMLHttpRequest()
-  xhr.open('POST', '/dev-ann-api/saveworldlist', true)
-  xhr.setRequestHeader('Content-Type', 'application/json')
-
-  xhr.onreadystatechange = function() {
-    if (this.readyState != 4) return
-
-    if (this.status == 200) {
-      worldList.forEach(w => {
-        w.annotation.resetModified()
-      })
-
-      logger.log(`saved: ${worldList[0].frameInfo.scene}: ${worldList.reduce((a, b) => a + ' ' + b.frameInfo.frame, '')}`)
-
-      if (done) {
-        done()
-      }
-    } else {
-      window.editor.infoBox.show('Error', `save failed, status : ${this.status}`)
+    if (worldList.length > 0) {
+        if (worldList[0].data.cfg.disableLabels) {
+            console.log("labels not loaded, save action is prohibitted.")
+            return;
+        }
     }
 
-    // end of state change: it can be after some time (async)
-  }
+    console.log(worldList.length, "frames");
+    let ann = worldList.map(w => {
+        return {
+            scene: w.frameInfo.scene,
+            frame: w.frameInfo.frame,
+            annotation: w.annotation.toBoxAnnotations()
+        };
+    })
 
-  var b = JSON.stringify(ann)
-  xhr.send(b)
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/dev-ann-api/saveworldlist", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onreadystatechange = function () {
+        if (this.readyState != 4) return;
+
+        if (this.status == 200) {
+
+
+            worldList.forEach(w => {
+                w.annotation.resetModified();
+            })
+
+            logger.log(`saved: ${worldList[0].frameInfo.scene}: ${worldList.reduce((a, b) => a + " " + b.frameInfo.frame, "")}`);
+
+            if (done) {
+                done();
+            }
+        } else {
+            window.editor.infoBox.show("Error", `save failed, status : ${this.status}`);
+        }
+
+
+        // end of state change: it can be after some time (async)
+    };
+
+    var b = JSON.stringify(ann);
+    xhr.send(b);
 }
 
 // function saveWorld(world, done){
@@ -162,6 +173,8 @@ function doSaveWorldList(worldList, done) {
 //                 done();
 //             }
 
+
+
 //         }
 
 //         // end of state change: it can be after some time (async)
@@ -171,5 +184,6 @@ function doSaveWorldList(worldList, done) {
 //     //console.log(b);
 //     xhr.send(b);
 // }
+
 
 export { saveWorldList, reloadWorldList }

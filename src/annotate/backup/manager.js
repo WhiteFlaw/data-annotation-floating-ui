@@ -2,7 +2,7 @@ import { Exec } from './exec.js';
 
 const executors = new Exec();
 
-class Manager {
+class BackupManager {
     constructor() {
         this.editor = null;
         
@@ -103,7 +103,7 @@ class Manager {
         this.editor = editor;
     }
     initManager(action) { // data.js--_doPreload(), 切帧后应reset;
-        const frame = document.querySelector("#frame-selector").value;
+        const frame = this.editor.frameManager.frame;
         if (frame === this.nowFrame) return;
         this.nowFrame = frame;
         this.reset();
@@ -111,6 +111,6 @@ class Manager {
     }
 }
 
-const manager = new Manager();
+const backupManager = new BackupManager();
 
-export { manager }
+export { backupManager }

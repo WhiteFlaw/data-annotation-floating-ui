@@ -7,7 +7,6 @@
 	--highlight-background-color: darkgray;
 	--highlight-color: yellow;
 	--highlight-color-editor: #ffff0020;
-
 	--highlight-background-transparent-color: #aaaaaa44;
 }
 
@@ -20,11 +19,11 @@
 	--highlight-background-color: gray;
 	--highlight-color: blue;
 	--highlight-color-editor: #0000ff20;
-
 	--highlight-background-transparent-color: #22222244;
 }
 
-.editor-container {
+html,
+body {
 	margin: 0;
 	height: 100%;
 	width: 100%;
@@ -38,20 +37,17 @@
 	overflow-y: hidden;
 }
 
-
-
 .red {
 	color: red;
 }
 
-
-.editor-container a {
+a {
 	color: var(--font-color);
 	text-decoration: none;
 	/* pointer-events: auto; */
 }
 
-.editor-container a:hover {
+a:hover {
 	text-decoration: underline;
 }
 
@@ -63,8 +59,6 @@ button {
 canvas {
 	display: block;
 }
-
-
 
 #main-editor {
 	position: absolute;
@@ -102,35 +96,11 @@ canvas {
 	/* height: 100%; */
 }
 
-#global-info {
-	/* position: absolute; */
-	top: 0px;
-	color: var(--font-color);
-	background-color: var(--widget-background-color);
-	width: auto;
-	font-size: inherit;
-	padding: 0px;
-	box-sizing: border-box;
-	text-align: left;
-	z-index: 3;
-	/* TODO Solve this in HTML */
-	font-size: smaller;
-	display: flex;
-
-}
-
-#selectors {
-	background-color: inherit;
-	color: inherit;
-	border-width: 0;
-	display: inline-flex;
-}
-
 #object-category-selector,
 #object-track-id-editor,
-#attr-input,
+#object-trunk-selector,
+#object-occlusion-selector,
 #scene-selector,
-#frame-selector,
 #object-selector,
 #camera-selector,
 #obj-ids-of-scene {
@@ -146,6 +116,19 @@ canvas {
 	color: inherit;
 	display: inline-flex;
 	background-color: var(--widget-background-color);
+}
+
+#object-trunk-selector {
+	width: 98px;
+}
+
+#object-occlusion-selector {
+	width: 70px;
+}
+
+#if-default-attribute-label,
+#if-default-category-label {
+	color: rgb(173, 173, 173);
 }
 
 #camera-selector {
@@ -188,13 +171,9 @@ canvas {
 
 
 #object-track-id-editor,
-#attr-input {
+#object-trunk-selector,
+#object-occlusion-selector {
 	border-bottom-width: 1px;
-}
-
-#attr-input {
-	margin-right: 5px;
-	line-height: 24px;
 }
 
 #object-category-attribute,
@@ -208,14 +187,9 @@ canvas {
 }
 
 #use-previous-frame {
-	background-color: var(--widget-background-color);
-	border-color: var(--widget-background-color);
 	color: var(--font-color);
-	margin-right: 10px;
-}
-
-#use-previous-frame:hover {
-	background-color: var(--highlight-background-color);
+	border-color: var(--widget-background-color);
+	background-color: var(--widget-background-color);
 }
 
 #if-default-use-label {
@@ -270,11 +244,40 @@ canvas {
 	margin: 0;
 }
 
+#header {
+	display: flex;
+	justify-content: space-between;
+}
+
 #header #buttons {
 	display: flex;
-	position: absolute;
-	right: 0;
-	top: 0;
+	align-items: center;
+	background-color: var(--widget-background-color);	
+}
+
+#header #tools {
+	display: flex;
+	width: auto;
+	height: 45px;
+	padding: 0px;
+	z-index: 3;
+	text-align: center;
+	font-size: smaller;
+	box-sizing: border-box;
+	color: var(--font-color);
+	background-color: var(--widget-background-color);
+}
+
+#header #tools > div:hover {
+	background-color: var(--highlight-background-color);
+}
+
+.header-button {
+	display: flex;
+	height: 45px;
+	align-items: center;
+	flex-direction: column;
+	justify-content: center;
 }
 
 #config-button {
@@ -288,8 +291,6 @@ canvas {
 	padding: 2px;
 } */
 
-
-
 #maincanvas-svg {
 	position: absolute;
 	top: 0%;
@@ -299,20 +300,65 @@ canvas {
 	padding: 0px;
 }
 
+.line-g {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 10000;
+}
+
 .image-wrapper #move-handle {
+	/* move-handle在浮动层具备尺寸会导致custom-svg可绘制空间受到挤压 */
 	position: absolute;
 	top: 0%;
 	left: 0%;
-	width: 100%;
-	height: 90%;
+	/* width: 100%;
+	height: 90%; */
 }
 
 .image-wrapper #header {
 	position: absolute;
 	top: 0%;
 	left: 0%;
-	color: red;
+	width: 100%;
+	display: flex;
 	padding-left: 5px;
+	justify-content: space-between;
+}
+
+.image-wrapper #header #header-title {
+	color: red;
+}
+
+.image-wrapper #header #header-state {
+	margin: 0;
+	color: var(--font-color);
+}
+
+.image-wrapper #header #header-action {
+	display: flex;
+	margin-right: 5px;
+	text-align: center;
+	color: var(--font-color);
+	border-color: var(--widget-background-color);
+	background-color: var(--widget-background-color);
+}
+
+#header-action div {
+	min-width: 50px;
+}
+
+#header-action div:hover {
+	background-color: var(--highlight-background-color);
+}
+
+.image-wrapper #header #header-id-list,
+.image-wrapper #header #header-delete,
+.image-wrapper #header #header-show,
+.image-wrapper #header #header-hide {
+	display: none;
 }
 
 /* line {
@@ -414,19 +460,6 @@ dynamic set obj-type css has higher priority than this one.
 
 #obj-label {
 	display: none;
-}
-
-
-#attr-editor {
-	position: relative;
-}
-
-#attr-selector {
-	position: absolute;
-	top: 100%;
-	left: 0%;
-	background-color: var(--widget-background-color);
-	width: 250px;
 }
 
 .attr-item {
@@ -604,7 +637,7 @@ dynamic set obj-type css has higher priority than this one.
 
 
 .float-label {
-	/* color: #0000ff; */
+	/* color: #0000ff; */ /* 该项在Vue内需要去除, 会出现样式覆盖导致全部标签为默认色, 目前原因不明 */
 	position: absolute;
 	display: inline-flex;
 }
@@ -623,17 +656,14 @@ dynamic set obj-type css has higher priority than this one.
 
 .label-obj-id-text,
 .label-obj-type-text,
-.label-obj-attr-text {
+.label-obj-attr-text,
+.label-obj-occl-text {
 	padding-left: 5px;
 }
 
 .label-out-view {
 	display: none;
 }
-
-
-
-
 
 
 #batch-editor-tools-wrapper {
@@ -736,10 +766,10 @@ dynamic set obj-type css has higher priority than this one.
 	display: none;
 }
 
-
 #main-box-editor-wrapper #sub-views {
 	display: inline-block;
 	position: relative;
+	left: calc(100vw - 325px);
 	width: 320px;
 	height: 100%;
 	resize: both;
@@ -794,7 +824,6 @@ dynamic set obj-type css has higher priority than this one.
 
 #batch-box-editor .ui-button:hover {
 	background-color: var(--highlight-background-color);
-	;
 }
 
 
@@ -825,7 +854,7 @@ dynamic set obj-type css has higher priority than this one.
 }
 
 #z-view-manipulator {
-	height: 35%;
+	height: 20%;
 }
 
 #y-view-manipulator {
@@ -971,9 +1000,7 @@ td {
 
 
 .popup-window-wrapper #header {
-	background-color: red
-		/* var(--widget-background-color) */
-	;
+	background-color: var(--widget-background-color);
 	min-width: 400px;
 	/*minwidth of dialog*/
 }
@@ -1131,8 +1158,6 @@ td {
 	overflow-y: auto;
 }
 
-
-
 .log-object-frame-id {
 	cursor: pointer;
 }
@@ -1151,6 +1176,8 @@ td {
 .sub-views-size {
 	display: flex;
 	justify-content: space-between;
+	background-color: rgb(57, 59, 62);
+	/* 换成颜色变量 */
 }
 
 /*将标注物体的长宽高高亮显示*/
