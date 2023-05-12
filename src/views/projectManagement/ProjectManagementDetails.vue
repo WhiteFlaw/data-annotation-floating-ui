@@ -1,4 +1,3 @@
-vue:
 <template>
   <page-container has-search>
     <template slot="search">

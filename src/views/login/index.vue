@@ -92,7 +92,7 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({path: '/HomePageSelection'})
+            this.$router.push({ path: '/' })
             this.loading = false
             // this.$router.push({ path: this.redirect || '/' })
             // window.location.href = 'http://10.30.13.8:8081'

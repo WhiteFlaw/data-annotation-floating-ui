@@ -252,7 +252,14 @@ export default {
             } else {
               this.$message.error(res.msg)
             }
-            this.$refs[formName].resetFields()
+            this.customerInfoForm = {
+              createdTime: '',
+              description: '',
+              email: '',
+              id: 0,
+              name: '',
+              phone: ''
+            }
             this.confirmEditLoading = false
             this.queryCustomersData()
           })

@@ -25,13 +25,14 @@
             <el-option :value="2" label="3D" />
           </el-select>
         </el-form-item>
-        <el-button type="primary" @click="handleFiltrate">筛选</el-button>
-        <el-button @click="handleReset">重置</el-button>
+        <el-button type="primary" @click="searchDataList">筛选</el-button>
+        <el-button @click="resetQueryCondition">重置</el-button>
       </el-form>
     </div>
     <div slot="content">
       <!--      表格列字段名待调整-->
       <el-table
+        v-loading="tableLoading"
         :data="tableData"
         style="width: 100%"
         :max-height="tableMaxHeight"
@@ -48,7 +49,7 @@
         </el-table-column>
         <el-table-column prop="status" label="项目状态" min-width="100" align="center">
           <template slot-scope="scope">
-            <el-tag :type="handleStatus(scope.row.status, 'type')">{{ handleStatus(scope.row.status, 'value') }}</el-tag>
+            <el-tag :type="changeStatus(scope.row.status, 'type')">{{ changeStatus(scope.row.status, 'value') }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="toBeClaimedCount" label="待领取" min-width="100" align="center" />
@@ -77,7 +78,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <PaginationComponent v-if="total" :page-index="queryCondition.pageIndex" :page-size="queryCondition.pageSize" :total="total" @pagination="handlePage" />
+      <PaginationComponent v-if="total" :page-index="queryCondition.pageIndex" :page-size="queryCondition.pageSize" :total="total" @pagination="changePage" />
     </div>
   </PageContainer>
 </template>
@@ -105,32 +106,42 @@ export default {
         type: 0,
         distinction: 0
       },
-      total: 0
+      total: 0,
+      tableLoading: false
     }
   },
   mounted() {
     this.initPageData()
-    this.handleFiltrate()
+    this.searchDataList()
   },
   methods: {
     initPageData() {
       this.getTableMaxHeight()
     },
     // 筛选按钮
-    handleFiltrate() {
+    searchDataList() {
       this.queryCondition.pageIndex = 1
       this.queryCondition.pageSize = 20
-      this.handlePage()
+      this.searchProjectDataList()
     },
     // 筛选分页
-    handlePage() {
+    searchProjectDataList() {
+      this.tableLoading = true
       getProjectList(this.queryCondition).then(res => {
+        this.tableLoading = false
         this.tableData = res.data.records
         this.total = res.data.total
+      }).catch(() => {
+        this.tableLoading = false
       })
     },
-    // 处理表格项目状态列数据
-    handleStatus(val, sort) {
+    changePage(val) { // 分页
+      this.queryCondition.pageIndex = val.page
+      this.queryCondition.pageSize = val.limit
+      this.searchProjectDataList()
+    },
+    // 判断表格项目状态列数据
+    changeStatus(val, sort) {
       let value = ''
       let type = ''
       if (val === 0) {
@@ -153,9 +164,9 @@ export default {
       }
     },
     // 重置
-    handleReset() {
+    resetQueryCondition() {
       this.queryCondition = this.$options.data().queryCondition
-      this.handleFiltrate()
+      this.searchDataList()
     },
     // 点击详情按钮
     handleDetail(info) {
