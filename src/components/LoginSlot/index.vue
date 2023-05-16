@@ -10,7 +10,7 @@
         <img alt="" srcset="../../assets/images/ytxgkLog.png" src="../../assets/images/ytxgkLog.png">
       </header>
       <main>
-        <div class="logBox">
+        <div class="log-box">
           <slot name="login" /><!--登录部分-->
         </div>
       </main>

@@ -22,8 +22,10 @@
 	--highlight-background-transparent-color: #22222244;
 }
 
-html,
-body {
+html.theme-dark,
+html.theme-light,
+html.theme-dark body,
+html.theme-light body {
 	margin: 0;
 	height: 100%;
 	width: 100%;
@@ -252,7 +254,7 @@ canvas {
 #header #buttons {
 	display: flex;
 	align-items: center;
-	background-color: var(--widget-background-color);	
+	background-color: var(--widget-background-color);
 }
 
 #header #tools {

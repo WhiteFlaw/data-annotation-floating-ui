@@ -83,8 +83,6 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         let self = this;
         this.editorUi = editorUi;
 
-
-
         this.playControl = new PlayControl(this.data);
 
         this.configUi = new ConfigUi(editorUi.querySelector("#config-button"), editorUi.querySelector("#config-wrapper"), this);
@@ -93,7 +91,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
             editorUi.querySelector("#header"),
             this.data,
             this.editorCfg,
-            (e) => { this.scene_changed(e.currentTarget.value) },
+            // (e) => { this.scene_changed(e.currentTarget.value) },
+            (sceneName) => { this.scene_changed(sceneName) },
             (e) => { this.frame_changed(e) },
             (e) => { this.object_changed(e) },
             (e) => { this.camera_changed(e) },
@@ -966,7 +965,9 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
     };
 
     this.scene_changed = async function (sceneName) {
+
         //var sceneName = event.currentTarget.value;
+        // console.log('自动点击',sceneName)
 
         if (sceneName.length == 0) {
             return;
@@ -974,11 +975,12 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
         console.log("choose sceneName " + sceneName);
         var meta = this.data.getMetaBySceneName(sceneName);
+        // console.log('meta',meta)
 
         if (!meta) {
             meta = await this.data.readSceneMetaData(sceneName);
         }
-
+        // console.log('meta333333',meta)
         var frame_list_str = ''
         for (let i = 0; i < meta.frames.length; i++) {
             frame_list_str += `<div value="${meta.frames[i]}" class="frame-list-div" id="frame-list-${i + 1}">${i + 1}</div>`

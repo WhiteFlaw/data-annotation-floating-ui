@@ -1,9 +1,8 @@
-
 .login-container {
   width: 100%;
   //min-height: 900px;
   height: 100%;
-  background: linear-gradient(270deg, #2B53B8 1%, #0A0C81 100%);
+  background: linear-gradient(270deg, #2b53b8 1%, #0a0c81 100%);
 }
 
 * {
@@ -21,30 +20,38 @@
 
 header img {
   width: 22%;
-  height: 114px;
-  margin: 30px 0 0 30px;
+  height: 120px;
   opacity: 0.8;
   object-fit: contain;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 main {
-  height: calc(100% - 149px);
-  background: no-repeat url("../../assets/images/backImg.png");
-  background-size: contain;
-  object-fit: contain;
+  height: 100vh;
+  background: no-repeat url('../../assets/images/backImg.png');
+  background-size: 80% 90%;
+  background-position: left bottom;
   display: flex;
   align-items: center;
-  flex: 1;
-  .logBox {
-    margin-right: 6%;
+  .log-box {
+    flex-shrink: 0;
     margin-left: auto;
+    margin-right: 6vw;
     display: flex;
-    background: #fff;
-    border-radius: 30px;
+    background: rgba(255,255,255,0.96);
+    border-radius: 20px;
     box-sizing: border-box;
     flex-direction: column;
-    width: 500px;
-    height: 550px;
+    justify-content: stretch;
+    width: 480px;
+    height: 520px;
+
+    @media only screen and (max-width: 1366px) {
+      width: 400px;
+      height: 460px;
+    }
 
     h2 {
       width: 100%;
@@ -55,22 +62,31 @@ main {
     }
 
     ::v-deep .el-form {
-      padding: 60px;
-
+      flex-grow: 1;
+      overflow: hidden;
+      padding:120px 48px 24px;
+      @media only screen and (max-width: 1366px) {
+        padding: 80px 30px 10px;
+      }
       .el-row {
+        height: 100%;
         .el-col {
+          &:nth-child(n + 2) {
+            margin-top: 46px;
+            @media only screen and (max-width: 1366px) {
+              margin-top: 32px;
+            }
+          }
           .el-form-item {
             width: 100%;
-
             .el-form-item__content {
               width: 100%;
 
               .login-input .el-input__inner {
                 height: 60px;
                 width: 100%;
-                border: 1px solid #EEEEEE;
-                color: #B9BED1;
-                margin-top: 40px;
+                border: 1px solid #eeeeee;
+                color: #b9bed1;
               }
             }
           }
@@ -80,7 +96,7 @@ main {
   }
 }
 
-.logBox p {
+.log-box {
   .el-button {
     width: 100%;
     text-align: center;
@@ -88,14 +104,11 @@ main {
   .inputBtn1 {
     height: 60px;
     font-size: 22px;
-    margin-top: 80px;
-    background: linear-gradient(90deg, #243DF8 1%, #0C7CF9 98%);
+    background: linear-gradient(90deg, #243df8 1%, #0c7cf9 98%);
   }
   .inputBtn2 {
     border: none;
-    margin-top: 30px;
-    margin-bottom: 48px;
     font-size: 18px;
-    color: #B9BED1;
+    color: #b9bed1;
   }
 }

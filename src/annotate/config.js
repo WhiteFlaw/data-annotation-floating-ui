@@ -2,7 +2,7 @@
 class Config{
 
     //dataCfg = {
-    
+
     //disableLabels: true,
     enablePreload = true;
     color_points = "mono";
@@ -40,14 +40,14 @@ class Config{
 
     moveStep = 0.01;  // ratio, percentage
     rotateStep = Math.PI/360;
-    
+
     ignoreDistantObject = true;
-    
+
     ///editorCfg
 
     //disableSceneSelector = true;
     //disableFrameSelector = true;
-    //disableCameraSelector = true;
+    disableCameraSelector = true;
     //disableFastToolbox= true;
     //disableMainView= true;
     //disableMainImageContext = true;
@@ -56,16 +56,16 @@ class Config{
     //disableAxis = true;
     //disableMainViewKeyDown = true;
     //projectRadarToImage = true;
-    //projectLidarToImage = true;   
+    //projectLidarToImage = true;
 
     constructor()
     {
-        
+
     }
 
     readItem(name, defaultValue, castFunc){
         let ret = window.localStorage.getItem(name);
-        
+
         if (ret)
         {
             if (castFunc)
@@ -76,7 +76,7 @@ class Config{
         else
         {
             return defaultValue;
-        }        
+        }
     }
 
     setItem(name, value)

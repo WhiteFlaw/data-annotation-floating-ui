@@ -185,6 +185,7 @@ export default {
       receiveQualityInspectionTask(Number(val.id), 2).then(res => {
         if (res.msg === 'success') {
           this.$message.success('操作成功！')
+          this.$router.push({ name: 'Annotation', query: { taskId: val.id } })
           this.searchData()
         }
       })

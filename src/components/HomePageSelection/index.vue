@@ -94,6 +94,10 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    @media only screen and (max-width: 1366px) {
+      width:300px;
+      background-size:100% 100%;
+    }
 
     .btn-wrapper {
       display: flex;
