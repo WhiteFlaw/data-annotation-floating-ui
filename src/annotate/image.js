@@ -560,7 +560,7 @@ class ImageViewer { // 2D视图区
                 });
             }
 
-            // project lidar points onto camera image   
+            // project lidar points onto camera image
             if (this.cfg.projectLidarToImage) {
                 let pts = this.world.lidar.get_all_points();
                 let ptsOnImg = points3d_to_image2d(pts, calib[this.names[i]], true, this.img_lidar_point_map, img.width, img.height);
@@ -995,7 +995,7 @@ class ImageEditor { // 图片编辑器
         console.log(this.annotation_2d.psr);
     }
     // 输出处理完的annotation_2d看看都存了什么东西, 应该是错的
-    // 如果对, 那么ann_2d在world和本地应该是一致的, 但是现在保存后this.world里的annotation_2d不是最新 
+    // 如果对, 那么ann_2d在world和本地应该是一致的, 但是现在保存后this.world里的annotation_2d不是最新
 
     allRect_find(allRect, rect) { // allRect没有数组方法
         let target = false;
@@ -1569,7 +1569,7 @@ function point3d_to_homo(points) {
     return homo;
 }
 function points3d_to_image2d(points, calib, accept_partial = false, save_map, img_dx, img_dy) {
-    // 
+    //
     return points3d_homo_to_image2d(point3d_to_homo(points), calib, accept_partial, save_map, img_dx, img_dy);
 }
 
@@ -1585,6 +1585,8 @@ function all_points_in_image_range(p) {
 
 
 function choose_best_camera_for_point(scene_meta, center) {
+
+  // console.log('任务参数',scene_meta)
 
     if (!scene_meta.calib) {
         return null;

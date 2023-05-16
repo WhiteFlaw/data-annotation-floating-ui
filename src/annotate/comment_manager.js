@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { GET, POST } from '@/utils/http-client.js'
-import { MessageBox, Message } from 'element-ui'
+import { Message } from 'element-ui'
 import { innerDOMString } from './util.js'
 import { commentManagerTemplate } from './template/commentManagerTemplate.js'
 
@@ -117,7 +117,7 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
 
   this.addCommentSubmit = function (event) {
     const btnId = event.target.getAttribute('id')
-    console.log('保存', btnId)
+    // console.log('保存', btnId)
     const comment = {
       type: this.selectedType,
       objId: '',

@@ -81,7 +81,7 @@ export const asyncRoutes = [
         path: 'my-dashboard',
         name: 'MyDashboard',
         component: () => import('@/views/dashboard/index'),
-        meta: { title: '我的工作台', icon: 'dashboad-index', roles: ['manager', 'teamLeader']}
+        meta: { title: '我的工作台', icon: 'dashboad-index', roles: ['manager', 'teamLeader'] }
       }
     ]
   },
@@ -216,6 +216,7 @@ export const asyncRoutes = [
             children: [
               {
                 path: 'task-list',
+                name: 'TaskList',
                 component: () => import('@/views/myTask/taskDetail/index'),
                 meta: { title: '任务列表' }
               },
@@ -233,7 +234,7 @@ export const asyncRoutes = [
       {
         path: 'roundOfInspection',
         component: () => import('@/views/roundOfInspection'),
-        meta: { title: '一轮质检', roles: ['teamLeader', 'qc']},
+        meta: { title: '一轮质检', roles: ['teamLeader', 'qc'] },
         redirect: '/myTask/roundOfInspection/itemList',
         children: [
           {
@@ -255,7 +256,7 @@ export const asyncRoutes = [
       {
         path: 'secondRoundOfInspection',
         component: () => import('@/views/secondRoundOfInspection'),
-        meta: { title: '二轮质检', roles: ['teamLeader', 'qc']},
+        meta: { title: '二轮质检', roles: ['teamLeader', 'qc'] },
         redirect: '/myTask/secondRoundOfInspection/secondItemList',
         children: [
           {

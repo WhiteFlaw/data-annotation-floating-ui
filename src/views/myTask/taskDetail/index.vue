@@ -10,9 +10,7 @@
       <el-form inline>
         <el-row>
           <el-col :span="6">
-            <el-form-item label="项目编号:">
-              <el-tag size="mini" effect="dark" type="success">正式</el-tag>{{ info.id }}
-            </el-form-item>
+            <el-form-item label="项目编号:"> <el-tag size="mini" effect="dark" type="success">正式</el-tag>{{ info.id }} </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="项目名称:">
@@ -51,15 +49,7 @@
       <el-tabs v-model="activeName" @tab-click="searchTaskList">
         <el-tab-pane label="标注中" name="0">
           <!--          表格字段待调整-->
-          <el-table
-            v-loading="loading"
-            :data="markTableData"
-            :max-height="tableMaxHeight"
-            style="width: 100%"
-            border
-            stripe
-            highlight-current-row
-          >
+          <el-table v-loading="loading" :data="markTableData" :max-height="tableMaxHeight" style="width: 100%" border stripe highlight-current-row>
             <el-table-column align="center" prop="id" label="任务ID" min-width="120" />
             <el-table-column align="center" prop="name" label="任务名称" min-width="120" />
             <el-table-column align="center" prop="status" label="任务状态" min-width="100">
@@ -70,28 +60,26 @@
             </el-table-column>
             <el-table-column prop="status" label="任务执行进度:未标注/任务总量" min-width="200" align="center">
               <template slot-scope="scope">
-                {{ (scope.row.totalCount-scope.row.doneCount)+'/'+scope.row.totalCount }}
+                {{ scope.row.totalCount - scope.row.doneCount + '/' + scope.row.totalCount }}
               </template>
             </el-table-column>
             <el-table-column label="操作" min-width="180" align="center">
               <template slot-scope="scope">
                 <el-button type="text" size="small" @click="taskDetails(scope.row)">详情</el-button>
-                <el-button type="primary" size="small" @click="handleMark(scope.row)">{{ scope.row.status ===1?'开始标注':'继续标注' }}</el-button>
+                <el-button type="primary" size="small" @click="handleMark(scope.row)">{{ scope.row.status === 1 ? '开始标注' : '继续标注' }}</el-button>
               </template>
             </el-table-column>
           </el-table>
-          <PaginationComponent v-if="markQueryCondition.total" :page-index="markQueryCondition.pageIndex" :page-size="markQueryCondition.pageSize" :total="markQueryCondition.total" @pagination="searchTaskList" />
+          <PaginationComponent
+            v-if="markQueryCondition.total"
+            :page-index="markQueryCondition.pageIndex"
+            :page-size="markQueryCondition.pageSize"
+            :total="markQueryCondition.total"
+            @pagination="searchTaskList" />
         </el-tab-pane>
         <el-tab-pane label="待返修" name="1">
           <!--          表格字段待调整-->
-          <el-table
-            :data="repairTableData"
-            style="width: 100%"
-            :max-height="tableMaxHeight"
-            border
-            stripe
-            highlight-current-row
-          >
+          <el-table :data="repairTableData" style="width: 100%" :max-height="tableMaxHeight" border stripe highlight-current-row>
             <el-table-column align="center" prop="id" label="任务ID" min-width="120" />
             <el-table-column align="center" prop="name" label="任务名称" min-width="120" />
             <el-table-column align="center" label="操作" min-width="180">
@@ -100,18 +88,16 @@
               </template>
             </el-table-column>
           </el-table>
-          <PaginationComponent v-if="repairQueryCondition.total" :page-index="repairQueryCondition.pageIndex" :page-size="repairQueryCondition.pageSize" :total="repairQueryCondition.total" @pagination="searchTaskList" />
+          <PaginationComponent
+            v-if="repairQueryCondition.total"
+            :page-index="repairQueryCondition.pageIndex"
+            :page-size="repairQueryCondition.pageSize"
+            :total="repairQueryCondition.total"
+            @pagination="searchTaskList" />
         </el-tab-pane>
         <el-tab-pane label="我的标注记录" name="2">
           <!--          表格字段待调整-->
-          <el-table
-            :data="recordTableData"
-            style="width: 100%"
-            :max-height="tableMaxHeight"
-            border
-            stripe
-            highlight-current-row
-          >
+          <el-table :data="recordTableData" style="width: 100%" :max-height="tableMaxHeight" border stripe highlight-current-row>
             <el-table-column align="center" prop="id" label="任务ID" min-width="120" />
             <el-table-column align="center" prop="name" label="任务名称" min-width="180" />
             <el-table-column align="center" prop="endTime" label="标注完成时间" min-width="180" />
@@ -121,7 +107,12 @@
               </template>
             </el-table-column>
           </el-table>
-          <PaginationComponent v-if="recordQueryCondition.total" :page-index="recordQueryCondition.pageIndex" :page-size="recordQueryCondition.pageSize" :total="recordQueryCondition.total" @pagination="searchTaskList" />
+          <PaginationComponent
+            v-if="recordQueryCondition.total"
+            :page-index="recordQueryCondition.pageIndex"
+            :page-size="recordQueryCondition.pageSize"
+            :total="recordQueryCondition.total"
+            @pagination="searchTaskList" />
         </el-tab-pane>
       </el-tabs>
     </template>
@@ -129,7 +120,7 @@
 </template>
 
 <script>
-import {beginLabel, getProjectDetailInfo, imitateDoneMark, getTaskDataList} from '@/api/task'
+import { beginLabel, getProjectDetailInfo, imitateDoneMark, getTaskDataList } from '@/api/task'
 import PaginationComponent from '@/components/PaginationComponent'
 import PageContainer from '@/components/PageContainer'
 import tableMixin from '@/utils/tableMixin'
@@ -182,9 +173,9 @@ export default {
     async searchProjectInformation() {
       this.info.id = this.$route.params.projectId
       await this.searchTaskList()
-      getProjectDetailInfo(this.info.id).then(res => {
+      getProjectDetailInfo(this.info.id).then((res) => {
         this.createdTime = res.data.createdTime.replace('T', ' ')
-        this.projectInformation = {...res.data}
+        this.projectInformation = { ...res.data }
       })
     },
     // TAB点击事件 查询表格数据
@@ -207,14 +198,17 @@ export default {
     },
     // 提取查询表格方法
     async searchTaskDataList(queryCondition, tableData, status) {
-      const res = await getTaskDataList({...queryCondition, projectId: this.info.id, statusList: status, userId: 0, checkType: 0})
-      return {data: res.data.records, total: res.data.total}
+      const res = await getTaskDataList({ ...queryCondition, projectId: this.info.id, statusList: status, userId: 0, checkType: 0 })
+      return { data: res.data.records, total: res.data.total }
     },
     // 详情
     taskDetails(info) {
-      this.$router.push({name: 'jobDetail', params: {
-        taskId: info.id
-      }})
+      this.$router.push({
+        name: 'jobDetail',
+        params: {
+          taskId: info.id
+        }
+      })
     },
     // 退回 功能注释  后续看需求调整
     // handleBack(row) {
@@ -230,7 +224,7 @@ export default {
     // },
     // 开始标注 功能未完成  后续按需求调整
     handleBegin() {
-      beginLabel(this.info.id).then(res => {
+      beginLabel(this.info.id).then((res) => {
         if (res) {
           this.$message.success('操作成功')
           this.searchTaskList()
@@ -244,43 +238,49 @@ export default {
       })
     },
     handleMark(info) {
+      this.$router.push({ name: 'Annotation', query: { taskId: info.id } })
       // this.beginMark(); 暂时隐藏功能未开发 目前是一个模拟标注完成接口，后续删除
-      imitateDoneMark(info.id).then(res => {
-        if (res.msg === 'success') {
-          this.$message.success('操作成功')
-          this.searchTaskList()
-        }
-      }).catch(() => {
-        this.searchTaskList()
-      })
+      // imitateDoneMark(info.id).then(res => {
+      //   if (res.msg === 'success') {
+      //     this.$message.success('操作成功')
+      //     this.searchTaskList()
+      //   }
+      // }).catch(() => {
+      //   this.searchTaskList()
+      // })
     },
     // 待验收状态下继续标注不需要领任务
     handleRepair(info) {
-      imitateDoneMark(info.id).then(res => {
-        if (res.msg === 'success') {
-          this.$message.success('操作成功')
-        }
-        this.searchTaskList()
-      }).catch(() => {
-        this.searchTaskList()
-      })
+      this.$router.push({ name: 'Annotation', query: { taskId: info.id } })
+      // imitateDoneMark(info.id).then(res => {
+      //   if (res.msg === 'success') {
+      //     this.$message.success('操作成功')
+      //   }
+      //   this.searchTaskList()
+      // }).catch(() => {
+      //   this.searchTaskList()
+      // })
     },
     // 开始标注动作
-    beginMark() {
-
-    },
-    changeStatus(val) { // 判断项目状态
+    beginMark() {},
+    changeStatus(val) {
+      // 判断项目状态
       let status
       switch (val) {
-        case 0 : status = '未领取'
+        case 0:
+          status = '未领取'
           break
-        case 1 : status = '进行中'
+        case 1:
+          status = '进行中'
           break
-        case 2 : status = '验收中'
+        case 2:
+          status = '验收中'
           break
-        case 3 : status = '已完成'
+        case 3:
+          status = '已完成'
           break
-        default:status = ''
+        default:
+          status = ''
           break
       }
       return status

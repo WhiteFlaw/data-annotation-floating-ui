@@ -17,6 +17,14 @@ export default {
       pointsGlobalConfig: ''
     }
   },
+  beforeRouteLeave(to, from, next) {
+    const htmlClassName = document.documentElement.className
+    console.log(htmlClassName)
+    if (htmlClassName.search('theme-dark') !== -1) {
+      document.documentElement.className = ''
+    }
+    next()
+  },
   created() {
     this.pointsGlobalConfig = new Config()
 
@@ -59,13 +67,7 @@ export default {
       const data = new Data(dataCfg)
       await data.init()
 
-      const editor = new Editor(
-        maindiv.lastElementChild,
-        maindiv,
-        editorCfg,
-        data,
-        'main-editor'
-      )
+      const editor = new Editor(maindiv.lastElementChild, maindiv, editorCfg, data, 'main-editor')
       window['editor'] = editor
       editor.run()
 
@@ -78,8 +80,8 @@ export default {
 </script>
 
 <style scoped>
-@import "../../styles/annotate/main.css";
-@import "../../styles/annotate/frame-manager.css";
-@import "../../styles/annotate/image-manager.css";
-@import "../../styles/annotate/comment-manager.css";
+@import '../../styles/annotate/main.css';
+@import '../../styles/annotate/frame-manager.css';
+@import '../../styles/annotate/image-manager.css';
+@import '../../styles/annotate/comment-manager.css';
 </style>
