@@ -257,11 +257,74 @@ canvas {
 	background-color: var(--widget-background-color);
 }
 
+#buttons.header-right-buttons{
+  padding-left:10px;
+}
+
+#buttons.header-right-buttons> input{
+  margin-right:5px;
+}
+
+#buttons.header-right-buttons> select{
+  margin-left:5px;
+}
+
+#buttons.header-right-buttons> input:nth-of-type(2){
+  margin-left:10px;
+}
+
+#buttons.header-right-buttons> .func-buttons{
+  display: flex;
+  align-items: center;
+  padding:0 10px;
+}
+
+#buttons.header-right-buttons> .func-buttons .marker-buttons,
+#buttons.header-right-buttons> .func-buttons .tester-buttons,
+#buttons.header-right-buttons> .func-buttons .accepter-buttons{
+  width:120px;
+  flex-shrink:0;
+  display:none;
+}
+
+#buttons.header-right-buttons> .func-buttons .marker-buttons{
+  display: flex;
+}
+
+#buttons.header-right-buttons> .func-buttons .f-button{
+  width:60px;
+  text-align: center;
+  margin:0 2px;
+  cursor: pointer;
+}
+
+#buttons.header-right-buttons> .func-buttons .f-button:hover{
+  opacity: 0.9;
+  transition: all 300ms ease-in-out;
+}
+
+#buttons.header-right-buttons> .func-buttons .btn-primary{
+  background:#526aff;
+}
+
+#buttons.header-right-buttons> .func-buttons .btn-success{
+  background:#25976a
+}
+
+#buttons.header-right-buttons> .func-buttons .btn-warning{
+  background:#f2964d
+}
+
+#buttons.header-right-buttons> .func-buttons .btn-danger{
+  background:#c0422e
+}
+
+
 #header #tools {
 	display: flex;
 	width: auto;
 	height: 45px;
-	padding: 0px;
+	padding: 0 10px 0 0;
 	z-index: 3;
 	text-align: center;
 	font-size: smaller;

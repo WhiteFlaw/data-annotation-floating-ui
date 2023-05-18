@@ -58,7 +58,7 @@ var Header = function (
     //     else
     //         scene_selector_str += "<option value=" + scene + ">" + scene + "</option>";
     // }
-    if(sceneDescList) scene_selector_str =`<option value="${sceneDescList}">${sceneDescList}</option>`;
+    if(sceneDescList) scene_selector_str =`<option value="${sceneDescList}">${this.data.sceneAllData.taskName}</option>`;
 
     this.ui.querySelector('#scene-selector').innerHTML = scene_selector_str
 
