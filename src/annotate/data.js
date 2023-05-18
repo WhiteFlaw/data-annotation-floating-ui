@@ -5,6 +5,7 @@ import { World } from './world.js'
 import { Debug } from './debug.js'
 import { backupManager } from './backup/manager.js'
 import { copyWorld, setWorld, replaceWorld } from './util.js'
+import { taskId } from './getPathParams.js'
 
 class Data {
   constructor(cfg) {
@@ -36,7 +37,13 @@ class Data {
     //         console.log("error read scene list!");
     //     });
     // console.log('初始化scene')
-    const taskId = window.location.href.split('=')[1]
+    // const href = window.location.href
+    // const params = new Map(href.substring(href.lastIndexOf('?') + 1).split('&').map(p=>p.split('=')))// split on & and return array of strings (param=val&param=
+
+    // const taskId = params.get('taskId')
+    // const workId = params.get('workId')
+    // const taskType = params.get('type')
+
     if (taskId) {
       const res = await getSceneMateByTaskId(taskId)
       // console.log(res)

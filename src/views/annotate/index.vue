@@ -17,6 +17,11 @@ export default {
       pointsGlobalConfig: ''
     }
   },
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      localStorage.setItem('fromPath', from.fullPath)
+    })
+  },
   beforeRouteLeave(to, from, next) {
     const htmlClassName = document.documentElement.className
     console.log(htmlClassName)

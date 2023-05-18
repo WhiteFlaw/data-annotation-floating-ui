@@ -3,6 +3,7 @@ import { GET, POST } from '@/utils/http-client.js'
 import { Message } from 'element-ui'
 import { innerDOMString } from './util.js'
 import { commentManagerTemplate } from './template/commentManagerTemplate.js'
+import { taskId } from './getPathParams.js'
 
 export const CommentManager = function (parentUi, data, onCommentChanged, onCommentSubmitted) {
   innerDOMString(commentManagerTemplate, parentUi)
@@ -22,7 +23,7 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
   this.selectedType = '0'
   this.objectsList = []
   this.data = data
-  this.taskId = 0
+  this.taskId = taskId || 0
   this.taskName = ''
   this.worldList = []
   this.commentsList = []
@@ -41,13 +42,13 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
           Message.error(resObj.statusText)
         }
       }
-      this.renderCommentsList(this.taskName)
+      this.renderCommentsList(this.taskId)
     }
   }
 
-  this.renderCommentsList = function (taskName) {
+  this.renderCommentsList = function (taskId) {
     const self = this
-    this.getCommentsList(taskName).then((res) => {
+    this.getCommentsList(taskId).then((res) => {
       if (res.success) {
         this.commentsList = [...res.data]
         if (!res.data.length) return false
@@ -148,12 +149,12 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
     })
   }
 
-  this.getCommentsList = function (taskName) {
-    return GET('/admin/qc/comment-list/', { taskName })
+  this.getCommentsList = function (taskId) {
+    return GET(`/admin/qc/comment-list/${taskId}` )
   }
 
-  this.postCommentsList = function (taskId, taskName, comment) {
-    return POST('/admin/qc/comment', [{ taskId, taskName, ...comment }])
+  this.postCommentsList = function (taskId, comment) {
+    return POST('/admin/qc/comment', [{ taskId, ...comment }])
   }
 
   this.getObjectsList = function (scene) {

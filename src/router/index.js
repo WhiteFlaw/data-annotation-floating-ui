@@ -55,19 +55,20 @@ export const constantRoutes = [
       title: '开始3D标注',
       icon: 'link'
     }
-  },
-  {
-    path: '/annotate',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: '3d',
-        component: () => import('@/views/annotate/index'),
-        meta: { title: '标注-內', icon: 'dashboard' }
-      }
-    ]
   }
+  // ,
+  // {
+  //   path: '/annotate',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: '3d',
+  //       component: () => import('@/views/annotate/index'),
+  //       meta: { title: '标注-內', icon: 'dashboard' }
+  //     }
+  //   ]
+  // }
 ]
 
 export const asyncRoutes = [

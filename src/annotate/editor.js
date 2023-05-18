@@ -29,6 +29,9 @@ import { autoAnnotate } from "./auto_annotate.js";
 import { reloadWorldList, saveWorldList } from "./save.js";
 import { globalKeyDownManager } from './keydown_manager.js';
 import { CommentManager } from './comment_manager.js';
+import { workId, getClickDom } from './getPathParams.js';
+import { initOptionBtn, OptionButtons } from './optionBtn.js';
+
 
 function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
@@ -274,8 +277,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
 
         this.onWindowResize();
-    };
 
+    };
 
 
     this.run = function () {
@@ -296,7 +299,6 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
     this.show = function () {
         this.wrapperUi.style.display = "block";
     };
-
 
 
 
@@ -967,7 +969,6 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
     this.scene_changed = async function (sceneName) {
 
         //var sceneName = event.currentTarget.value;
-        // console.log('自动点击',sceneName)
 
         if (sceneName.length == 0) {
             return;
@@ -1233,8 +1234,6 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
     this.annotateByAlg1 = function () {
         autoAnnotate(this.data.world, () => this.on_load_world_finished(this.data.world));
     };
-
-
 
     this.object_category_changed = function (event) {
         if (this.selected_box) {
@@ -1546,8 +1545,6 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
     };
 
-
-
     this.create_box_by_points = function (points, rotationZ) {
 
         let localRot = this.data.world.sceneRotToLidar(new THREE.Euler(0, 0, rotationZ, "XYZ"));
@@ -1586,7 +1583,6 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
         return this.data.world.annotation.add_box(center, scale, localRot, "Unknown", "");
     };
-
 
     this.handleLeftClick = function (event) {
 
@@ -1729,8 +1725,6 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
     };
 
-
-
     this.selectBox = function (object) {
 
         if (this.selected_box != object) {
@@ -1810,7 +1804,6 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
         this.container.style.height = editorRect.height - headerRect.height + "px";
     }
-
 
     this.onWindowResize = function () {
 
@@ -1946,7 +1939,6 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         }
     };
 
-
     // axix, xyz, action: scale, move, direction, up/down
     this.transform_bbox = function (command) {
         if (!this.selected_box)
@@ -2041,7 +2033,6 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
 
     // }
-
 
 
     this.keydown = function (ev) {
@@ -2309,7 +2300,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
         if (frame_index < 0) {
             console.log("first frame");
-            this.infoBox.show("Notice", "This is the first frame");
+            this.infoBox.show("提示", "已经是第一个作业了！");
             return;
         }
 
@@ -2329,7 +2320,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
         if (frame_index >= num_frames) {
             console.log("last frame");
-            this.infoBox.show("Notice", "This is the last frame");
+            this.infoBox.show("提示", "已经是最后一个作业了！");
             return;
         }
 
@@ -2882,6 +2873,26 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
     this.init(editorUi);
 
-};
+    this.clickFrameByWorkId = function(listItems = null){
+      if(workId){
+        let clickDom = null
+        for(let i=0; i<listItems.length;i++){
+          if(listItems[i].attributes.value.value === workId){
+            clickDom = listItems[i]
+            break;
+          }
+        }
+        clickDom.onclick = (e)=>{
+          this.frameManager.onFrameChanged(e);
+          this.frameManager.after_frame_click(e);
+        };
+        const e = new Event("click", { bubbles: false, cancelable: true })
+        clickDom.dispatchEvent(e)
+      }
+    }
+    getClickDom(this.clickFrameByWorkId.bind(this))
 
+    initOptionBtn()
+    this.OptionButtons = new OptionButtons(this.data,this.frameManager)
+};
 export { Editor }
