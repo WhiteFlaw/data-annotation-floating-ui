@@ -54,7 +54,8 @@ export const constantRoutes = [
     meta: {
       title: '开始3D标注',
       icon: 'link'
-    }
+    },
+    hidden: true
   }
   // ,
   // {
@@ -173,7 +174,7 @@ export const asyncRoutes = [
     children: [
       {
         path: 'projectList',
-        name: 'projectList',
+        name: 'ProjectList',
         component: () => import('@/views/checkManagement/projectList'),
         meta: { title: '项目列表' },
         hidden: true

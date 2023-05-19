@@ -16,7 +16,7 @@
               主页
             </el-dropdown-item>
           </router-link>
-          <router-link to="/homePageSelection">
+          <router-link to="/">
             <el-dropdown-item>
               切换2D/3D入口
             </el-dropdown-item>
@@ -66,6 +66,8 @@ export default {
         this.homePage = '/myTask/taggingTask/project-list'
       } else if (this.roles.indexOf('qc') !== -1) {
         this.homePage = '/myTask/roundOfInspection'
+      } else if (this.roles.indexOf('at') !== -1) {
+        this.homePage = '/checkManagement/projectList'
       }
     },
     toggleSideBar() {

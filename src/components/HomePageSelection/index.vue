@@ -2,7 +2,7 @@
   <login-slot>
     <template slot="login">
       <div class="btn-container">
-        <div class="btn-bg" @click="selectMark('2')">
+        <div class="btn-bg" @click="selectMark('0')">
           <div class="btn-wrapper">
             <img
               alt=""
@@ -11,7 +11,7 @@
             <div class="text-class">2D标注</div>
           </div>
         </div>
-        <div class="btn-bg" @click="selectMark('3')">
+        <div class="btn-bg" @click="selectMark('1')">
           <div class="btn-wrapper">
             <img
               alt=""
@@ -63,16 +63,20 @@ export default {
     selectMark(val) { // 点击图片触发事件
       // TODO 根据选择入口不同跳转不同对页面
       console.log(val)
-      if (this.roles.indexOf('admin') !== -1) {
-        this.$router.push({name: 'DataManagement'})
-      } else if ((this.roles.indexOf('manager') !== -1 || this.roles.indexOf('teamLeader') !== -1) && this.roles.indexOf('admin') === -1) {
-        this.$router.push({name: 'Dashboard'})
-      } else if (this.roles.indexOf('tagger') !== -1) {
-        this.$router.push({name: 'AnnotatedItemList'})
-      } else if (this.roles.indexOf('qc') !== -1) {
-        this.$router.push({name: 'ItemList'})
-      } else if (this.roles.indexOf('at') !== -1) {
-        this.$router.push({name: 'ProjectList'})
+      if (val === '1') {
+        if (this.roles.indexOf('admin') !== -1) {
+          this.$router.push({name: 'DataManagement'})
+        } else if ((this.roles.indexOf('manager') !== -1 || this.roles.indexOf('teamLeader') !== -1) && this.roles.indexOf('admin') === -1) {
+          this.$router.push({name: 'Dashboard'})
+        } else if (this.roles.indexOf('tagger') !== -1) {
+          this.$router.push({name: 'AnnotatedItemList'})
+        } else if (this.roles.indexOf('qc') !== -1) {
+          this.$router.push({name: 'ItemList'})
+        } else if (this.roles.indexOf('at') !== -1) {
+          this.$router.push({name: 'ProjectList'})
+        }
+      } else {
+        this.$message.success('2D平台正在开发中，敬请期待')
       }
     }
   }
