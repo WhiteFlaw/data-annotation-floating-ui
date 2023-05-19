@@ -71,8 +71,8 @@
         <el-table-column min-width="200" align="center" label="操作">
           <template slot-scope="scope">
             <el-button type="text" :disabled="!!scope.row.recheckUserId" @click="receiveQualityInspection(scope.row)">领取质检</el-button>
-            <el-button type="text" :disabled="!scope.row.recheckUserId" @click="completionOfSecondInspection(scope.row)">模拟二检完成</el-button>
-            <el-button type="text" :disabled="!scope.row.recheckUserId" @click="rejectTheTaskData(scope.row)">模拟二检驳回</el-button>
+            <el-button type="text" :disabled="!scope.row.recheckUserId" @click="completionOfSecondInspection(scope.row)">二检完成</el-button>
+            <el-button type="text" :disabled="!scope.row.recheckUserId" @click="rejectTheTaskData(scope.row)">二检驳回</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -185,8 +185,14 @@ export default {
       receiveQualityInspectionTask(Number(val.id), 2).then(res => {
         if (res.msg === 'success') {
           this.$message.success('操作成功！')
-          this.$router.push({ name: 'Annotation', query: { taskId: val.id } })
           this.searchData()
+          this.$router.push({
+            name: 'Annotation',
+            query: {
+              taskId: val.id,
+              type: 2
+            }
+          })
         }
       })
     },

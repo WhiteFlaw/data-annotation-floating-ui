@@ -19,7 +19,8 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      localStorage.setItem('fromPath', from.fullPath)
+      console.log(13212414332, from)
+      if (from.fullPath !== '/') localStorage.setItem('fromPath', from.fullPath)
     })
   },
   beforeRouteLeave(to, from, next) {

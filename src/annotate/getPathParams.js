@@ -1,7 +1,4 @@
 // 获取路由参数
-let taskId = ''
-let workId = ''
-let taskType = ''
 const getPathParams = () => {
   const href = window.location.href
   const params = new Map(
@@ -10,11 +7,12 @@ const getPathParams = () => {
       .split('&')
       .map((p) => p.split('='))
   )
-  taskId = params.get('taskId') || ''
-  workId = params.get('workId') || ''
-  taskType = params.get('type') || ''
+  return {
+    taskId : params.get('taskId') || '',
+    workId : params.get('workId') || '',
+    taskType : params.get('type') || ''
+  }
 }
-getPathParams()
 
 // 定时检测dom是否加载完成
 var clickDomTimer = null
@@ -28,4 +26,4 @@ const getClickDom = (fn) => {
   }
 }
 
-export { taskId, taskType, workId, getClickDom }
+export { getPathParams, getClickDom }

@@ -168,7 +168,7 @@ export const asyncRoutes = [
   {
     path: '/checkManagement',
     component: Layout,
-    meta: { title: '交付验证', icon: 'Delivery', roles: ['admin'] },
+    meta: { title: '交付验证', icon: 'Delivery', roles: ['admin', 'at'] },
     redirect: '/checkManagement/projectList',
     children: [
       {
@@ -204,6 +204,7 @@ export const asyncRoutes = [
         children: [
           {
             path: 'project-list',
+            name: 'AnnotatedItemList',
             component: () => import('@/views/myTask/taggingTask/index'),
             meta: { title: '标注项目列表', roles: ['manager', 'teamLeader', 'tagger'] }
           },
@@ -240,7 +241,7 @@ export const asyncRoutes = [
         children: [
           {
             path: 'itemList',
-            name: 'itemList',
+            name: 'ItemList',
             component: () => import('@/views/roundOfInspection/ItemList'),
             meta: { title: '项目列表' },
             hidden: true

@@ -68,9 +68,11 @@ export default {
       } else if ((this.roles.indexOf('manager') !== -1 || this.roles.indexOf('teamLeader') !== -1) && this.roles.indexOf('admin') === -1) {
         this.$router.push({name: 'Dashboard'})
       } else if (this.roles.indexOf('tagger') !== -1) {
-        this.$router.push({path: '/myTask/taggingTask/project-list'})
+        this.$router.push({name: 'AnnotatedItemList'})
       } else if (this.roles.indexOf('qc') !== -1) {
-        this.$router.push({path: '/myTask/roundOfInspection'})
+        this.$router.push({name: 'ItemList'})
+      } else if (this.roles.indexOf('at') !== -1) {
+        this.$router.push({name: 'ProjectList'})
       }
     }
   }

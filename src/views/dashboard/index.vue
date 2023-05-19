@@ -64,6 +64,7 @@
         v-if="!itemListFlag && roles === 'teamLeader'"
         :table-data="tableData"
         :table-loading="tableLoading"
+        :row-data="rowData"
         @update-role="updateRole"
       />
       <pagination-component

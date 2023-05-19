@@ -5,7 +5,7 @@ import { World } from './world.js'
 import { Debug } from './debug.js'
 import { backupManager } from './backup/manager.js'
 import { copyWorld, setWorld, replaceWorld } from './util.js'
-import { taskId } from './getPathParams.js'
+import {getPathParams} from './getPathParams.js'
 
 class Data {
   constructor(cfg) {
@@ -43,7 +43,7 @@ class Data {
     // const taskId = params.get('taskId')
     // const workId = params.get('workId')
     // const taskType = params.get('type')
-
+    const taskId = getPathParams()['taskId']
     if (taskId) {
       const res = await getSceneMateByTaskId(taskId)
       // console.log(res)

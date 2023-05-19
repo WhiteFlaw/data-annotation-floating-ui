@@ -29,7 +29,7 @@ import { autoAnnotate } from "./auto_annotate.js";
 import { reloadWorldList, saveWorldList } from "./save.js";
 import { globalKeyDownManager } from './keydown_manager.js';
 import { CommentManager } from './comment_manager.js';
-import { workId, getClickDom } from './getPathParams.js';
+import { getPathParams, getClickDom } from './getPathParams.js';
 import { initOptionBtn, OptionButtons } from './optionBtn.js';
 
 
@@ -2874,6 +2874,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
     this.init(editorUi);
 
     this.clickFrameByWorkId = function(listItems = null){
+      const workId = getPathParams()['workId']
       if(workId){
         let clickDom = null
         for(let i=0; i<listItems.length;i++){

@@ -57,7 +57,9 @@ const getGroupOptions = () => {
 const getTeamLeaderOptions = () => {
   return GET('/admin/common/teamLeaderList')
 }
-
+const getAcceptanceOfficerList = () => {
+  return GET('/admin/common/list-at')
+}
 /**
  * 返回项目状态下拉列表
  * 项目状态(0:未领取;1:进行中;2:验收中;3:已完成;)
@@ -88,5 +90,6 @@ export {
   getGroupOptions,
   getTeamLeaderOptions,
   projectStatusOptions,
-  projectTypeOptions
+  projectTypeOptions,
+  getAcceptanceOfficerList
 }

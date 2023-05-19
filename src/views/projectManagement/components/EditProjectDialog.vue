@@ -3,7 +3,7 @@
     :visible="visible"
     title="编辑项目"
     width="640px"
-    top="5vh"
+    top="2vh"
     append-to-body
     destroy-on-close
     class="edit-project-form"
@@ -29,6 +29,11 @@
       <el-form-item label="项目类型" prop="type">
         <el-select v-model="projectInfoEditForm.type" placeholder="请选择项目类型">
           <el-option v-for="projectType of projectTypeList" :key="projectType.name" :label="projectType.name" :value="projectType.id" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="验收员">
+        <el-select v-model="projectInfoEditForm.atInfo" placeholder="请选择验收员">
+          <el-option v-for="acceptanceOfficer in acceptanceOfficerDataList" :key="acceptanceOfficer.id" :value="acceptanceOfficer.id + ':' + acceptanceOfficer.nickname" :label="acceptanceOfficer.nickname" />
         </el-select>
       </el-form-item>
       <!--      <el-form-item label="项目周期" prop="selectedDataRange">-->
@@ -68,7 +73,14 @@
 
 <script>
 import { assignToGroup, updateProjectsList } from '@/api/projectManagement'
-import { getCustomersOptions, getProjectManagerOptions, getGroupOptions, projectStatusOptions, projectTypeOptions } from '@/api/common'
+import {
+  getCustomersOptions,
+  getProjectManagerOptions,
+  getGroupOptions,
+  projectStatusOptions,
+  projectTypeOptions,
+  getAcceptanceOfficerList
+} from '@/api/common'
 import { EFFECTIVE_MANAGER_LIST} from '@/utils/constant'
 export default {
   name: 'EditProjectDialog',
@@ -91,13 +103,19 @@ export default {
       customerList: [],
       projectManagerList: [],
       projectStatusList: [],
-      projectTypeList: []
+      projectTypeList: [],
+      acceptanceOfficerDataList: [] // 接收验收员
     }
+  },
+  mounted() {
+    getAcceptanceOfficerList().then(res => {
+      this.acceptanceOfficerDataList = res.data
+    })
   },
   methods: {
     // 弹窗初始化
     initDialog() {
-      this.projectInfoEditForm = { ...this.editFormData, startDate: null, endDate: null }
+      this.projectInfoEditForm = { ...this.editFormData, startDate: null, endDate: null, atInfo: this.editFormData.atId ? (this.editFormData.atId + ':' + this.editFormData.atNickname) : '' }
       getCustomersOptions().then((res) => {
         if (res.success) {
           this.customerList = [...res.data]
@@ -140,7 +158,9 @@ export default {
             managerId: Number(this.projectInfoEditForm.managerInfo?.split(':')[0]),
             managerNickname: this.projectInfoEditForm.managerInfo?.split(':')[1],
             customerId: Number(this.projectInfoEditForm.customerInfo?.split(':')[0]),
-            customerName: this.projectInfoEditForm.customerInfo?.split(':')[1]
+            customerName: this.projectInfoEditForm.customerInfo?.split(':')[1],
+            atId: Number(this.projectInfoEditForm.atInfo?.split(':')[0]),
+            atNickname: this.projectInfoEditForm.atInfo?.split(':')[1]
           }).then((res) => {
             if (res.success) {
               this.$message.success(res.msg)

@@ -74,6 +74,7 @@
             <el-tag :type="scope.row.status === 3?'success' : ''">{{ changeStatus(scope.row.status) }}</el-tag>
           </template>
         </el-table-column>
+        <el-table-column prop="userNickname" align="center" label="标注员" width="100" />
         <el-table-column min-width="100" align="center" label="任务执行进度">
           <template slot-scope="scope">
             {{ scope.row.doneCount + '/' + scope.row.totalCount }}
@@ -82,9 +83,9 @@
         <el-table-column align="center" label="操作" min-width="200">
           <template slot-scope="scope">
             <el-button v-if="activeName === '2'" type="text" :disabled="!!scope.row.checkUserId" @click="receiveQualityInspection(scope.row)">领取质检</el-button>
-            <el-button v-if="activeName === '2'" type="text" :disabled="!scope.row.checkUserId" @click="completionOfFirstInspection(scope.row)">模拟一检完成</el-button>
-            <el-button v-if="activeName === '2'" type="text" :disabled="!scope.row.checkUserId" @click="rejectTheTaskData(scope.row)">模拟一检驳回</el-button>
-            <el-button v-if="activeName === '8'" type="text">修改</el-button>
+            <el-button v-if="activeName === '2'" type="text" :disabled="!scope.row.checkUserId" @click="completionOfFirstInspection(scope.row)">一检完成</el-button>
+            <el-button v-if="activeName === '2'" type="text" :disabled="!scope.row.checkUserId" @click="rejectTheTaskData(scope.row)">一检驳回</el-button>
+            <el-button v-if="activeName === '8'" type="text" @click="updateTask(scope.row)">修改任务</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -229,7 +230,13 @@ export default {
         if (res.msg === 'success') {
           this.$message.success('操作成功！')
           this.searchData()
-          this.$router.push({ name: 'Annotation', query: { taskId: val.id } })
+          this.$router.push({
+            name: 'Annotation',
+            query: {
+              taskId: val.id,
+              type: 1
+            }
+          })
         }
       })
     },
@@ -246,6 +253,15 @@ export default {
         if (res.msg === 'success') {
           this.$message.success('操作成功！')
           this.searchData()
+        }
+      })
+    },
+    updateTask(val) { // 修改任务
+      this.$router.push({
+        name: 'Annotation',
+        query: {
+          taskId: val.id,
+          type: 1
         }
       })
     }

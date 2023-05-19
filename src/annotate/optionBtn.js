@@ -1,10 +1,11 @@
-import { taskType } from './getPathParams'
-import { GET, POST } from '@/utils/http-client.js'
-import { saveWorldList } from "./save.js"
+import { getPathParams } from './getPathParams'
+import { POST } from '@/utils/http-client.js'
+// import { saveWorldList } from "./save.js"
 import { objIdManager } from "./obj_id_list.js";
 import { Message, MessageBox } from 'element-ui'
 
 const initOptionBtn = () => {
+  const taskType = getPathParams()['taskType']
   if (taskType) {
     // 从标注跳转
     if (taskType === '0') {
@@ -44,34 +45,34 @@ const OptionButtons = function (data, frameManager) {
   this.fnQfbutton = document.getElementById('fn-qf-button')
   this.fnDisqfButton = document.getElementById('fn-disqf-button')
 
-console.log(7777777777777777777777,this.data)
+ let buttonLoading = false
 
   this.exitButton.onclick = () => {
     this.exitTask()
   }
 
   this.fnSuspendButton.onclick = () => {
-    this.ssWork(1)
+    if(!buttonLoading) this.ssWork(1)
   }
 
   this.fnSubmitButton.onclick = () => {
-    this.ssWork(0)
+    if(!buttonLoading) this.ssWork(0)
   }
 
   this.fnRejectButton.onclick = () => {
-    this.tsWork(1)
+    if(!buttonLoading) this.tsWork(1)
   }
 
   this.fnPassButton.onclick = () => {
-    this.tsWork(0)
+    if(!buttonLoading) this.tsWork(0)
   }
 
   this.fnQfbutton.onclick = () => {
-    this.acptWork(0)
+    if(!buttonLoading) this.acptWork(0)
   }
 
   this.fnDisqfButton.onclick = () => {
-    this.acptWork(1)
+    if(!buttonLoading) this.acptWork(1)
   }
 
   this.exitTask = () => {
@@ -83,6 +84,7 @@ console.log(7777777777777777777777,this.data)
 //标注 保存或挂起
   this.ssWork = (type) => {
     let scene = this.data.world.frameInfo.scene;
+    buttonLoading = true
     objIdManager.load_obj_ids_of_scene(scene, (objs) => {
       const data = {
         boxCount : objs.reduce((a, b) => a + b.count, 0),
@@ -91,6 +93,7 @@ console.log(7777777777777777777777,this.data)
         type:type
       }
       this.suspendOrSubmitWork({...data}).then(res=>{
+        buttonLoading = false
         if(res.success){
           if(res.msg === "T"){
             Message.success('当前作业操作成功！')
@@ -102,6 +105,8 @@ console.log(7777777777777777777777,this.data)
         }else{
           Message.error(res.msg)
         }
+      }).catch(() => {
+        buttonLoading = false
       })
     });
   }
@@ -111,7 +116,9 @@ console.log(7777777777777777777777,this.data)
       homeworkId:this.data.sceneAllData.homework_list.find(f=>f.name === this.data.world.frameInfo.frame)['id'],
       type:type
     }
+    buttonLoading = true
     this.testWork({...data}).then(res=>{
+      buttonLoading = false
       if(res.success){
         if(res.msg === "T"){
           Message.success('当前作业操作成功！')
@@ -123,6 +130,8 @@ console.log(7777777777777777777777,this.data)
       }else{
         Message.error(res.msg)
       }
+    }).catch(() => {
+      buttonLoading = false
     })
   }
 
@@ -132,7 +141,9 @@ this.acptWork = (type) => {
     homeworkId:this.data.sceneAllData.homework_list.find(f=>f.name === this.data.world.frameInfo.frame)['id'],
     type:type
   }
+  buttonLoading = true
   this.acceptWork({...data}).then(res=>{
+    buttonLoading = false
     if(res.success){
       if(res.msg === "T"){
         Message.success('当前作业操作成功！')
@@ -144,6 +155,8 @@ this.acptWork = (type) => {
     }else{
       Message.error(res.msg)
     }
+  }).catch(() => {
+    buttonLoading = false
   })
 }
 
@@ -153,8 +166,11 @@ this.optionCompleteMessageBox = (msg) => {
     distinguishCancelAndClose: true,
     confirmButtonText: '确定',
     cancelButtonText: '取消'
+    // callback:() => {
+    //   this.exitTask()
+    // }
   }).then(()=>{
-    this.exitTask()
+      this.exitTask()
   }).catch(()=>{
     Message.info('操作取消！')
   })

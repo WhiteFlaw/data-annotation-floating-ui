@@ -33,6 +33,11 @@
             <el-option v-for="projectType of projectTypeList" :key="projectType.name" :label="projectType.name" :value="projectType.id" />
           </el-select>
         </el-form-item>
+        <el-form-item label="验收员" prop="atInfo">
+          <el-select v-model="dataForm.atInfo" placeholder="请选择验收员">
+            <el-option v-for="acceptanceOfficer in acceptanceOfficerDataList" :key="acceptanceOfficer.id" :value="acceptanceOfficer.id + ':' + acceptanceOfficer.nickname" :label="acceptanceOfficer.nickname" />
+          </el-select>
+        </el-form-item>
         <!-- <el-form-item label="项目周期" prop="selectedDataRange">
           <el-date-picker
             v-model="dataForm.selectedDataRange"
@@ -69,7 +74,7 @@
 <script>
 import PageContainer from '@/components/PageContainer'
 import { getProjectDataList, confirmInitData } from '@/api/dataManagement'
-import { getCustomersOptions, getGroupOptions, projectTypeOptions, getProjectManagerOptions } from '@/api/common'
+import { getCustomersOptions, getGroupOptions, projectTypeOptions, getProjectManagerOptions, getAcceptanceOfficerList } from '@/api/common'
 import {EFFECTIVE_MANAGER_LIST} from '@/utils/constant'
 export default {
   name: 'DataManagement',
@@ -91,9 +96,11 @@ export default {
         selectedGroup: [],
         chunkSize: 10,
         description: '',
-        managerInfo: ''
+        managerInfo: '',
+        atInfo: ''
       },
-      confirmLoading: false
+      confirmLoading: false,
+      acceptanceOfficerDataList: [] // 接收验收员
     }
   },
   computed: {
@@ -110,6 +117,7 @@ export default {
           }
         ],
         type: [{ required: true, message: '请选择项目类型', trigger: 'blur' }],
+        atInfo: [{ required: true, message: '请选择验收员', trigger: 'blur' }],
         // selectedDataRange: [
         //   {
         //     required: true,
@@ -160,6 +168,9 @@ export default {
           this.$message.error(res.msg)
         }
       })
+      getAcceptanceOfficerList().then(res => {
+        this.acceptanceOfficerDataList = res.data
+      })
     },
     // 确定提交初始化数据
     confirmDataInit(formName) {
@@ -178,7 +189,9 @@ export default {
         teamIds: this.dataForm.selectedGroup,
         description: this.dataForm.description,
         managerId: Number(this.dataForm.managerInfo.split(':')[0]),
-        managerNickname: this.dataForm.managerInfo.split(':')[1]
+        managerNickname: this.dataForm.managerInfo.split(':')[1],
+        atId: Number(this.dataForm.atInfo.split(':')[0]),
+        atNickname: this.dataForm.atInfo.split(':')[1]
       }
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -215,6 +228,7 @@ export default {
   width: 600px;
 
   .el-form-item {
+    margin-bottom: 15px;
     .el-select,
     .el-date-editor {
       width: 100%;

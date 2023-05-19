@@ -3,7 +3,7 @@ import { GET, POST } from '@/utils/http-client.js'
 import { Message } from 'element-ui'
 import { innerDOMString } from './util.js'
 import { commentManagerTemplate } from './template/commentManagerTemplate.js'
-import { taskId } from './getPathParams.js'
+import { getPathParams } from './getPathParams.js'
 
 export const CommentManager = function (parentUi, data, onCommentChanged, onCommentSubmitted) {
   innerDOMString(commentManagerTemplate, parentUi)
@@ -23,7 +23,7 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
   this.selectedType = '0'
   this.objectsList = []
   this.data = data
-  this.taskId = taskId || 0
+  this.taskId = getPathParams()['taskId'] || 0
   this.taskName = ''
   this.worldList = []
   this.commentsList = []

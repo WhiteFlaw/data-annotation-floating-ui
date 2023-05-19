@@ -40,18 +40,15 @@
       >
         <el-table-column prop="id" label="作业ID" min-width="180" align="center" />
         <el-table-column prop="name" label="作业名称" min-width="180" align="center" />
-        <el-table-column prop="" label="标注" min-width="180" align="center">
-          <el-table-column prop="" label="标注已用时" min-width="180" align="center" />
-          <el-table-column prop="status" label="状态" min-width="180" align="center">
-            <template slot-scope="scope">
-              <el-tag :type="scope.row.status !== 3? '' : 'success'">{{ handleStatus(scope.row.status) }}</el-tag>
-            </template>
-          </el-table-column>
+        <el-table-column prop="status" label="作业状态" min-width="180" align="center">
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.status !== 3? '' : 'success'">{{ handleStatus(scope.row.status) }}</el-tag>
+          </template>
         </el-table-column>
         <!--        操作功能未完成-->
         <el-table-column label="操作" min-width="180" align="center">
-          <template>
-            <el-button type="text" size="small">查看</el-button>
+          <template slot-scope="scope">
+            <el-button type="text" size="small" :disabled="scope.row.status === 3" @click="markWork(scope.row)">标注作业</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -103,9 +100,9 @@ export default {
     // 处理状态
     handleStatus(value) {
       if (value === 0) {
-        return '未质检'
+        return '未标注'
       } else if (value === 1) {
-        return '质检中'
+        return '标注中'
       } else if (value === 2) {
         return '已挂起'
       } else {
@@ -128,6 +125,16 @@ export default {
     jobDetail() {
       getJobDetailInfo(this.info.id).then(res => {
         this.projectData = {...res.data}
+      })
+    },
+    markWork(val) { // 标注作业
+      this.$router.push({
+        name: 'Annotation',
+        query: {
+          taskId: this.queryCondition.taskId,
+          workId: val.name,
+          type: 0
+        }
       })
     }
   }
