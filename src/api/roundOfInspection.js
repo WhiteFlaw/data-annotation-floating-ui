@@ -53,7 +53,7 @@ export function receiveQualityInspectionTask(taskId, checkType) {
 }
 
 /**
- * 模拟一检完成
+ * 一检完成
  * @param taskId 任务id
  * @param checkType 一检二检区分
  * @returns {*}

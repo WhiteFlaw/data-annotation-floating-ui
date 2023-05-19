@@ -27,6 +27,9 @@
             <el-form-item label="项目经理："> {{ projectInfoEditForm.managerNickname }} </el-form-item>
           </el-col>
           <el-col :md="12" :lg="8" :xl="6">
+            <el-form-item label="验收员："> {{ projectInfoEditForm.atNickname || '' }} </el-form-item>
+          </el-col>
+          <el-col :md="12" :lg="8" :xl="6">
             <el-form-item label="项目类型："> {{ filterProjectType(projectInfoEditForm.type) }} </el-form-item>
           </el-col>
           <el-col :md="12" :lg="8" :xl="6">

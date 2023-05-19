@@ -4,7 +4,7 @@
  * 验收模块
  */
 
-import {GET, POST, PUT} from '@/utils/http-client'
+import {GET, POST} from '@/utils/http-client'
 
 /**
  * 查询项目列表
@@ -44,10 +44,18 @@ export function getTeamUserList(projectId) {
 
 /**
  * 一键验收功能
- * @param projectId
- * @param params
+ * @param data 项目ID(项目整个驳回传这个) 	作业ID(作业单张驳回传这个) 驳回原因 验收通过0/验收驳回1
  * @returns {*}
  */
-export function checkProject(projectId, params) {
-  return PUT(`/admin/accept/${projectId}`, {}, params)
+export function checkProject(data) {
+  return POST(`/admin/accept/`, data)
+}
+
+/**
+ * 获取验收随机数据
+ * @param data 页码 每页条数 百分比 项目id
+ * @returns {*}
+ */
+export function getRandomDataList(data) {
+  return POST(`/admin/accept/batch-reject`, data)
 }

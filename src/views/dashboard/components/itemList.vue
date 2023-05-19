@@ -103,7 +103,7 @@ export default {
     changeProjectStatus(val) { // 判断项目状态
       let status
       switch (val) {
-        case 0: status = '全部'
+        case 0: status = '未领取'
           break
         case 1: status = '进行中'
           break

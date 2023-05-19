@@ -38,17 +38,23 @@
       >
         <el-table-column prop="id" align="center" label="项目ID" width="120" />
         <el-table-column prop="name" align="center" label="项目名称" min-width="150" />
+        <el-table-column prop="" align="center" label="验收进度" width="150">
+          <template slot-scope="scope">
+            {{ scope.row.atBatchPassCount + '/' + scope.row.atBatchCount }}
+          </template>
+        </el-table-column>
         <el-table-column prop="managerNickname" align="center" label="项目经理" width="100" />
         <el-table-column prop="createdTime" align="center" label="创建时间" width="160">
           <template slot-scope="scope">
             {{ scope.row.createdTime.indexOf('T') !== -1 ? (scope.row.createdTime.split('T')[0] + ' ' + scope.row.createdTime.split('T')[1]) : scope.row.createdTime }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" fixed="right" width="200">
+        <el-table-column align="center" label="操作" fixed="right" width="250">
           <template slot-scope="scope">
             <el-button type="text" @click="openProjectDetails(scope.row)">详情</el-button>
-            <el-button type="text" @click="acceptProject(scope.row)">一键验收</el-button>
-            <el-button type="text" @click="rejectProject(scope.row)">一键驳回</el-button>
+            <el-button type="text" @click="acceptanceProject(scope.row)">验收</el-button>
+            <el-button type="text" @click="acceptProject(scope.row)">验收通过</el-button>
+            <el-button type="text" @click="rejectProject(scope.row)">验收驳回</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -59,6 +65,12 @@
         :page-size.sync="limit"
         @pagination="changePage"
       />
+      <template v-if="acceptanceVisible">
+        <acceptance-percentage
+          :visible.sync="acceptanceVisible"
+          :project-details="projectDetails"
+        />
+      </template>
     </template>
   </page-container>
 </template>
@@ -68,9 +80,10 @@ import PageContainer from '@/components/PageContainer'
 import tableMixin from '@/utils/tableMixin'
 import PaginationComponent from '@/components/PaginationComponent'
 import {checkProject, queryItemDataList} from '@/api/check'
+import AcceptancePercentage from '@/views/checkManagement/components/AcceptancePercentage'
 export default {
   name: 'ItemList',
-  components: {PaginationComponent, PageContainer},
+  components: {AcceptancePercentage, PaginationComponent, PageContainer},
   mixins: [tableMixin],
   data() {
     return {
@@ -86,7 +99,9 @@ export default {
       },
       total: 0,
       page: 1,
-      limit: 20
+      limit: 20,
+      acceptanceVisible: false,
+      projectDetails: {}
     }
   },
   mounted() {
@@ -147,22 +162,56 @@ export default {
       this.searchData()
     },
     acceptProject(info) {
-      this.$confirm('确认一键验收此项目吗？')
-        .then(_ => {
-          checkProject(info.id, {acceptType: 1}).then(() => {
+      this.$confirm(`确认一键验收此项目吗？`, '温馨提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        checkProject({
+          projectId: info.id,
+          type: 0
+        }).then(res => {
+          if (res.success) {
+            this.$message.success(res.msg)
             this.search()
-          })
+          }
         })
-        .catch(_ => {})
+      }).catch(() => {
+        this.$message.info('验收已取消')
+      })
     },
     rejectProject(info) {
-      this.$confirm('确认一键驳回本项目吗？')
-        .then(_ => {
-          checkProject(info.id, {acceptType: 2}).then(() => {
+      this.$confirm(`确认一键驳回本项目吗？`, '温馨提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        checkProject({
+          projectId: info.id,
+          type: 1
+        }).then(res => {
+          if (res.success) {
+            this.$message.success(res.msg)
             this.search()
-          })
+          }
         })
-        .catch(_ => {})
+      }).catch(() => {
+        this.$message.info('驳回已取消')
+      })
+    },
+    acceptanceProject(val) { // 验收
+      if (Number(val.atBatchCount) !== 0) { // 如果有验收进度即有正在验收的批次
+        this.$router.push({
+          name: 'projectDetail',
+          query: {
+            projectId: val.id, // 点击详情进入详情页面，根据项目id查询任务列表
+            percent: 10
+          }
+        })
+      } else if (Number(val.atBatchCount) === 0) {
+        this.acceptanceVisible = true
+        this.projectDetails = val
+      }
     }
   }
 }

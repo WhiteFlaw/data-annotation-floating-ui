@@ -54,11 +54,6 @@
         </el-table-column>
         <el-table-column prop="toBeClaimedCount" label="待领取" min-width="100" align="center" />
         <el-table-column label="我的标注" align="center">
-          <el-table-column prop="toBeRepairedCount" label="待返修" min-width="80" align="center">
-            <template slot-scope="scope">
-              {{ scope.row.toBeRepairedCount||0 }}
-            </template>
-          </el-table-column>
           <el-table-column prop="annotatedCount" label="标注中" min-width="80" align="center">
             <template slot-scope="scope">
               {{ scope.row.annotatedCount||0 }}
@@ -67,6 +62,16 @@
           <el-table-column prop="markedCount" label="已标注" min-width="80" align="center">
             <template slot-scope="scope">
               {{ scope.row.markedCount||0 }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="toBeRepairedCount" label="待返修" min-width="80" align="center">
+            <template slot-scope="scope">
+              {{ scope.row.toBeRepairedCount||0 }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="putUpCount" label="已挂起" min-width="80" align="center">
+            <template slot-scope="scope">
+              {{ scope.row.putUpCount||0 }}
             </template>
           </el-table-column>
         </el-table-column>

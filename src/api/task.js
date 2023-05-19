@@ -77,3 +77,13 @@ export function imitateDoneMark(taskId) {
   return PUT(`/admin/tagging/finish/${taskId}`)
 }
 
+/**
+ * 跳转验证
+ * @param taskId 任务ID
+ * @param type 	标注0/质检1
+ * @returns {*}
+ */
+export function jumpVerification(taskId, type) {
+  return GET(`/admin/tagging/tag-verify/${taskId}`, {type})
+}
+

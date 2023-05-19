@@ -39,7 +39,7 @@
           </el-col>
           <el-col :span="2">
             <el-form-item>
-              <el-button type="primary" size="small" @click="handleBegin">开始标注</el-button>
+              <el-button type="primary" size="small" @click="handleBegin">领取任务</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -55,18 +55,18 @@
             <el-table-column align="center" prop="status" label="任务状态" min-width="100">
               <template slot-scope="scope">
                 <text v-if="scope.row.status === 0">-</text>
-                <el-tag v-else :type="scope.row.status === 1 ? '' : 'success'">{{ scope.row.status === 1 ? '标注中' : '已完成' }}</el-tag>
+                <el-tag v-else :type="(scope.row.status !== 7 ? '' : 'success')">{{ changeTaskStatus(scope.row.status) }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="status" label="任务执行进度:未标注/任务总量" min-width="200" align="center">
+            <el-table-column prop="status" label="任务执行进度:已标注/任务总量" min-width="200" align="center">
               <template slot-scope="scope">
-                {{ scope.row.totalCount - scope.row.doneCount + '/' + scope.row.totalCount }}
+                {{ scope.row.doneCount + '/' + scope.row.totalCount }}
               </template>
             </el-table-column>
             <el-table-column label="操作" min-width="180" align="center">
               <template slot-scope="scope">
                 <el-button type="text" size="small" @click="taskDetails(scope.row)">详情</el-button>
-                <el-button type="primary" size="small" @click="handleMark(scope.row)">{{ scope.row.status === 1 ? '开始标注' : '继续标注' }}</el-button>
+                <el-button type="text" size="small" @click="handleMark(scope.row)">{{ scope.row.doneCount === 0 ? '开始标注' : '继续标注' }}</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -84,7 +84,7 @@
             <el-table-column align="center" prop="name" label="任务名称" min-width="120" />
             <el-table-column align="center" label="操作" min-width="180">
               <template slot-scope="scope">
-                <el-button type="primary" size="small" @click="handleRepair(scope.row)">继续标注</el-button>
+                <el-button type="text" size="small" @click="handleRepair(scope.row)">继续标注</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -120,7 +120,7 @@
 </template>
 
 <script>
-import { beginLabel, getProjectDetailInfo, imitateDoneMark, getTaskDataList } from '@/api/task'
+import {beginLabel, getProjectDetailInfo, getTaskDataList, jumpVerification} from '@/api/task'
 import PaginationComponent from '@/components/PaginationComponent'
 import PageContainer from '@/components/PageContainer'
 import tableMixin from '@/utils/tableMixin'
@@ -190,7 +190,7 @@ export default {
         this.repairTableData = obj.data
         this.repairQueryCondition.total = obj.total
       } else if (this.activeName === '2') {
-        const obj = await this.searchTaskDataList(this.recordQueryCondition, this.recordTableData, [])
+        const obj = await this.searchTaskDataList(this.recordQueryCondition, this.recordTableData, [2, 3, 6, 7])
         this.recordTableData = obj.data
         this.recordQueryCondition.total = obj.total
       }
@@ -238,31 +238,36 @@ export default {
       })
     },
     handleMark(info) {
-      this.$router.push({ name: 'Annotation', query: { taskId: info.id } })
-      // this.beginMark(); 暂时隐藏功能未开发 目前是一个模拟标注完成接口，后续删除
-      // imitateDoneMark(info.id).then(res => {
-      //   if (res.msg === 'success') {
-      //     this.$message.success('操作成功')
-      //     this.searchTaskList()
-      //   }
-      // }).catch(() => {
-      //   this.searchTaskList()
-      // })
+      jumpVerification(info.id, 0).then(res => {
+        if (res.msg === 'success') {
+          this.$router.push({
+            name: 'Annotation',
+            query: {
+              taskId: info.id,
+              type: 0
+            }
+          })
+        } else {
+          this.$message.error('有任务正在标注中！')
+        }
+      })
     },
     // 待验收状态下继续标注不需要领任务
     handleRepair(info) {
-      this.$router.push({ name: 'Annotation', query: { taskId: info.id } })
-      // imitateDoneMark(info.id).then(res => {
-      //   if (res.msg === 'success') {
-      //     this.$message.success('操作成功')
-      //   }
-      //   this.searchTaskList()
-      // }).catch(() => {
-      //   this.searchTaskList()
-      // })
+      jumpVerification(info.id, 0).then(res => {
+        if (res.msg === 'success') {
+          this.$router.push({
+            name: 'Annotation',
+            query: {
+              taskId: info.id,
+              type: 0
+            }
+          })
+        } else {
+          this.$message.error('有任务正在标注中！')
+        }
+      })
     },
-    // 开始标注动作
-    beginMark() {},
     changeStatus(val) {
       // 判断项目状态
       let status
@@ -284,6 +289,33 @@ export default {
           break
       }
       return status
+    },
+    changeTaskStatus(val) {
+      let taskStatus
+      switch (val) {
+        case 0:taskStatus = '未领取'
+          break
+        case 1:taskStatus = '标注中'
+          break
+        case 2:taskStatus = '一检'
+          break
+        case 3:taskStatus = '二检'
+          break
+        case 4:taskStatus = '待返修'
+          break
+        case 5:taskStatus = '已挂起'
+          break
+        case 6:taskStatus = '待验收'
+          break
+        case 7:taskStatus = '已完成'
+          break
+        case 8:taskStatus = '验收驳回'
+          break
+        default:
+          taskStatus = ''
+          break
+      }
+      return taskStatus
     }
   }
 }

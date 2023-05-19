@@ -26,6 +26,11 @@ const getProjectDataList = (projectStatus = 0) => {
  * @param {string} [startDate=''] 起始日期
  * @param {*} [teamIds=[]] 团队id，多选
  * @param {string} [description=''] 项目描述
+ * @param {string} [type=0] 项目类型
+ * @param {string} [managerId=0] 项目经理ID
+ * @param {string} [managerNickname=''] 项目经理名称
+ * @param {string} [atId=0] 验收员id
+ * @param {string} [0=0] 验收员名称
  * @return {*}
  */
 const confirmInitData = ({
@@ -40,7 +45,9 @@ const confirmInitData = ({
   description = '',
   type = 0,
   managerId = 0,
-  managerNickname = ''
+  managerNickname = '',
+  atId = 0,
+  atNickname = ''
 }) => {
   return POST('/admin/project/inc', {
     chunkSize,
@@ -54,7 +61,9 @@ const confirmInitData = ({
     description,
     type,
     managerId,
-    managerNickname
+    managerNickname,
+    atId,
+    atNickname
   })
 }
 

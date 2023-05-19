@@ -41,7 +41,7 @@
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="search">筛选</el-button>
-              <el-button plain @click="handleReset">重置</el-button>
+              <el-button plain @click="resetSearchCondition">重置</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -58,12 +58,17 @@
       >
         <el-table-column align="center" prop="id" label="任务ID" />
         <el-table-column align="center" prop="name" label="任务名称" />
+        <el-table-column align="center" prop="status" label="任务名称">
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.status === 7?'success' : ''">{{ changeStatus(scope.row.status) }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column align="center" prop="userNickname" label="标注员" />
         <el-table-column align="center" prop="checkUserNickname" label="一检质检员" />
         <el-table-column align="center" prop="recheckUserNickname" label="二检质检员" />
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="handleDetail(scope.row)">查看</el-button>
+            <el-button type="text" @click="acceptanceTask(scope.row)">验收任务</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -82,7 +87,7 @@
 import PageContainer from '@/components/PageContainer'
 import tableMixin from '@/utils/tableMixin'
 import PaginationComponent from '@/components/PaginationComponent'
-import {getTeamUserList, queryProjectDetails, queryTaskList} from '@/api/check'
+import {getRandomDataList, getTeamUserList, queryProjectDetails, queryTaskList} from '@/api/check'
 
 export default {
   name: 'ProjectDetails',
@@ -91,7 +96,7 @@ export default {
   data() {
     return {
       tableLoading: false,
-      tableData: [{}],
+      tableData: [],
       titleData: {},
       page: 1,
       limit: 20,
@@ -138,13 +143,23 @@ export default {
       this.searchCondition.pageIndex = this.page
       this.searchCondition.projectId = this.$route.query.projectId
       this.tableLoading = true
-      queryTaskList(this.searchCondition).then(res => {
-        this.tableData = res.data.records
-        this.tableLoading = false
-        this.total = res.data.total
-      }).catch(() => {
-        this.tableLoading = false
-      })
+      if (this.$route.query.percent) {
+        getRandomDataList({...this.searchCondition, percent: this.$route.query.percent}).then(res => {
+          this.tableData = res.data.records
+          this.tableLoading = false
+          this.total = res.data.total
+        }).catch(() => {
+          this.tableLoading = false
+        })
+      } else {
+        queryTaskList(this.searchCondition).then(res => {
+          this.tableData = res.data.records
+          this.tableLoading = false
+          this.total = res.data.total
+        }).catch(() => {
+          this.tableLoading = false
+        })
+      }
     },
     changeStatus(val) { // 判断状态
       let status
@@ -163,15 +178,25 @@ export default {
           break
         case 6:status = '待验收'
           break
-        default:status = '已完成'
+        case 7: status = '已通过'
+          break
+        case 8: status = '未通过'
+          break
+        default:status = ''
       }
       return status
     },
-    handleDetail() {
-      this.$message.info('查看')
+    acceptanceTask(val) { // 验收任务
+      this.$router.push({
+        name: 'Annotation',
+        query: {
+          taskId: val.id,
+          type: 3
+        }
+      })
     },
     // 重置
-    handleReset() {
+    resetSearchCondition() {
       this.searchCondition = this.$options.data().searchCondition
       this.search()
     }
