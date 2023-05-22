@@ -29,7 +29,7 @@ deploy-job:
     - cp -r ./$BUILDDIR/. $UPLOADDIR/$BUILDDIR # 将打包完成的文件复制到目标服务器
     - mv $UPLOADDIR/$BUILDDIR $UPLOADDIR/$PRODDIR # 将目标文件改为服务端真正文件
     - echo "前端文件完成更新👏👏👏"
-    - docker restart nginx
+    - systemctl restart nginx
     - echo "nginx 部署成功👏👏👏"
   after_script:
     - echo "完成install--> build--> deploy 🔥🔥🔥"
