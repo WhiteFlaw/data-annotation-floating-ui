@@ -192,7 +192,7 @@ export const asyncRoutes = [
     path: '/myTask',
     name: 'myTask',
     component: Layout,
-    meta: { title: '我的任务', icon: 'task-manange', roles: ['manager', 'teamLeader', 'qc', 'tagger'] },
+    meta: { title: '我的任务', icon: 'task-manange', roles: ['manager', 'teamLeader', 'qc', 'tagger', 'admin'] },
     redirect: '/myTask/taggingTask',
     alwaysShow: true,
     children: [
@@ -200,20 +200,20 @@ export const asyncRoutes = [
         path: 'taggingTask',
         name: 'taggingTask',
         component: () => import('@/views/myTask/index'),
-        meta: { title: '标注项目', roles: ['teamLeader', 'tagger'] },
+        meta: { title: '标注项目', roles: ['teamLeader', 'tagger', 'admin'] },
         redirect: '/myTask/taggingTask/project-list',
         children: [
           {
             path: 'project-list',
             name: 'AnnotatedItemList',
             component: () => import('@/views/myTask/taggingTask/index'),
-            meta: { title: '标注项目列表', roles: ['manager', 'teamLeader', 'tagger'] }
+            meta: { title: '标注项目列表', roles: ['manager', 'teamLeader', 'tagger', 'admin'] }
           },
           {
             path: 'taskDetail/:projectId',
             name: 'taskDetail',
             component: () => import('@/views/myTask/index'),
-            meta: { title: '项目详情', roles: ['manager', 'teamLeader', 'tagger'] },
+            meta: { title: '项目详情', roles: ['manager', 'teamLeader', 'tagger', 'admin'] },
             redirect: '/myTask/taggingTask/taskDetail/:projectId/task-list',
             hidden: true,
             children: [

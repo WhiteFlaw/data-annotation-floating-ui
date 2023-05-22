@@ -1,7 +1,7 @@
 /*
  * @Author: M.Ming
  * @Date: 2023-03-28 17:14:28
- * @LastEditTime: 2023-04-23 11:08:20
+ * @LastEditTime: 2023-05-22 11:23:44
  * @FilePath: \3d-data-admin\src\api\projectManagement.js
  * @Description: 项目管理功能接口API
  */
@@ -87,6 +87,14 @@ const getProjectGroupDetail = ({ pageIndex = 0, pageSize = 0, projectId = 0 }) =
 const assignToGroup = ({ projectId = 0, teamIds = [] }) => {
   return POST('/admin/project/dis-teams', { projectId, teamIds })
 }
+/**
+ * 获取单个任务信息，用于log
+ * @param {*} taskId
+ * @return {*}
+ */
+const getTaskLog = (taskId) => {
+  return GET(`/admin/tagging/${taskId}`)
+}
 
 export {
   getProjectsList,
@@ -96,5 +104,6 @@ export {
   getProjectDetail,
   getProjectChildTaskDetail,
   getProjectGroupDetail,
-  assignToGroup
+  assignToGroup,
+  getTaskLog
 }

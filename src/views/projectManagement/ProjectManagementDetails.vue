@@ -46,7 +46,9 @@
           </el-col>
           <el-col :md="12" :lg="8" :xl="6">
             <el-form-item label="项目状态：">
-              <el-tag v-if="projectInfoEditForm.status" :type="projectInfoEditForm.status === 3?'success' : ''">{{ filterProjectStatus(projectInfoEditForm.status) }}</el-tag>
+              <el-tag v-if="projectInfoEditForm.status" :type="projectInfoEditForm.status === 3 ? 'success' : ''">{{
+                filterProjectStatus(projectInfoEditForm.status)
+              }}</el-tag>
             </el-form-item>
           </el-col>
 
@@ -68,8 +70,8 @@
             }}
           </template>
         </el-table-column>
-        <el-table-column label="标注数据统计(2D/3D框数)" prop="" align="center" width="190" />
-        <el-table-column label="驳回次数" prop="" align="center" min-width="70" />
+        <el-table-column label="标注数据统计(2D/3D框数)" prop="boxCount" align="center" width="190" />
+        <el-table-column label="驳回次数" prop="rejectCount" align="center" min-width="70" />
         <el-table-column label="操作" align="left" header-align="center" fixed="right" width="100">
           <template slot-scope="scope">
             <el-button type="text" @click="viewTaskDetail(scope.row)"> 查看 </el-button>
@@ -80,6 +82,7 @@
       <pagination-component :total="total" :page-index="pageIndex" :page-size="pageSize" @pagination="changePage" />
       <edit-project-dialog :visible.sync="editProjectDialogShow" :edit-form-data="projectInfoEditForm" @shut-down-dialog="shutDownDialog" />
       <assign-to-group-dialog :visible.sync="editProjectGroupDialogShow" :edit-form-data="projectGroupEditForm" />
+      <task-logs :visible.sync="taskLogsDialogShow" :task-id="selectedTask.id" :task-name="selectedTask.name" />
     </template>
   </page-container>
 </template>
@@ -89,6 +92,7 @@ import PageContainer from '@/components/PageContainer'
 import PaginationComponent from '@/components/PaginationComponent'
 import EditProjectDialog from '@/views/projectManagement/components/EditProjectDialog'
 import AssignToGroupDialog from '@/views/projectManagement/components/AssignToGroupDialog'
+import TaskLogs from './components/TaskLogs.vue'
 import tableMixin from '@/utils/tableMixin'
 import { getProjectsList, getProjectDetail, getProjectChildTaskDetail, releaseProjectData, deleteProjectsList } from '@/api/projectManagement'
 import { projectStatusOptions, projectTypeOptions } from '@/api/common'
@@ -98,7 +102,8 @@ export default {
     PageContainer,
     PaginationComponent,
     EditProjectDialog,
-    AssignToGroupDialog
+    AssignToGroupDialog,
+    TaskLogs
   },
   mixins: [tableMixin],
   data() {
@@ -116,7 +121,12 @@ export default {
       editProjectGroupDialogShow: false,
       projectInfoEditForm: {},
       projectGroupEditForm: {},
-      projectStatisticsData: {}
+      projectStatisticsData: {},
+      taskLogsDialogShow: false,
+      selectedTask: {
+        id: 0,
+        name: ''
+      }
     }
   },
   computed: {},
@@ -280,10 +290,15 @@ export default {
       this.queryChildTasksData()
     },
     viewTaskDetail(row) {
-      console.log(row)
+      this.$router.push({ name: 'jobDetail', params: { taskId: row.id } })
     },
     viewTaskLog(row) {
       console.log(row)
+      this.selectedTask = {
+        id: Number(row.id),
+        name: row.name
+      }
+      this.taskLogsDialogShow = true
     },
     // 计算进度条
     format(val1, val2) {
