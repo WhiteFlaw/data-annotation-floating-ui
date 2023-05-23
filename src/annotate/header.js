@@ -45,6 +45,7 @@ var Header = function (
 
   if (cfg.disableCameraSelector) {
     this.cameraSelectorUi.style.display = 'none'
+    document.getElementById('camera-selector').parentElement.style.display = 'none'
   }
 
   // update scene selector ui
@@ -59,8 +60,8 @@ var Header = function (
     //         scene_selector_str += "<option value=" + scene + ">" + scene + "</option>";
     // }
     if(sceneDescList) scene_selector_str =`<option value="${sceneDescList}">${this.data.sceneAllData.taskName}</option>`;
-
     this.ui.querySelector('#scene-selector').innerHTML = scene_selector_str
+    document.getElementById('scene-selector-name').innerText = this.data.sceneAllData.taskName
 
   }
 

@@ -10,7 +10,9 @@
       <el-form inline>
         <el-row>
           <el-col :span="6">
-            <el-form-item label="项目编号:"> <el-tag size="mini" effect="dark" type="success">正式</el-tag>{{ info.id }} </el-form-item>
+            <el-form-item label="项目编号:">{{ info.id }}
+              <!-- <el-tag size="mini" effect="dark" type="success">正式</el-tag>  -->
+            </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="项目名称:">

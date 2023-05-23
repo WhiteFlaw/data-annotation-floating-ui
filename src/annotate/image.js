@@ -524,7 +524,7 @@ class ImageViewer { // 2D视图区
                 return;
             }
 
-            this.show_canvas();
+            // this.show_canvas();
 
             var trans_ratio = this.get_trans_ratio();
 

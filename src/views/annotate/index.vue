@@ -24,7 +24,6 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     const htmlClassName = document.documentElement.className
-    console.log(htmlClassName)
     if (htmlClassName.search('theme-dark') !== -1) {
       document.documentElement.className = ''
     }

@@ -113,6 +113,13 @@ export const asyncRoutes = [
         meta: { title: '项目详情', icon: '', roles: ['admin'] }
       },
       {
+        path: 'jobDetail/:projectId/:taskId',
+        name: 'jobDetailForAdmin',
+        component: () => import('@/views/myTask/jobDetail/index'),
+        meta: { title: '作业列表' },
+        hidden: true
+      },
+      {
         path: 'customer-management',
         name: 'CustomerManagement',
         component: () => import('@/views/customerManagement/index'),
@@ -192,7 +199,7 @@ export const asyncRoutes = [
     path: '/myTask',
     name: 'myTask',
     component: Layout,
-    meta: { title: '我的任务', icon: 'task-manange', roles: ['manager', 'teamLeader', 'qc', 'tagger', 'admin'] },
+    meta: { title: '我的任务', icon: 'task-manange', roles: ['manager', 'teamLeader', 'qc', 'tagger'] },
     redirect: '/myTask/taggingTask',
     alwaysShow: true,
     children: [
@@ -200,20 +207,20 @@ export const asyncRoutes = [
         path: 'taggingTask',
         name: 'taggingTask',
         component: () => import('@/views/myTask/index'),
-        meta: { title: '标注项目', roles: ['teamLeader', 'tagger', 'admin'] },
+        meta: { title: '标注项目', roles: ['teamLeader', 'tagger'] },
         redirect: '/myTask/taggingTask/project-list',
         children: [
           {
             path: 'project-list',
             name: 'AnnotatedItemList',
             component: () => import('@/views/myTask/taggingTask/index'),
-            meta: { title: '标注项目列表', roles: ['manager', 'teamLeader', 'tagger', 'admin'] }
+            meta: { title: '标注项目列表', roles: ['manager', 'teamLeader', 'tagger'] }
           },
           {
             path: 'taskDetail/:projectId',
             name: 'taskDetail',
             component: () => import('@/views/myTask/index'),
-            meta: { title: '项目详情', roles: ['manager', 'teamLeader', 'tagger', 'admin'] },
+            meta: { title: '项目详情', roles: ['manager', 'teamLeader', 'tagger'] },
             redirect: '/myTask/taggingTask/taskDetail/:projectId/task-list',
             hidden: true,
             children: [
