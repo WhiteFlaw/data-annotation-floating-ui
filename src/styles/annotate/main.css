@@ -324,7 +324,7 @@ canvas {
 	display: flex;
 	width: auto;
 	height: 45px;
-	padding: 0 10px 0 0;
+	padding: 0 10px 0 10px;
 	z-index: 3;
 	text-align: center;
 	font-size: smaller;
@@ -333,16 +333,43 @@ canvas {
 	background-color: var(--widget-background-color);
 }
 
-#header #tools > div:hover {
+#header #tools > div:not(.header-selector-container):hover {
 	background-color: var(--highlight-background-color);
+}
+
+#header #tools > .header-selector-container{
+  margin-right:10px;
+  display: flex;
+  align-items: center;
+  justify-content:stretch;
+  color:inherit;
+  background-color: inherit;
+}
+#header #tools > .header-selector-container> label{
+  margin-right:5px;
+  color:#808080
+}
+
+#header #tools > .header-selector-container> select{
+  cursor: pointer;
 }
 
 .header-button {
 	display: flex;
-	height: 45px;
-	align-items: center;
+	align-items:center;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: flex-end;
+  padding:5px;
+  cursor: pointer;
+}
+
+.header-button svg{
+  flex-grow: 1;
+}
+
+.header-button>span{
+  flex-shrink: 0;
+  line-height:18px;
 }
 
 #config-button {
@@ -412,7 +439,8 @@ canvas {
 }
 
 #header-action div {
-	min-width: 50px;
+  padding:0 5px;
+  cursor: pointer;
 }
 
 #header-action div:hover {
@@ -1206,7 +1234,7 @@ td {
 	display: none;
 }
 
-#log-wrapper #view {
+#log-wrapper #view  {
 	left: 400px;
 	top: 400px;
 	height: 400px;

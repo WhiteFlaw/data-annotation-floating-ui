@@ -290,10 +290,9 @@ export default {
       this.queryChildTasksData()
     },
     viewTaskDetail(row) {
-      this.$router.push({ name: 'jobDetail', params: { taskId: row.id } })
+      this.$router.push({ name: 'jobDetailForAdmin', params: { projectId: row.projectId, taskId: row.id } })
     },
     viewTaskLog(row) {
-      console.log(row)
       this.selectedTask = {
         id: Number(row.id),
         name: row.name

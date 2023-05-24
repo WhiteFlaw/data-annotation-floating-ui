@@ -1,5 +1,6 @@
 .comment-manager-wrapper {
-  display: flex;
+  /* display: flex; */
+  display: none;
   flex-direction: column;
   align-items: stretch;
   position: absolute;

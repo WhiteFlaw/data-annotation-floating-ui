@@ -43,22 +43,29 @@ export default {
             timestamp: this.taskInfo.createdTime
           },
           {
-            content: `${this.taskInfo.name} 任务开始(标注员：${this.taskInfo.userNickname})`,
+            content: `任务${this.taskInfo.userNickname ? `开始(标注员：${this.taskInfo.userNickname})` : '未被领取'}`,
             timestamp: this.taskInfo.startTime
           },
           {
-            content: `${this.taskInfo.name} 标注完成(标注员：${this.taskInfo.userNickname})`,
+            content: `标注${this.taskInfo.userNickname ? `完成(标注员：${this.taskInfo.userNickname})` : '未完成'}`,
             timestamp: this.taskInfo.endTime
           },
           {
-            content: `${this.taskInfo.name} 一检结束(质检员：${this.taskInfo.checkUserNickname})`,
+            content: `一检${this.taskInfo.checkUserNickname && this.taskInfo.checkStartTime ? `开始(质检员：${this.taskInfo.checkUserNickname})` : '未开始'}`,
+            timestamp: this.taskInfo.checkStartTime
+          },
+          {
+            content: `一检${this.taskInfo.checkUserNickname && this.taskInfo.checkTime ? `结束(质检员：${this.taskInfo.checkUserNickname})` : `${this.taskInfo.checkStartTime ? '未结束' : '未开始'}`}`,
             timestamp: this.taskInfo.checkTime
           },
           {
-            content: `${this.taskInfo.name} 二检结束(质检员：${this.taskInfo.recheckUserNickname})`,
+            content: `二检${this.taskInfo.recheckUserNickname && this.taskInfo.recheckStartTime ? `开始(质检员：${this.taskInfo.recheckUserNickname})` : '未开始'}`,
+            timestamp: this.taskInfo.recheckStartTime
+          },
+          {
+            content: `二检${this.taskInfo.recheckUserNickname && this.taskInfo.recheckTime ? `结束(质检员：${this.taskInfo.checkUserNickname})` : `${this.taskInfo.recheckStartTime ? '未结束' : '未开始'}`}`,
             timestamp: this.taskInfo.recheckTime
           }
-
         ]
       } else {
         this.$message.error(res.msg)
