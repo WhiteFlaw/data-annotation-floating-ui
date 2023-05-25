@@ -1,7 +1,7 @@
 {
   "name": "relax-admin-front",
   "version": "1.0.0",
-  "description": "妙缘堂管理后台",
+  "description": "数据管理后台",
   "author": "Steven Li <ligaojian2006@126.com>",
   "scripts": {
     "dev": "vue-cli-service serve",
@@ -16,13 +16,15 @@
   "dependencies": {
     "@tensorflow/tfjs": "^4.2.0",
     "axios": "0.18.1",
+    "chart.js": "~3.8.0",
     "core-js": "3.6.5",
     "element-ui": "~2.15.13",
     "js-cookie": "2.2.0",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
-    "vue": "2.6.12",
+    "vue": "~2.6.12",
+    "vue-chartjs": "~4.0.0",
     "vue-router": "3.0.6",
     "vuex": "3.1.0",
     "xlsx": "^0.18.5"

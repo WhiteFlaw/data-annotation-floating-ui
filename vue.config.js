@@ -38,7 +38,7 @@ module.exports = {
     },
     proxy: {
       [process.env.VUE_APP_PYTHON_API]: {
-        // target: `http://101.42.38.16`,
+        // target: `http://10.30.211.214:8081/`,
         target: `http://192.168.1.123:8081/`,
         changeOrigin: true,
         pathRewrite: {
@@ -46,7 +46,7 @@ module.exports = {
         }
       },
       [process.env.VUE_APP_STATIC_URL]: {
-        // target: `http://101.42.38.16`,
+        // target: `http://10.30.211.214:8081/`,
         target: `http://192.168.1.123:8081/`,
         changeOrigin: true,
         pathRewrite: {
@@ -54,7 +54,7 @@ module.exports = {
         }
       },
       [process.env.VUE_APP_TOOL_STATIC_URL]: {
-        // target: `http://10.30.211.214/`,
+        // target: `http://10.30.211.214:9090/`,
         target: `http://192.168.1.123:9212/`,
         changeOrigin: true,
         pathRewrite: {

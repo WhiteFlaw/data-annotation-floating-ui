@@ -14,7 +14,8 @@ export default {
   name: 'Home',
   data() {
     return {
-      pointsGlobalConfig: ''
+      pointsGlobalConfig: '',
+      globalKeyDownManager: null
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -46,6 +47,9 @@ export default {
       this.start()
     })
   },
+  beforeDestroy() {
+    this.globalKeyDownManager.handlerList = []
+  },
   methods: {
     async start() {
       const mainEditor = await this.createMainEditor()
@@ -60,6 +64,8 @@ export default {
       if (scene && frame) {
         mainEditor.load_world(scene, frame)
       }
+
+      this.globalKeyDownManager = mainEditor.globalKeyDownManager
     },
     async createMainEditor() {
       const maindiv = document.querySelector('#main-editor')

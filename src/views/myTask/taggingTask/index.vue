@@ -29,61 +29,57 @@
         <el-button @click="resetQueryCondition">重置</el-button>
       </el-form>
     </div>
-    <div slot="content">
-      <!--      表格列字段名待调整-->
-      <el-table
-        v-loading="tableLoading"
-        :data="tableData"
-        style="width: 100%"
-        :max-height="tableMaxHeight"
-        border
-        stripe
-        highlight-current-row
-      >
-        <el-table-column prop="id" label="项目编号" min-width="180" align="center" />
-        <el-table-column prop="name" label="项目名称" min-width="180" align="center" />
-        <el-table-column prop="type" label="项目类型" min-width="100" align="center">
-          <template slot-scope="scope">
-            {{ scope.row.type === 1 ? '2D' : '3D' }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="status" label="项目状态" min-width="100" align="center">
-          <template slot-scope="scope">
-            <el-tag :type="changeStatus(scope.row.status, 'type')">{{ changeStatus(scope.row.status, 'value') }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="toBeClaimedCount" label="待领取" min-width="100" align="center" />
-        <el-table-column label="我的标注" align="center">
-          <el-table-column prop="annotatedCount" label="标注中" min-width="80" align="center">
+    <div slot="content" class="has-chart-container">
+      <div class="table-container">
+        <!--      表格列字段名待调整-->
+        <el-table v-loading="tableLoading" :data="tableData" style="width: 100%" :max-height="tableMaxHeight" border stripe highlight-current-row>
+          <el-table-column prop="id" label="项目编号" min-width="180" align="center" />
+          <el-table-column prop="name" label="项目名称" min-width="180" align="center" />
+          <el-table-column prop="type" label="项目类型" min-width="100" align="center">
             <template slot-scope="scope">
-              {{ scope.row.annotatedCount||0 }}
+              {{ scope.row.type === 1 ? '2D' : '3D' }}
             </template>
           </el-table-column>
-          <el-table-column prop="markedCount" label="已标注" min-width="80" align="center">
+          <el-table-column prop="status" label="项目状态" min-width="100" align="center">
             <template slot-scope="scope">
-              {{ scope.row.markedCount||0 }}
+              <el-tag :type="changeStatus(scope.row.status, 'type')">{{ changeStatus(scope.row.status, 'value') }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="toBeRepairedCount" label="待返修" min-width="80" align="center">
+          <el-table-column prop="toBeClaimedCount" label="待领取" min-width="100" align="center" />
+          <el-table-column label="我的标注" align="center">
+            <el-table-column prop="annotatedCount" label="标注中" min-width="80" align="center">
+              <template slot-scope="scope">
+                {{ scope.row.annotatedCount || 0 }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="markedCount" label="已标注" min-width="80" align="center">
+              <template slot-scope="scope">
+                {{ scope.row.markedCount || 0 }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="toBeRepairedCount" label="待返修" min-width="80" align="center">
+              <template slot-scope="scope">
+                {{ scope.row.toBeRepairedCount || 0 }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="putUpCount" label="已挂起" min-width="80" align="center">
+              <template slot-scope="scope">
+                {{ scope.row.putUpCount || 0 }}
+              </template>
+            </el-table-column>
+          </el-table-column>
+          <el-table-column label="操作" min-width="100" align="center">
             <template slot-scope="scope">
-              {{ scope.row.toBeRepairedCount||0 }}
+              <el-button type="text" size="small" @click="handleDetail(scope.row)"> 详情 </el-button>
             </template>
           </el-table-column>
-          <el-table-column prop="putUpCount" label="已挂起" min-width="80" align="center">
-            <template slot-scope="scope">
-              {{ scope.row.putUpCount||0 }}
-            </template>
-          </el-table-column>
-        </el-table-column>
-        <el-table-column label="操作" min-width="100" align="center">
-          <template slot-scope="scope">
-            <el-button type="text" size="small" @click="handleDetail(scope.row)">
-              详情
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <PaginationComponent v-if="total" :page-index="queryCondition.pageIndex" :page-size="queryCondition.pageSize" :total="total" @pagination="changePage" />
+        </el-table>
+        <PaginationComponent v-if="total" :page-index="queryCondition.pageIndex" :page-size="queryCondition.pageSize" :total="total" @pagination="changePage" />
+      </div>
+      <div class="chart-container">
+        <h2>标注工作量统计（当日）</h2>
+        <bar-chart :width="480" :height="360" :chart-data-sets="chartDataSets" />
+      </div>
     </div>
   </PageContainer>
 </template>
@@ -91,13 +87,16 @@
 <script>
 import PaginationComponent from '@/components/PaginationComponent'
 import PageContainer from '@/components/PageContainer'
-import {getProjectList} from '@/api/task'
+import { getProjectList } from '@/api/task'
 import tableMixin from '@/utils/tableMixin'
+import BarChart from '@/components/Charts/BarChart'
+import { getJobStatusChartData } from '@/api/common'
 export default {
   name: 'TaggingTask',
   components: {
     PaginationComponent,
-    PageContainer
+    PageContainer,
+    BarChart
   },
   mixins: [tableMixin],
   data() {
@@ -112,7 +111,8 @@ export default {
         distinction: 0
       },
       total: 0,
-      tableLoading: false
+      tableLoading: false,
+      chartDataSets: null
     }
   },
   mounted() {
@@ -122,6 +122,13 @@ export default {
   methods: {
     initPageData() {
       this.getTableMaxHeight()
+      getJobStatusChartData({ type: 0 }).then((res) => {
+        if (res.success) {
+          this.chartDataSets = [...res.data]
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
     },
     // 筛选按钮
     searchDataList() {
@@ -132,15 +139,18 @@ export default {
     // 筛选分页
     searchProjectDataList() {
       this.tableLoading = true
-      getProjectList(this.queryCondition).then(res => {
-        this.tableLoading = false
-        this.tableData = res.data.records
-        this.total = res.data.total
-      }).catch(() => {
-        this.tableLoading = false
-      })
+      getProjectList(this.queryCondition)
+        .then((res) => {
+          this.tableLoading = false
+          this.tableData = res.data.records
+          this.total = res.data.total
+        })
+        .catch(() => {
+          this.tableLoading = false
+        })
     },
-    changePage(val) { // 分页
+    changePage(val) {
+      // 分页
       this.queryCondition.pageIndex = val.page
       this.queryCondition.pageSize = val.limit
       this.searchProjectDataList()
@@ -175,13 +185,15 @@ export default {
     },
     // 点击详情按钮
     handleDetail(info) {
-      this.$router.push({name: 'taskDetail', params: {
-        projectId: info.id
-      }})
+      this.$router.push({
+        name: 'taskDetail',
+        params: {
+          projectId: info.id
+        }
+      })
     }
   }
 }
 </script>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>
