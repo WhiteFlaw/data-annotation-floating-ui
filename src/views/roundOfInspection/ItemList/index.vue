@@ -37,7 +37,7 @@
     </template>
     <template slot="content">
       <div class="has-chart-container">
-        <div class="table-container">
+        <div class="table-container" :style="`width:calc(100% - ${chartWidth + 30 + 'px'}`">
           <el-table v-loading="tableLoading" :data="tableData" border stripe highlight-current-row :max-height="tableMaxHeight">
             <el-table-column prop="id" align="center" label="项目ID" width="120" />
             <el-table-column prop="name" align="center" label="项目名称" min-width="150" />
@@ -100,7 +100,7 @@
         </div>
         <div class="chart-container">
           <h2>一检工作量统计（当日）</h2>
-          <bar-chart :width="480" :height="360" :chart-data-sets="chartDataSets" />
+          <bar-chart :width="chartWidth" :height="chartWidth * 0.75" label-name="任务数 / 小时" :chart-data-sets="chartDataSets" />
         </div>
       </div>
     </template>
@@ -136,10 +136,18 @@ export default {
       chartDataSets: null
     }
   },
+  computed: {
+    chartWidth() {
+      let w = 480
+      if (document.body.clientWidth <= 1366) w = 320
+      return w
+    }
+  },
   mounted() {
     this.initPageData()
     this.search()
   },
+
   methods: {
     // 页面初始化
     initPageData() {

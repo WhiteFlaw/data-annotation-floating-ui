@@ -30,7 +30,7 @@
       </el-form>
     </div>
     <div slot="content" class="has-chart-container">
-      <div class="table-container">
+      <div class="table-container" :style="`width:calc(100% - ${chartWidth + 30 + 'px'}`">
         <!--      表格列字段名待调整-->
         <el-table v-loading="tableLoading" :data="tableData" style="width: 100%" :max-height="tableMaxHeight" border stripe highlight-current-row>
           <el-table-column prop="id" label="项目编号" min-width="180" align="center" />
@@ -78,7 +78,7 @@
       </div>
       <div class="chart-container">
         <h2>标注工作量统计（当日）</h2>
-        <bar-chart :width="480" :height="360" :chart-data-sets="chartDataSets" />
+        <bar-chart :width="chartWidth" :height="chartWidth * 0.75" label-name="框数 / 小时" :chart-data-sets="chartDataSets" />
       </div>
     </div>
   </PageContainer>
@@ -113,6 +113,13 @@ export default {
       total: 0,
       tableLoading: false,
       chartDataSets: null
+    }
+  },
+  computed: {
+    chartWidth() {
+      let w = 480
+      if (document.body.clientWidth <= 1366) w = 320
+      return w
     }
   },
   mounted() {
