@@ -73,7 +73,13 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
   }
 
   this.addCommentListItem = function (event) {
+    if(!this.objectsList.length){
+      Message.error('任务尚未开始，不能进行批注！')
+      return false
+    }
     this.commentAddDialog.style.display = 'block'
+
+    this.commentAddDialog.addEventListener("keydown",e=>e.stopPropagation())
   }
 
   this.editCommentListItem = function (event) {
@@ -189,6 +195,8 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
       } else {
         return '共性问题'
       }
+    }else{
+      return '未标注'
     }
   }
 
