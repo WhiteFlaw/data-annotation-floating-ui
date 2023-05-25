@@ -227,9 +227,9 @@ function Images(sceneMeta, sceneName, frame) {
 
 function World(data, sceneName, frame, coordinatesOffset, on_preload_finished) {
   // world初始实例化不包括webglGroup, 所以会直接执行preload以生成webglGroup
-  this.data = data
-  this.sceneMeta = this.data.getMetaBySceneName(sceneName)
-  this.frameInfo = new FrameInfo(this.data, this.sceneMeta, sceneName, frame)
+  this.data = data;
+  this.sceneMeta = this.data.getMetaBySceneName(sceneName);
+  this.frameInfo = new FrameInfo(this.data, this.sceneMeta, sceneName, frame);
 
   this.coordinatesOffset = coordinatesOffset
 

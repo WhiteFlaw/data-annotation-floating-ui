@@ -2280,11 +2280,13 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
     this.use_previous_frame = async function () {
         var old_frame = this.frameManager.frame;
-        var sceneName = this.header.querySelector('#scene-selector').value;
+        var sceneName = this.header.sceneSelectorUi.value;
 
-        var new_frame = this.data.world.frameInfo.frame_index - 1;
+        console.log(this.frameManager.frameIndex - 1)
+        var new_frame = this.data.findWorld(sceneName, this.frameManager.frameIndex - 2).frameInfo.frame;
         var new_world = await this.data.getWorld(sceneName, new_frame); // world in previous frame.
 
+        console.log(old_frame, new_frame)
         this.change_world(old_frame, new_world, () => { }, true);
         this.nonuse_previous_frame()
     }
