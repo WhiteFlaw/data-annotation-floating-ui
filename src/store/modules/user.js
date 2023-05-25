@@ -8,7 +8,8 @@ const getDefaultState = () => {
     name: '',
     avatar: '',
     roles: [],
-    nickname: '' // 账号名称
+    nickname: '', // 账号名称
+    userId: '' // 用户id
   }
 }
 
@@ -32,6 +33,9 @@ const mutations = {
   },
   SET_NICK_NAME: (state, nickname) => {
     state.nickname = nickname
+  },
+  SET_USER_ID: (state, userId) => {
+    state.userId = userId
   }
 }
 
@@ -59,12 +63,12 @@ const actions = {
           return reject('Verification failed, please Login again.')
         }
 
-        const { name, roles } = data
+        const { name, roles, nickname, id } = data
         data.roles = roles
-        const nickname = data.nickname
         commit('SET_NAME', name)
         commit('SET_ROLES', roles)
         commit('SET_NICK_NAME', nickname)
+        commit('SET_USER_ID', id)
         resolve(data)
       }).catch(error => {
         reject(error)

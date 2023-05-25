@@ -27,7 +27,7 @@
               {{ titleData.type ? (titleData.type === 0 ? '未设定' : (titleData.type === 1 ? '2D' : '3D')) : '' }}
             </el-form-item>
           </el-col>
-          <el-col :span="20">
+          <el-col :span="18">
             <el-form-item label="标注员：">
               <el-select v-model="searchCondition.userId" filterable placeholder="请选择标注员">
                 <el-option :value="0" label="全部" />
@@ -44,8 +44,9 @@
               <el-button plain>重置</el-button>
             </el-form-item>
           </el-col>
-          <el-col :span="4" class="text-align-right">
-            <el-button v-if="activeName === '8'" :loading="batchRejectionLoading" type="primary" @click="batchRejection">批量驳回</el-button>
+          <el-col :span="6" class="text-align-right">
+            <el-button v-if="activeName === '2'" :loading="batchCompletionLoading" type="primary" @click="batchCompletion">批量完成</el-button>
+            <el-button :loading="batchRejectionLoading" type="primary" @click="batchRejection">批量驳回</el-button>
           </el-col>
           <el-col>
             <el-tabs v-model="activeName" type="card" @tab-click="handleClick()">
@@ -66,12 +67,12 @@
         :max-height="tableMaxHeight"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column v-if="activeName === '8'" type="selection" width="60" align="center" />
+        <el-table-column type="selection" width="60" align="center" />
         <el-table-column min-width="150" align="center" prop="id" label="任务ID" />
         <el-table-column min-width="150" align="center" prop="name" label="任务名称" />
         <el-table-column min-width="100" align="center" prop="status" label="任务状态">
           <template slot-scope="scope">
-            <el-tag :type="scope.row.status === 3?'success' : ''">{{ changeStatus(scope.row.status) }}</el-tag>
+            <el-tag :type="scope.row.status === 3?'success' : (changeStatus(scope.row) === '一检中'? 'warning' : '')">{{ changeStatus(scope.row) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="userNickname" align="center" label="标注员" width="100" />
@@ -82,7 +83,8 @@
         </el-table-column>
         <el-table-column align="center" label="操作" min-width="200">
           <template slot-scope="scope">
-            <el-button v-if="activeName === '2'" type="text" :disabled="!!scope.row.checkUserId" @click="receiveQualityInspection(scope.row)">领取质检</el-button>
+            <el-button v-if="activeName === '2' && !scope.row.checkUserId" type="text" :disabled="!!scope.row.checkUserId" @click="receiveQualityInspection(scope.row)">领取质检</el-button>
+            <el-button v-if="activeName === '2' && scope.row.checkUserId" type="text" :disabled="!scope.row.checkUserId || scope.row.checkUserId !== userId" @click="continuedQualityInspection(scope.row)">继续质检</el-button>
             <el-button v-if="activeName === '2'" type="text" :disabled="!scope.row.checkUserId" @click="completionOfFirstInspection(scope.row)">一检完成</el-button>
             <el-button v-if="activeName === '2'" type="text" :disabled="!scope.row.checkUserId" @click="rejectTheTaskData(scope.row)">一检驳回</el-button>
             <el-button v-if="activeName === '8'" type="text" @click="updateTask(scope.row)">修改任务</el-button>
@@ -111,6 +113,7 @@ import {
   receiveQualityInspectionTask, rejectTheTask, updateCompletionOfFirstInspection
 } from '@/api/roundOfInspection'
 import PaginationComponent from '@/components/PaginationComponent'
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'ProjectDetails',
@@ -134,8 +137,13 @@ export default {
       },
       teamUserList: [], // 接收团队人员列表
       selectList: [], // 勾选数据
-      batchRejectionLoading: false
+      batchRejectionLoading: false,
+      batchCompletionLoading: false
     }
+  },
+  computed: {
+    // 获取登陆人Id
+    ...mapGetters(['userId'])
   },
   mounted() {
     this.searchProjectDetails()
@@ -148,26 +156,43 @@ export default {
       this.getTableMaxHeight()
     },
     handleClick() { // tabs切换方法
+      // this.selectList = []
       this.search()
     },
     handleSelectionChange(val) { // 勾选
       this.selectList = val
     },
     batchRejection() { // 批量驳回
-      if (this.selectList.length === 0) {
-        this.$message.error('请选择要驳回的数据！')
-        return false
-      }
-      this.batchRejectionLoading = true
-      batchRejectTag(this.selectList).then(res => {
-        this.batchRejectionLoading = false
-        if (res.msg === 'success') {
-          this.$message.success('操作成功！')
-          this.searchData()
+      if (this.activeName === '8') {
+        if (this.selectList.length === 0) {
+          this.$message.error('请选择要驳回的数据！')
+          return false
         }
-      }).catch(() => {
-        this.batchRejectionLoading = false
-      })
+        this.batchRejectionLoading = true
+        batchRejectTag(this.selectList).then(res => {
+          this.batchRejectionLoading = false
+          if (res.msg === 'success') {
+            this.$message.success('操作成功！')
+            this.searchData()
+          }
+        }).catch(() => {
+          this.batchRejectionLoading = false
+        })
+      } else {
+        if (!this.selectList.length) {
+          this.$message.error('请选择任务！')
+          return
+        }
+        const selectDataList = this.selectList.map(item => {
+          return item.id
+        })
+        rejectTheTask(selectDataList, 1).then(res => {
+          if (res.msg === 'success') {
+            this.$message.success('操作成功！')
+            this.searchData()
+          }
+        })
+      }
     },
     searchProjectDetails() { // 查询项目详情
       const id = this.$route.query.projectId
@@ -204,12 +229,17 @@ export default {
     },
     changeStatus(val) { // 判断状态
       let status
-      switch (val) {
+      switch (val.status) {
         case 0:status = '未领取'
           break
         case 1:status = '标注中'
           break
-        case 2:status = '一检'
+        case 2:
+          if (val.checkUserId) {
+            status = '一检中'
+          } else if (!val.checkUserId) {
+            status = '待一检'
+          }
           break
         case 3:status = '二检'
           break
@@ -241,7 +271,9 @@ export default {
       })
     },
     completionOfFirstInspection(val) { // 一检完成
-      updateCompletionOfFirstInspection(Number(val.id), 1).then(res => {
+      const dataList = []
+      dataList.push(val.id)
+      updateCompletionOfFirstInspection(dataList, 1).then(res => {
         if (res.msg === 'success') {
           this.$message.success('操作成功！')
           this.searchData()
@@ -249,7 +281,9 @@ export default {
       })
     },
     rejectTheTaskData(val) { // 一检驳回
-      rejectTheTask(Number(val.id), 1).then(res => {
+      const dataList = []
+      dataList.push(val.id)
+      rejectTheTask(dataList, 1).then(res => {
         if (res.msg === 'success') {
           this.$message.success('操作成功！')
           this.searchData()
@@ -262,6 +296,30 @@ export default {
         query: {
           taskId: val.id,
           type: 1
+        }
+      })
+    },
+    continuedQualityInspection(val) { // 继续质检
+      this.$router.push({
+        name: 'Annotation',
+        query: {
+          taskId: val.id,
+          type: 1
+        }
+      })
+    },
+    batchCompletion() { // 批量完成
+      if (!this.selectList.length) {
+        this.$message.error('请选择任务！')
+        return
+      }
+      const selectDataList = this.selectList.map(item => {
+        return item.id
+      })
+      updateCompletionOfFirstInspection(selectDataList, 1).then(res => {
+        if (res.msg === 'success') {
+          this.$message.success('操作成功！')
+          this.searchData()
         }
       })
     }

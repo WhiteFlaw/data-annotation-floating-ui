@@ -54,22 +54,22 @@ export function receiveQualityInspectionTask(taskId, checkType) {
 
 /**
  * 一检完成
- * @param taskId 任务id
+ * @param data 任务id
  * @param checkType 一检二检区分
  * @returns {*}
  */
-export function updateCompletionOfFirstInspection(taskId, checkType) {
-  return PUT(`/admin/qc/done-qc-task/${taskId}`, {}, {checkType})
+export function updateCompletionOfFirstInspection(data, checkType) {
+  return PUT(`/admin/qc/done-qc-task`, data, {checkType})
 }
 
 /**
  * 驳回任务
- * @param taskId 任务id
+ * @param data 任务id
  * @param checkType 一检二检区分
  * @returns {*}
  */
-export function rejectTheTask(taskId, checkType) {
-  return PUT(`/admin/qc/reject-qc/${taskId}`, {}, {checkType})
+export function rejectTheTask(data, checkType) {
+  return PUT(`/admin/qc/reject-qc`, data, {checkType})
 }
 
 /**

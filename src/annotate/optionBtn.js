@@ -128,11 +128,19 @@ const OptionButtons = function (data, frameManager) {
   }
   //一检和二检 通过或驳回
   this.tsWork = (type) => {
-    const data = {
-      homeworkId: this.data.sceneAllData.homework_list.find((f) => f.name === this.data.world.frameInfo.frame)['id'],
-      type: type
-    }
+    // const data = {
+    //   homeworkId: this.data.sceneAllData.homework_list.find((f) => f.name === this.data.world.frameInfo.frame)['id'],
+    //   type: type
+    // }
+    let scene = this.data.world.frameInfo.scene
     buttonLoading = true
+    objIdManager.load_obj_ids_of_scene(scene, (objs) => {
+      const data = {
+        boxCount: objs.reduce((a, b) => a + b.count, 0),
+        homeworkId: this.data.sceneAllData.homework_list.find((f) => f.name === this.data.world.frameInfo.frame)['id'],
+        tagTime: '',
+        type: type
+      }
     this.testWork({ ...data })
       .then((res) => {
         buttonLoading = false
@@ -155,6 +163,7 @@ const OptionButtons = function (data, frameManager) {
       .catch(() => {
         buttonLoading = false
       })
+    })
   }
   //验收 合格或不合格
   this.acptWork = (type) => {
