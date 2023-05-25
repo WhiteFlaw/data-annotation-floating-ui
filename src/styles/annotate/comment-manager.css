@@ -5,8 +5,9 @@
   align-items: stretch;
   position: absolute;
   left: 5px;
-  bottom: 0px;
-  height: calc(100vh - 645px - 10px);
+  top: calc(100vh - 350px);
+  height: 300px;
+  max-height: 300px;
   width: 300px;
   overflow: hidden;
   background-color: rgb(57, 59, 62);

@@ -71,6 +71,7 @@ class Data {
   createWorldIndex = 0 // this index shall not repeat, so it increases permanently
 
   async getWorld(sceneName, frame, on_preload_finished) {
+    console.log(frame)
     // find in list
 
     if (!this.meta[sceneName]) {
@@ -111,6 +112,7 @@ class Data {
   _createWorld(sceneName, frame, on_preload_finished) {
     let [x, y, z] = this.allocateOffset()
     // console.log('create world', x, y, z,this)
+    console.log(frame);
     let world = new World(this, sceneName, frame, [this.worldGap * x, this.worldGap * y, this.worldGap * z], on_preload_finished)
     world.offsetIndex = [x, y, z]
     this.createWorldIndex++
@@ -128,13 +130,13 @@ class Data {
       return world
     else return null
   }
-
+  
   getFrameIndex() {
-    return this.worldList[0].frameInfo.frame_index + 1
+    return this.worldList[0].frameInfo.frame_index + 1;
   }
 
   getFrameList() {
-    return this.worldList[0].frameInfo.sceneMeta.frames
+    return this.worldList[0].frameInfo.sceneMeta.frames;
   }
 
   offsetList = [[0, 0, 0]]

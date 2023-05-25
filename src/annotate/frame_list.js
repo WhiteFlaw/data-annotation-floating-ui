@@ -20,8 +20,6 @@ const FrameManager = function (parentUi, data, onFrameChanged, toPreviousFrame, 
     this.frameManagerPreviousUi = this.ui.querySelector('#frame-manager-previous');
     this.frameManagerNextUi = this.ui.querySelector('#frame-manager-next');
 
-
-
     this.frameManagerListUi.onclick = (e) => {
         this.onFrameChanged(e);
         this.after_frame_click(e);
