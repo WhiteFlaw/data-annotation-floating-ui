@@ -1,11 +1,11 @@
 /*
  * @Author: M.Ming
  * @Date: 2023-03-31 11:29:41
- * @LastEditTime: 2023-04-23 15:08:33
+ * @LastEditTime: 2023-05-25 11:37:50
  * @FilePath: \3d-data-admin\src\api\common.js
  * @Description: 通用（下拉列表等）接口API
  */
-const { GET } = require('@/utils/http-client')
+const { GET, POST } = require('@/utils/http-client')
 
 /**
  * 获取所有客户列表
@@ -81,6 +81,10 @@ const projectTypeOptions = [
   { id: 2, name: '3D' }
 ]
 
+const getJobStatusChartData = ({ dateTime = '', projectId = 0, type, userId = 0 }) => {
+  return POST('/admin/log-view/work-record', { dateTime, projectId, type, userId })
+}
+
 export {
   getAllCustomersList,
   getAllTeamsList,
@@ -91,5 +95,6 @@ export {
   getTeamLeaderOptions,
   projectStatusOptions,
   projectTypeOptions,
-  getAcceptanceOfficerList
+  getAcceptanceOfficerList,
+  getJobStatusChartData
 }

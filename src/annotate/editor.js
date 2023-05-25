@@ -2390,7 +2390,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
     this.on_load_world_finished = function (world, updateFrameInfo = true) {
 
-        document.title = "SUSTech POINTS-" + world.frameInfo.scene;
+        // document.title = "SUSTech POINTS-" + world.frameInfo.scene;
+        document.title = `标注平台-${world.frameInfo.scene}`
         // switch view positoin
         this.moveAxisHelper(world);
         this.moveRangeCircle(world);
