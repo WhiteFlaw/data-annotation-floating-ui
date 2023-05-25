@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible="visible" :title="title" width="480px" top="10vh" append-to-body destroy-on-close @open="initLogDialog" @close="closeDialog">
+  <el-dialog :close-on-click-modal="false" :visible="visible" :title="title" width="480px" top="10vh" append-to-body destroy-on-close @open="initLogDialog" @close="closeDialog">
     <el-timeline>
       <el-timeline-item v-for="(activity, index) in activities" :key="index" :timestamp="activity.timestamp">
         {{ activity.content }}
@@ -43,27 +43,27 @@ export default {
             timestamp: this.taskInfo.createdTime
           },
           {
-            content: `任务${this.taskInfo.userNickname ? `开始(标注员：${this.taskInfo.userNickname})` : '未被领取'}`,
+            content: this.changeActivities(this.taskInfo, 0),
             timestamp: this.taskInfo.startTime
           },
           {
-            content: `标注${this.taskInfo.userNickname ? `完成(标注员：${this.taskInfo.userNickname})` : '未完成'}`,
+            content: this.changeActivities(this.taskInfo, 1),
             timestamp: this.taskInfo.endTime
           },
           {
-            content: `一检${this.taskInfo.checkUserNickname && this.taskInfo.checkStartTime ? `开始(质检员：${this.taskInfo.checkUserNickname})` : '未开始'}`,
+            content: this.changeActivities(this.taskInfo, 2),
             timestamp: this.taskInfo.checkStartTime
           },
           {
-            content: `一检${this.taskInfo.checkUserNickname && this.taskInfo.checkTime ? `结束(质检员：${this.taskInfo.checkUserNickname})` : `${this.taskInfo.checkStartTime ? '未结束' : '未开始'}`}`,
+            content: this.changeActivities(this.taskInfo, 3),
             timestamp: this.taskInfo.checkTime
           },
           {
-            content: `二检${this.taskInfo.recheckUserNickname && this.taskInfo.recheckStartTime ? `开始(质检员：${this.taskInfo.recheckUserNickname})` : '未开始'}`,
+            content: this.changeActivities(this.taskInfo, 4),
             timestamp: this.taskInfo.recheckStartTime
           },
           {
-            content: `二检${this.taskInfo.recheckUserNickname && this.taskInfo.recheckTime ? `结束(质检员：${this.taskInfo.checkUserNickname})` : `${this.taskInfo.recheckStartTime ? '未结束' : '未开始'}`}`,
+            content: this.changeActivities(this.taskInfo, 5),
             timestamp: this.taskInfo.recheckTime
           }
         ]
@@ -73,6 +73,110 @@ export default {
     },
     closeDialog() {
       this.$emit('update:visible', false)
+    },
+    changeActivities(val, qualityInspection) {
+      let content
+      if (qualityInspection === 0) {
+        if (val.status === 0) {
+          content = '任务未领取'
+        }
+        if (val.startTime) {
+          content = `任务开始(标注员：${val.userNickname})`
+        }
+      }
+      if (qualityInspection === 1) {
+        if (val.status === 0) {
+          content = '任务未领取'
+        } else if (val.status === 1) {
+          if (val.endTime) {
+            content = `任务完成(标注员：${val.userNickname})`
+          } else {
+            content = `任务进行中(标注员：${val.userNickname})`
+          }
+        } else {
+          content = `任务完成(标注员：${val.userNickname})`
+        }
+      }
+      if (qualityInspection === 2) {
+        if (val.status === 2) {
+          if (val.checkUserId) {
+            content = `一检开始(质检员：${val.checkUserNickname})`
+          } else {
+            content = '一检未被领取'
+          }
+        } else if (val.status === 0 || val.status === 1) {
+          content = '一检未被领取'
+        } else {
+          content = `一检开始(质检员：${val.checkUserNickname})`
+        }
+      }
+      if (qualityInspection === 3) {
+        if (val.status === 4) {
+          if (!val.recheckUserId) {
+            content = `一检驳回(质检员：${val.checkUserNickname})`
+          } else {
+            content = `一检完成(质检员：${val.checkUserNickname})`
+          }
+        } else if (val.status === 2) {
+          if (val.checkUserId) {
+            if (val.checkTime) {
+              content = `一检完成(质检员：${val.checkUserNickname})`
+            } else {
+              content = `一检进行中(质检员：${val.checkUserNickname})`
+            }
+          } else {
+            content = '一检未被领取'
+          }
+        } else if (val.status === 0 || val.status === 1 || val.status === 5) {
+          content = '一检未被领取'
+        } else if (val.status === 8) {
+          content = '验收驳回'
+        } else {
+          content = `一检完成(质检员：${val.checkUserNickname})`
+        }
+      }
+      if (qualityInspection === 4) {
+        if (val.status === 0 || val.status === 1 || val.status === 2 || val.status === 4 || val.status === 5 || val.status === 8) {
+          content = '二检未被领取'
+        }
+        if (val.status === 4 && val.recheckUserId) {
+          content = `二检开始(质检员：${val.recheckUserNickname})`
+        }
+        if (val.status === 3) {
+          if (val.recheckUserId) {
+            if (val.recheckStartTime) {
+              content = `二检开始(质检员：${val.recheckUserNickname})`
+            } else {
+              content = '二检未被领取'
+            }
+          } else {
+            content = '二检未被领取'
+          }
+        }
+        if (val.status === 6 || val.status === 7) {
+          content = `二检开始(质检员：${val.recheckUserNickname})`
+        }
+      }
+      if (qualityInspection === 5) {
+        if (val.status === 4 && val.recheckUserId) {
+          content = `二检驳回(质检员：${val.recheckUserNickname})`
+        } else if (val.status === 6 || val.status === 7) {
+          content = `二检完成(质检员：${val.recheckUserNickname})`
+        } else if (val.status === 0 || val.status === 1 || val.status === 2 || val.status === 8 || val.status === 5 || val.status === 4) {
+          content = '二检未被领取'
+        } else if (val.status === 3) {
+          if (val.recheckUserId) {
+            if (val.recheckTime) {
+              content = `二检完成(质检员：${val.recheckUserNickname})`
+            } else {
+              content = `二检进行中(质检员：${val.recheckUserNickname})`
+            }
+          } else {
+            content = '二检未被领取'
+          }
+        }
+      }
+      return content
     }
   }
 }

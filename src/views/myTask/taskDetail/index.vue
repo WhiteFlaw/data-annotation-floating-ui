@@ -41,7 +41,7 @@
           </el-col>
           <el-col :span="2">
             <el-form-item>
-              <el-button type="primary" size="small" @click="handleBegin">领取任务</el-button>
+              <el-button type="primary" size="small" @click="claimTask">领取任务</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -68,16 +68,16 @@
             <el-table-column label="操作" min-width="180" align="center">
               <template slot-scope="scope">
                 <el-button type="text" size="small" @click="taskDetails(scope.row)">详情</el-button>
-                <el-button type="text" size="small" @click="handleMark(scope.row)">{{ scope.row.doneCount === 0 ? '开始标注' : '继续标注' }}</el-button>
+                <el-button type="text" size="small" @click="taggingTask(scope.row)">{{ scope.row.doneCount === 0 ? '开始标注' : '继续标注' }}</el-button>
               </template>
             </el-table-column>
           </el-table>
           <PaginationComponent
             v-if="markQueryCondition.total"
-            :page-index="markQueryCondition.pageIndex"
-            :page-size="markQueryCondition.pageSize"
-            :total="markQueryCondition.total"
-            @pagination="searchTaskList" />
+            :page-index.sync="markQueryCondition.pageIndex"
+            :page-size.sync="markQueryCondition.pageSize"
+            :total.sync="markQueryCondition.total"
+            @pagination="changePage" />
         </el-tab-pane>
         <el-tab-pane label="待返修" name="1">
           <!--          表格字段待调整-->
@@ -86,16 +86,16 @@
             <el-table-column align="center" prop="name" label="任务名称" min-width="120" />
             <el-table-column align="center" label="操作" min-width="180">
               <template slot-scope="scope">
-                <el-button type="text" size="small" @click="handleRepair(scope.row)">继续标注</el-button>
+                <el-button type="text" size="small" @click="continueTaggingTask(scope.row)">继续标注</el-button>
               </template>
             </el-table-column>
           </el-table>
           <PaginationComponent
             v-if="repairQueryCondition.total"
-            :page-index="repairQueryCondition.pageIndex"
-            :page-size="repairQueryCondition.pageSize"
-            :total="repairQueryCondition.total"
-            @pagination="searchTaskList" />
+            :page-index.sync="repairQueryCondition.pageIndex"
+            :page-size.sync="repairQueryCondition.pageSize"
+            :total.sync="repairQueryCondition.total"
+            @pagination="changePage" />
         </el-tab-pane>
         <el-tab-pane label="我的标注记录" name="2">
           <!--          表格字段待调整-->
@@ -103,18 +103,24 @@
             <el-table-column align="center" prop="id" label="任务ID" min-width="120" />
             <el-table-column align="center" prop="name" label="任务名称" min-width="180" />
             <el-table-column align="center" prop="endTime" label="标注完成时间" min-width="180" />
+            <el-table-column align="center" label="任务状态" min-width="180">
+              <template slot-scope="scope">
+                <el-tag :type="(changeAnnotationRecordStatus(scope.row)=== '一检中'|| changeAnnotationRecordStatus(scope.row)=== '二检中')?'warning' : 'success'">{{ changeAnnotationRecordStatus(scope.row) }}</el-tag>
+              </template>
+            </el-table-column>
             <el-table-column align="center" label="操作" min-width="180">
               <template slot-scope="scope">
                 <el-button type="text" size="small" @click="taskDetails(scope.row)">详情</el-button>
+                <el-button type="text" :disabled="!!scope.row.recheckUserId || !!scope.row.checkUserId" @click="updateTask(scope.row)">修改</el-button>
               </template>
             </el-table-column>
           </el-table>
           <PaginationComponent
             v-if="recordQueryCondition.total"
-            :page-index="recordQueryCondition.pageIndex"
-            :page-size="recordQueryCondition.pageSize"
-            :total="recordQueryCondition.total"
-            @pagination="searchTaskList" />
+            :page-index.sync="recordQueryCondition.pageIndex"
+            :page-size.sync="recordQueryCondition.pageSize"
+            :total.sync="recordQueryCondition.total"
+            @pagination="changePage" />
         </el-tab-pane>
       </el-tabs>
     </template>
@@ -151,7 +157,6 @@ export default {
         pageSize: 20,
         total: 0
       },
-      taskId: '', // 将要进行标注的id
       loading: false,
       info: {}, // 接收路由传递数据
       activeName: '0', // TAB选中项
@@ -192,7 +197,7 @@ export default {
         this.repairTableData = obj.data
         this.repairQueryCondition.total = obj.total
       } else if (this.activeName === '2') {
-        const obj = await this.searchTaskDataList(this.recordQueryCondition, this.recordTableData, [2, 3, 6, 7])
+        const obj = await this.searchTaskDataList(this.recordQueryCondition, this.recordTableData, [2, 3, 6, 7, 8])
         this.recordTableData = obj.data
         this.recordQueryCondition.total = obj.total
       }
@@ -212,25 +217,12 @@ export default {
         }
       })
     },
-    // 退回 功能注释  后续看需求调整
-    // handleBack(row) {
-    //   repairMark({taskId: row.id, status: 0}).then(res => {
-    //     if (res.msg === 'success') {
-    //       this.$message({
-    //         message: '操作成功',
-    //         type: 'success'
-    //       })
-    //       this.searchTaskList()
-    //     }
-    //   })
-    // },
-    // 开始标注 功能未完成  后续按需求调整
-    handleBegin() {
+    // 领取任务
+    claimTask() {
       beginLabel(this.info.id).then((res) => {
-        if (res) {
+        if (res.msg === 'success') {
           this.$message.success('操作成功')
           this.searchTaskList()
-          this.taskId = res.data.id
         } else {
           this.$message({
             message: res.msg,
@@ -239,7 +231,8 @@ export default {
         }
       })
     },
-    handleMark(info) {
+    // 标注中 开始标注/继续标注
+    taggingTask(info) {
       jumpVerification(info.id, 0).then(res => {
         if (res.msg === 'success') {
           this.$router.push({
@@ -255,7 +248,7 @@ export default {
       })
     },
     // 待验收状态下继续标注不需要领任务
-    handleRepair(info) {
+    continueTaggingTask(info) {
       jumpVerification(info.id, 0).then(res => {
         if (res.msg === 'success') {
           this.$router.push({
@@ -292,6 +285,7 @@ export default {
       }
       return status
     },
+    // 判断任务状态
     changeTaskStatus(val) {
       let taskStatus
       switch (val) {
@@ -318,14 +312,62 @@ export default {
           break
       }
       return taskStatus
+    },
+    // 我的标注记录修改任务
+    updateTask(val) {
+      this.$router.push({
+        name: 'Annotation',
+        query: {
+          taskId: val.id,
+          type: 0
+        }
+      })
+    },
+    // 我的标注记录 判断任务状态
+    changeAnnotationRecordStatus(val) {
+      let status
+      if (val.status === 2) {
+        if (!val.checkUserId) {
+          status = '待一检'
+        }
+        if (val.checkUserId) {
+          status = '一检中'
+        }
+      } else if (val.status === 3) {
+        if (!val.recheckUserId) {
+          status = '待二检'
+        }
+        if (val.recheckUserId) {
+          status = '二检中'
+        }
+      } else if (val.status === 6) {
+        status = '待验收'
+      } else if (val.status === 7) {
+        status = '已完成'
+      } else if (val.status === 8) {
+        status = '验收驳回'
+      }
+      return status
+    },
+    changePage(val) { // 分页
+      if (this.activeName === '0') {
+        this.markQueryCondition.pageIndex = val.page
+        this.markQueryCondition.pageSize = val.limit
+        this.searchTaskList()
+      } else if (this.activeName === '1') {
+        this.repairQueryCondition.pageIndex = val.page
+        this.repairQueryCondition.pageSize = val.limit
+        this.searchTaskList()
+      } else if (this.activeName === '2') {
+        this.recordQueryCondition.pageIndex = val.page
+        this.recordQueryCondition.pageSize = val.limit
+        this.searchTaskList()
+      }
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.btn {
-  display: flex;
-  justify-content: right;
-}
+
 </style>
