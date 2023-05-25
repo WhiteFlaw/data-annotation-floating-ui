@@ -20,7 +20,6 @@ class KeyDownManager {
     constructor()
     {
         document.addEventListener( 'keydown', (event)=>{
-
             for (let i = this.handlerList.length-1; i >= 0; i--)
             {
                 let ret = this.handlerList[i][1](event);
@@ -32,7 +31,7 @@ class KeyDownManager {
             }
         });
     }
-   
+
 }
 
 
