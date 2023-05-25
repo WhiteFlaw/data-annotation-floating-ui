@@ -48,6 +48,10 @@ export default {
       type: Array,
       default: () => []
     },
+    labelName: {
+      type: String,
+      default: ''
+    },
     labels: {
       type: Array,
       default: () => [
@@ -83,7 +87,7 @@ export default {
         labels: this.labels,
         datasets: [
           {
-            label: '任务数 / 小时',
+            label: this.labelName,
             backgroundColor: '#0B6EAF',
             data: this.chartDataSets
           }
