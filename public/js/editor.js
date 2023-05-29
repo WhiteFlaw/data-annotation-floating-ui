@@ -5,7 +5,7 @@ import { FastToolBox, FloatLabelManager } from "./floatlabel.js";
 import { Mouse } from "./mouse.js";
 import { BoxEditor, BoxEditorManager } from "./box_editor.js";
 import { ImageContextManager } from "./image.js";
-import { ImageContext } from "./image.js";
+import { ImageViewer } from "./image.js";
 import { LabelPanel } from "./label_panel.js";
 import { globalObjectCategory } from "./obj_cfg.js";
 import { backupManager } from "./backup/manager.js";
@@ -153,7 +153,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
             (lidar_points) => this.on_img_click(lidar_points)
         );
 
-        this.imageContext = new ImageContext(
+        this.imageViewer = new ImageViewer(
             this.editorUi.querySelector("#content"),
             this.editorCfg
         );
@@ -291,8 +291,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         //$( "#maincanvas" ).resizable();
 
 
-        this.imageContext.init_image_op();
         this.imageContextManager.init_image_op(() => this.selected_box);
+        this.imageViewer.init_image_op();
 
         this.add_global_obj_type();
         this.add_global_obj_occl();
@@ -1019,9 +1019,6 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         // this.imageContextManager.images[0].imageEditor.annotate_pic_clear();
         this.load_world(sceneName, frame); // editor.js 2313
         event.currentTarget.blur();
-
-        const frame_index = this.data.getFrameIndex();
-        const frame_length = this.data.getFrameList().length;
     };
 
     this.ensureBoxTrackIdExist = function () {
@@ -1766,7 +1763,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
                     //     this.editorUi.querySelector("#camera-selector").value=best_camera;
                     //     this.imageContextManager.boxes_manager.display_image();
                     // }
-                    this.imageContext.setBestCamera(best_camera);
+                    this.imageViewer.setBestCamera(best_camera);
                     this.imageContextManager.setBestCamera(best_camera);
                 }
             }
@@ -2431,7 +2428,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         this.unselectBox(null, true);
         this.unselectBox(null, true);
         this.render();
-        this.imageContext.attachWorld(world);
+        this.imageViewer.attachWorld(world);
+        this.imageViewer.update_image(world);
         this.imageContextManager.attachWorld(world);
         this.imageContextManager.render_2d_image();
         this.render2dLabels(world);
