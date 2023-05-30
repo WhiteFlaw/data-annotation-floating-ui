@@ -191,7 +191,7 @@ function BoxImageContext(ui) {
     }
 }
 
-class ImageContext/*  extends MovableView  */ { // image-wrapper
+class ImageViewer/*  extends MovableView  */ { // image-wrapper
 
     constructor(parentUi) {
         // create ui
@@ -243,13 +243,10 @@ class ImageContext/*  extends MovableView  */ { // image-wrapper
     }
 }
 
-class ImageViewer { // 2D视图区
-    constructor(parentUi, cfg) {
-        innerDOMString(imageManagerUiTemplate, parentUi)
-
-        let ui = parentUi.lastElementChild;
-        this.ui = ui;
-
+class ImageContext { // 2D视图区
+    constructor(parentUi, name, cfg) {
+        this.parentUi = parentUi;
+        this.name = name;
         this.cfg = cfg;
     }
 
@@ -257,8 +254,6 @@ class ImageViewer { // 2D视图区
     get_selected_box = null;
     drawing = false;
     points = [];
-    names = ['front', 'left', 'right'];
-    name = 'front'; // 当前操作的name
     polyline;
 
     all_lines = [];
@@ -309,9 +304,8 @@ class ImageViewer { // 2D视图区
 
     clear_main_canvas() {
 
-        for (let i = 0; i < this.names.length; i++) {
 
-            var boxes = this.ui.querySelector(`#svg-${this.names[i]}-boxes`).children// this.ui.querySelector("#svg-boxes").children;
+            var boxes = this.parentUi.querySelector(`#svg-${this.name}-boxes`).children;
 
             if (boxes.length > 0) {
                 for (var c = boxes.length - 1; c >= 0; c--) {
@@ -319,14 +313,13 @@ class ImageViewer { // 2D视图区
                 }
             }
 
-            var points = document.querySelector(`#svg-${this.names[i]}-points`).children// this.ui.querySelector("#svg-points").children;
+            var points = this.parentUi.querySelector(`#svg-${this.name}-points`).children;
 
             if (points.length > 0) {
                 for (var c = points.length - 1; c >= 0; c--) {
                     points[c].remove();
                 }
             }
-        }
     }
 
     attachWorld(world) {
@@ -400,12 +393,11 @@ class ImageViewer { // 2D视图区
             // getCalib内应该返回各个各个方向的矩阵, 而不是只返回当前方向
             var trans_ratio = this.get_trans_ratio();
             if (trans_ratio) {
-                for (let i = 0; i < this.names.length; i++) {
-                    if (!calib[this.names[i]]) {
-                        break;
+                    if (!calib[this.name]) {
+                        return;
                     }
 
-                    var imgfinal = box_to_2d_points(box, calib[this.names[i]]); // 根据当前方向的矩阵和box转换svg
+                    var imgfinal = box_to_2d_points(box, calib[this.name]);
 
                     if (imgfinal) {
                         var imgfinal = imgfinal.map(function (x, i) {
@@ -417,29 +409,28 @@ class ImageViewer { // 2D视图区
                         })
 
                         var svg_box = this.box_to_svg(box, imgfinal, trans_ratio);
-                        var svg = this.ui.querySelector(`#svg-${this.names[i]}-boxes`);
+                        var svg = this.parentUi.querySelector(`#svg-${this.name}-boxes`);
                         svg.appendChild(svg_box);
                     }
-                }
             }
         },
 
         onBoxSelected: (box_obj_local_id, obj_type) => {
-            var b = this.ui.querySelector("#svg-box-local-" + box_obj_local_id);
+            var b = this.parentUi.querySelector("#svg-box-local-" + box_obj_local_id);
             if (b) {
                 b.setAttribute("class", "box-svg-selected");
             }
         },
 
         onBoxUnselected: (box_obj_local_id, obj_type) => {
-            var b = this.ui.querySelector("#svg-box-local-" + box_obj_local_id);
+            var b = this.parentUi.querySelector("#svg-box-local-" + box_obj_local_id);
 
             if (b)
                 b.setAttribute("class", obj_type);
         },
 
         remove_box: (box_obj_local_id) => {
-            var b = this.ui.querySelector("#svg-box-local-" + box_obj_local_id);
+            var b = this.parentUi.querySelector("#svg-box-local-" + box_obj_local_id);
 
             if (b)
                 b.remove();
@@ -450,7 +441,7 @@ class ImageViewer { // 2D视图区
         },
 
         update_box: (box) => {
-            var b = this.ui.querySelector("#svg-box-local-" + box.obj_local_id);
+            var b = this.parentUi.querySelector("#svg-box-local-" + box.obj_local_id);
             if (!b) {
                 return;
             }
@@ -461,18 +452,17 @@ class ImageViewer { // 2D视图区
 
             var trans_ratio = this.get_trans_ratio();
 
-            for (let j = 0; j < this.names.length; j++) {
-
-                if (!calib[this.names[j]]) {
+                if (!calib[this.name]) {
                     return;
                 }
-                console.log(calib[this.names[j]]);
-                var imgfinal = box_to_2d_points(box, calib[this.names[j]]);
+
+                var imgfinal = box_to_2d_points(box, calib[this.name]);
 
                 if (!imgfinal) {
                     //box may go out of image
                     return;
                 }
+
                 var imgfinal = imgfinal.map(function (x, i) {
                     if (i % 2 == 0) {
                         return Math.round(x * trans_ratio.x);
@@ -508,16 +498,13 @@ class ImageViewer { // 2D视图区
                         line.setAttribute("y2", imgfinal[(i + 4) * 2 + 1]);
                     }
                 }
-            }
-
         }
     }
 
     draw_svg() {
         // draw picture
-        for (let i = 0; i < this.names.length; i++) {
 
-            var img = this.world.cameras.getImageByName(this.names[i]);
+            var img = this.world.cameras.getImageByName(this.name);
 
             if (!img || img.width == 0) {
                 this.hide_canvas();
@@ -530,12 +517,12 @@ class ImageViewer { // 2D视图区
 
             var calib = this.getCalib();
 
-            let svg = this.ui.querySelector(`#svg-${this.names[i]}-boxes`);
+            let svg = this.parentUi.querySelector(`#svg-${this.name}-boxes`);
 
             // draw boxes
             this.world.annotation.boxes.forEach((box) => {
-                if (box.draw && calib[this.names[i]]) {
-                    var imgfinal = box_to_2d_points(box, calib[this.names[i]]);
+                if (box.draw && calib[this.name]) {
+                    var imgfinal = box_to_2d_points(box, calib[this.name]);
                     if (imgfinal) {
                         var box_svg = this.box_to_svg(box, imgfinal, trans_ratio, this.get_selected_box() == box);
                         svg.appendChild(box_svg);
@@ -543,13 +530,13 @@ class ImageViewer { // 2D视图区
                 }
             });
 
-            svg = this.ui.querySelector(`#svg-${this.names[i]}-points`);
+            svg = this.parentUi.querySelector(`#svg-${this.name}-points`);
 
             // draw radar points
             if (this.cfg.projectRadarToImage) {
                 this.world.radars.radarList.forEach(radar => {
                     let pts = radar.get_unoffset_radar_points();
-                    let ptsOnImg = points3d_to_image2d(pts, calib[this.names[i]]);
+                    let ptsOnImg = points3d_to_image2d(pts, calib[this.name]);
 
                     // there may be none after projecting
                     if (ptsOnImg && ptsOnImg.length > 0) {
@@ -563,7 +550,7 @@ class ImageViewer { // 2D视图区
             // project lidar points onto camera image
             if (this.cfg.projectLidarToImage) {
                 let pts = this.world.lidar.get_all_points();
-                let ptsOnImg = points3d_to_image2d(pts, calib[this.names[i]], true, this.img_lidar_point_map, img.width, img.height);
+                let ptsOnImg = points3d_to_image2d(pts, calib[this.name], true, this.img_lidar_point_map, img.width, img.height);
 
                 // there may be none after projecting
                 if (ptsOnImg && ptsOnImg.length > 0) {
@@ -572,20 +559,18 @@ class ImageViewer { // 2D视图区
                     svg.appendChild(pts_svg);
                 }
             }
-
-        }
     }
 
     hide() {
-        this.ui.style.display = "none";
+        this.parentUi.querySelector(`#img-manager-${this.name}`).style.display = "none";
     };
 
     show() {
-        this.ui.style.display = "";
+        this.parentUi.querySelector(`#img-manager-${this.name}`).style.display = "";
     };
 
     hidden() {
-        this.ui.style.display == "none";
+        this.parentUi.querySelector(`#img-manager-${this.name}`).style.display == "none";
     };
 
     point_color_by_distance(x, y) {
@@ -631,8 +616,7 @@ class ImageViewer { // 2D视图区
         )
     }
 
-    // TODO 检查是否被调用
-    to_viewbox_coord(x, y) {
+    /* to_viewbox_coord(x, y) {
         var div = this.ui.querySelector("#maincanvas-svg");
 
         const imgSize = this.getImagePixelRatio();
@@ -642,19 +626,16 @@ class ImageViewer { // 2D视图区
 
         return [x, y];
 
-    }
+    } */
 
-    show_all_image() {
-        for (let i = 0; i < this.names.length; i++) {
+    show_image() {
+            var board = document.querySelector(`#svg-${this.name}-image`);
 
-            var board = document.querySelector(`#svg-${this.names[i]}-image`);
-
-            var img = this.world.cameras.getImageByName(this.names[i]);
+            var img = this.world.cameras.getImageByName(this.name);
 
             if (img == undefined) return;
 
             board.setAttribute("href", img.src);
-        }
     }
 
     points_to_svg(points, trans_ratio, cssclass, radius = 2) {
@@ -704,7 +685,7 @@ class ImageViewer { // 2D视图区
 
         this.clear_main_canvas();
 
-        this.show_all_image();
+        this.show_image();
 
         this.draw_svg();
     }
@@ -713,9 +694,9 @@ class ImageViewer { // 2D视图区
         // this.ui.style.display = "none";
     }
 
-    show_canvas() {
+    /* show_canvas() {
         this.ui.style.display = "inline";
-    }
+    } */
 }
 
 class ImageEditor { // 图片编辑器
@@ -1321,39 +1302,17 @@ class ImageEditor { // 图片编辑器
 
 class ImageContextManager { // 图片管理器
     constructor(parentUi, selectorUi, cfg, on_img_click) {
+        this.cfg = cfg;
         this.parentUi = parentUi;
         this.selectorUi = selectorUi;
-        this.cameras = null;
-        this.cfg = cfg;
         this.on_img_click = on_img_click;
+        this.cameras = ['front', 'left', 'right'];
 
-        this.addImage("", true);
+        this.addAllImage();
 
     }
+
     images = [];
-
-    updateCameraList(cameras) { // 改成给下拉框赋值
-        /* this.cameras = cameras;
-
-        let autoCamera = '<div class="camera-item" id="camera-item-auto">auto</div>';
-
-        if (this.images.find(i => i.autoSwitch)) {
-            autoCamera = '<div class="camera-item camera-selected" id="camera-item-auto">auto</div>';
-        }
-
-        let camera_selector_str = cameras.map(c => {
-
-            let existed = this.images.find(i => i.name == c && !i.autoSwitch);
-            let className = existed ? "camera-item camera-selected" : "camera-item";
-
-            return `<div class="${className}" id="camera-item-${c}">${c}</div>`;
-        }).reduce((x, y) => x + y, autoCamera);
-
-        let ui = this.selectorUi.querySelector("#camera-list");
-        ui.innerHTML = camera_selector_str;
-        ui.style.display = "none"; */
-
-    }
 
     setDefaultBestCamera(c) {
 
@@ -1367,12 +1326,20 @@ class ImageContextManager { // 图片管理器
         }
     }
 
+    addAllImage() {
+        innerDOMString(imageManagerUiTemplate, this.parentUi)
+
+        for(let i = 0; i < this.cameras.length; i++) {
+            this.addImage(this.cameras[i], false);
+        }
+    }
+
     addImage(name, autoSwitch) {
 
         if (autoSwitch && this.bestCamera && !name)
             name = this.bestCamera;
 
-        let image = new ImageViewer(this.parentUi, this.cfg);
+        let image = new ImageContext(this.parentUi, name, this.cfg);
 
         this.images.push(image);
 
@@ -1385,9 +1352,9 @@ class ImageContextManager { // 图片管理器
             image.render_2d_image();
         }
 
-        let selectorName = autoSwitch ? "auto" : name;
+        /* let selectorName = autoSwitch ? "auto" : name;
 
-        /* let ui = this.selectorUi.querySelector("#camera-item-" + selectorName);
+        let ui = this.selectorUi.querySelector("#camera-item-" + selectorName);
         if (ui)
             ui.className = "camera-item camera-selected"; */
 
@@ -1441,6 +1408,7 @@ class ImageContextManager { // 图片管理器
         this.init_image_op_para = op;
         this.images.forEach(i => i.init_image_op(op));
     }
+
     hidden() {
         return false;
     }
@@ -1621,4 +1589,4 @@ function choose_best_camera_for_point(scene_meta, center) {
 }
 
 
-export { ImageContextManager, BoxImageContext, ImageViewer, ImageContext };
+export { ImageContextManager, BoxImageContext, ImageViewer };
