@@ -2,7 +2,7 @@ import * as THREE from './lib/three.module.js';
 
 import { Mouse } from "./mouse.js";
 import { ViewManager } from "./view.js";
-import { ImageContext } from "./image.js";
+import { ImageViewer } from "./image.js";
 import { FrameManager } from './frame_list.js';
 import { ImageContextManager } from "./image.js";
 import { globalObjectCategory } from "./obj_cfg.js";
@@ -26,9 +26,9 @@ import { MovableView } from './popup_dialog.js';
 import { objIdManager } from "./obj_id_list.js";
 import { logger, create_logger } from "./log.js";
 import { autoAnnotate } from "./auto_annotate.js";
+import { CommentManager } from './comment_manager.js';
 import { reloadWorldList, saveWorldList } from "./save.js";
 import { globalKeyDownManager } from './keydown_manager.js';
-import { CommentManager } from './comment_manager.js';
 import { getPathParams, getClickDom } from './getPathParams.js';
 import { initOptionBtn, OptionButtons } from './optionBtn.js';
 
@@ -149,7 +149,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
             (lidar_points) => this.on_img_click(lidar_points)
         );
 
-        this.imageContext = new ImageContext(
+        this.imageViewer = new ImageViewer(
             this.editorUi.querySelector("#content"),
             this.editorCfg
         );
@@ -287,7 +287,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         //$( "#maincanvas" ).resizable();
 
 
-        this.imageContext.init_image_op();
+        this.imageViewer.init_image_op();
         this.imageContextManager.init_image_op(() => this.selected_box);
 
         this.add_global_obj_type();
@@ -989,10 +989,6 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
         this.editorUi.querySelector('#frame-manager-list').innerHTML = frame_list_str;
         this.editorUi.querySelector('#frame-manager-length').innerHTML = meta.frames.length;
-
-        if (meta.camera) {
-            this.imageContextManager.updateCameraList(meta.camera);
-        }
 
         //load_obj_ids_of_scene(sceneName);
     };
@@ -1754,7 +1750,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
                     //     this.editorUi.querySelector("#camera-selector").value=best_camera;
                     //     this.imageContextManager.boxes_manager.display_image();
                     // }
-                    this.imageContext.setBestCamera(best_camera);
+                    this.imageViewer.setBestCamera(best_camera);
                     this.imageContextManager.setBestCamera(best_camera);
                 }
             }
@@ -2399,8 +2395,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         this.unselectBox(null, true);
         this.unselectBox(null, true);
         this.render();
-        this.imageContext.attachWorld(world);
-        this.imageContext.update_image();
+        this.imageViewer.attachWorld(world);
+        this.imageViewer.update_image();
         this.imageContextManager.attachWorld(world);
         this.imageContextManager.render_2d_image();
         this.commentManager.updatedCommentLists(world)
