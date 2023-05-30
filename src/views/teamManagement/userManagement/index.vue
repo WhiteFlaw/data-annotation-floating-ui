@@ -57,12 +57,13 @@
             <el-tag :type="scope.row.status === 1 ? 'info' : 'success'">{{ scope.row.status === 1 ? '无效':'有效' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" min-width="300">
+        <el-table-column align="center" label="操作" min-width="380" fixed="right">
           <template slot-scope="scope">
             <el-button type="text" @click="editInformation(scope.row)">编辑信息</el-button>
             <el-button type="text" :disabled="scope.row.status === 1" @click="roleConfiguration(scope.row)">角色配置</el-button>
             <el-button type="text" :disabled="scope.row.status === 1" @click="deleteData(scope.row)">删除</el-button>
             <el-button type="text" :disabled="scope.row.status === 1" @click="updateUserInvalidation(scope.row)">用户无效化</el-button>
+            <el-button type="text" :disabled="scope.row.status === 0" @click="updateUserEnablement(scope.row)">用户有效化</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -93,7 +94,7 @@
 import RoleConfiguration from '@/views/teamManagement/userManagement/components/roleConfiguration'
 import EditInformation from '@/views/teamManagement/userManagement/components/editInformation'
 import MemberUploadDialog from '@/views/teamManagement/userManagement/components/userUploadDialog'
-import {deleteUserData, queryUserListData, userInvalidation} from '@/api/userManagement'
+import {deleteUserData, queryUserListData, updateUserData, userInvalidation} from '@/api/userManagement'
 import PageContainer from '@/components/PageContainer'
 import PaginationComponent from '@/components/PaginationComponent'
 import tableMixin from '@/utils/tableMixin'
@@ -213,6 +214,27 @@ export default {
         this.$message({
           type: 'info',
           message: '无效化已取消'
+        })
+      })
+    },
+    updateUserEnablement(row) { // 用户有效化
+      this.$confirm(`是否要有效化用户：${row.nickname}`, '温馨提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const updateObject = {...row}
+        updateObject.status = 0
+        updateUserData(updateObject).then(res => {
+          if (res.msg === 'success') {
+            this.$message.success('用户有效化成功')
+            this.searchData()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '有效化已取消'
         })
       })
     }
