@@ -42,8 +42,7 @@ export default {
       // }
 
       this.levelList = matched.filter((item) => item.meta && item.meta.title && item.meta.breadcrumb !== false)
-
-      if (this.levelList[1].name === 'jobDetailForAdmin') {
+      if (this.levelList.length > 1 && this.levelList[1].name === 'jobDetailForAdmin') {
         this.levelList.splice(1, 0, {
           path: `/project-management/details`,
           name: 'ProjectManagementDetails',
