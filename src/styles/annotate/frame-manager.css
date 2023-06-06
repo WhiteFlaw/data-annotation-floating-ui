@@ -17,7 +17,7 @@
 #frame-manager-pagination {
     display: flex;
     height: 90%;
-    width: 100px;
+    min-width: 120px;
     border-radius: 3px;
     align-items: center;
     color: #fff;
@@ -32,15 +32,28 @@
     align-items: center;
 }
 
-#frame-manager-index {
-    width: 20%;
-    height: 50%;
+#frame-manager-index,
+#frame-manager-length {
+   flex-shrink: 0;
+   margin-right:5px;
+    min-width:36px;
+    padding: 0 4px;
+    height: 16px;
+    line-height: 16px;
     color: #fff;
     outline: none;
     border-radius: 3px;
     text-align: center;
-    border: 1px solid rgb(102, 107, 124);
+    /* border: 1px solid rgb(102, 107, 124); */
+    border:none;
     background-color: rgb(57, 59, 62);
+}
+#frame-manager-index{
+  width:36px;
+}
+#frame-manager-length{
+  margin-left: 5px;
+  margin-right:0
 }
 
 #frame-manager-list {
