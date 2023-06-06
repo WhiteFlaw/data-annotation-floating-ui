@@ -73,13 +73,13 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
   }
 
   this.addCommentListItem = function (event) {
-    if(!this.objectsList.length){
+    if (!this.objectsList.length) {
       Message.error('任务尚未开始，不能进行批注！')
       return false
     }
     this.commentAddDialog.style.display = 'block'
 
-    this.commentAddDialog.addEventListener("keydown",e=>e.stopPropagation())
+    this.commentAddDialog.addEventListener('keydown', (e) => e.stopPropagation())
   }
 
   this.editCommentListItem = function (event) {
@@ -103,7 +103,7 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
     if (event.target.innerText === '查看') {
       if (this.selectedType === '1') {
         this.commonCommentRadio.parentElement.style.display = 'none'
-        this.commentAddFormSingle.querySelector('#object-list').setAttribute('disabled','')
+        this.commentAddFormSingle.querySelector('#object-list').setAttribute('disabled', '')
         this.commentAddFormSingle.querySelector('#comment-add-text-single').setAttribute('readonly', '')
       }
       if (this.selectedType === '0') {
@@ -195,9 +195,55 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
       } else {
         return '共性问题'
       }
-    }else{
+    } else {
       return '未标注'
     }
+  }
+
+  this.moveCommentsBody = function () {
+
+    let isDragging = false
+    const commentBody = document.getElementById('comment-manager-wrapper')
+
+    const startDrag = (e) => {
+      e.preventDefault()
+      let mX = 0
+      let mY = 0
+      let eX = 0
+      let eY = 0
+
+      const move = (e) => {
+        e.preventDefault()
+        const dX = mX - e.clientX
+        const dY = mY - e.clientY
+        commentBody.style.left = eX - dX + 'px'
+        commentBody.style.top = eY - dY + 'px'
+      }
+
+      const stop = (e) => {
+        e.preventDefault()
+        document.removeEventListener('mousemove',move)
+        isDragging = false
+        e.target.style.cursor = ''
+        clearTimeout(startTimer)
+        document.removeEventListener('mouseup',stop)
+      }
+
+      if (isDragging) {
+        stop(e)
+      }
+      const startTimer = setTimeout(() => {
+          isDragging = true
+          e.target.style.cursor = 'move'
+          mX = e.clientX
+          mY = e.clientY
+          eX = commentBody.offsetLeft
+          eY = commentBody.offsetTop
+          document.addEventListener('mouseup',stop)
+          document.addEventListener('mousemove', move)
+      }, 300)
+    }
+    commentBody.addEventListener('mousedown', startDrag)
   }
 
   this.addCommentBtn.onclick = this.addCommentListItem.bind(this)
@@ -208,4 +254,5 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
   this.commentAddSubmitBtnClose.onclick = this.addCommentSubmit.bind(this)
   this.commentAddCancelBtn.onclick = this.closeCommentAddDialog.bind(this)
   this.commentListUl.onclick = this.editCommentListItem.bind(this)
+  this.moveCommentsBody()
 }
