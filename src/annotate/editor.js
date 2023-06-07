@@ -102,6 +102,10 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
             () => { this.use_attribute_changed() }, // enable the default attribute.
             () => { this.use_category_changed() }, // enable the default category.
             () => { this.use_previous_frame_click() }, // use previous frame.
+            (isShow) => { this.onFrontCameraClicked(isShow) }, // show/hide front camera.
+            (isShow) => { this.onLeftCameraClicked(isShow) }, // show/hide left camera.
+            (isShow) => { this.onRightCameraClicked(isShow) }, // show/hide right camera.
+            (isShow) => { this.onToggleImageEditor(isShow) },
             () => { this.undo_click() },
             () => { this.redo_click() }
         );
@@ -2248,6 +2252,36 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
         this.previousFrameUi = document.querySelector("#dialog-wrapper");
         this.previousFrameUi.style.display = 'block';
+    }
+
+    this.onFrontCameraClicked = function (isShow) {
+        if(isShow) {
+            this.imageContextManager.removeImage('front');
+            return;
+        }
+        this.imageContextManager.addImage('front', false);
+    }
+    this.onLeftCameraClicked = function (isShow) {
+        if(isShow) {
+            this.imageContextManager.removeImage('left');
+            return
+        }
+        this.imageContextManager.addImage('left', false);
+    }
+    this.onRightCameraClicked = function (isShow) {
+        if(isShow) {
+            this.imageContextManager.removeImage('right');
+            return;
+        }
+        this.imageContextManager.addImage('right', false);
+    }
+
+    this.onToggleImageEditor = function (isShow) {
+        if(isShow) {
+            this.imageViewer.hide();
+            return;
+        }
+        this.imageViewer.show();
     }
 
     this.undo_click = function () {
