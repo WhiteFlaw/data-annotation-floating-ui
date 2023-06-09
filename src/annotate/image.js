@@ -241,6 +241,16 @@ class ImageViewer/*  extends MovableView  */ { // image-wrapper
             this.imageEditor.annotate_pic_reapply(this.name);
         }
     }
+
+    hide() {
+        console.log('hide ImageEditor.')
+        this.ui.style.display = 'none';
+    }
+    
+    show() {
+        console.log('show ImageEditor')
+        this.ui.style.display = 'block';
+    }
 }
 
 class ImageContext { // 2D视图区
@@ -305,21 +315,21 @@ class ImageContext { // 2D视图区
     clear_main_canvas() {
 
 
-            var boxes = this.parentUi.querySelector(`#svg-${this.name}-boxes`).children;
+        var boxes = this.parentUi.querySelector(`#svg-${this.name}-boxes`).children;
 
-            if (boxes.length > 0) {
-                for (var c = boxes.length - 1; c >= 0; c--) {
-                    boxes[c].remove();
-                }
+        if (boxes.length > 0) {
+            for (var c = boxes.length - 1; c >= 0; c--) {
+                boxes[c].remove();
             }
+        }
 
-            var points = this.parentUi.querySelector(`#svg-${this.name}-points`).children;
+        var points = this.parentUi.querySelector(`#svg-${this.name}-points`).children;
 
-            if (points.length > 0) {
-                for (var c = points.length - 1; c >= 0; c--) {
-                    points[c].remove();
-                }
+        if (points.length > 0) {
+            for (var c = points.length - 1; c >= 0; c--) {
+                points[c].remove();
             }
+        }
     }
 
     attachWorld(world) {
@@ -393,25 +403,25 @@ class ImageContext { // 2D视图区
             // getCalib内应该返回各个各个方向的矩阵, 而不是只返回当前方向
             var trans_ratio = this.get_trans_ratio();
             if (trans_ratio) {
-                    if (!calib[this.name]) {
-                        return;
-                    }
+                if (!calib[this.name]) {
+                    return;
+                }
 
-                    var imgfinal = box_to_2d_points(box, calib[this.name]);
+                var imgfinal = box_to_2d_points(box, calib[this.name]);
 
-                    if (imgfinal) {
-                        var imgfinal = imgfinal.map(function (x, i) {
-                            if (i % 2 == 0) {
-                                return Math.round(x * trans_ratio.x);
-                            } else {
-                                return Math.round(x * trans_ratio.y);
-                            }
-                        })
+                if (imgfinal) {
+                    var imgfinal = imgfinal.map(function (x, i) {
+                        if (i % 2 == 0) {
+                            return Math.round(x * trans_ratio.x);
+                        } else {
+                            return Math.round(x * trans_ratio.y);
+                        }
+                    })
 
-                        var svg_box = this.box_to_svg(box, imgfinal, trans_ratio);
-                        var svg = this.parentUi.querySelector(`#svg-${this.name}-boxes`);
-                        svg.appendChild(svg_box);
-                    }
+                    var svg_box = this.box_to_svg(box, imgfinal, trans_ratio);
+                    var svg = this.parentUi.querySelector(`#svg-${this.name}-boxes`);
+                    svg.appendChild(svg_box);
+                }
             }
         },
 
@@ -452,113 +462,113 @@ class ImageContext { // 2D视图区
 
             var trans_ratio = this.get_trans_ratio();
 
-                if (!calib[this.name]) {
-                    return;
+            if (!calib[this.name]) {
+                return;
+            }
+
+            var imgfinal = box_to_2d_points(box, calib[this.name]);
+
+            if (!imgfinal) {
+                //box may go out of image
+                return;
+            }
+
+            var imgfinal = imgfinal.map(function (x, i) {
+                if (i % 2 == 0) {
+                    return Math.round(x * trans_ratio.x);
+                } else {
+                    return Math.round(x * trans_ratio.y);
+                }
+            })
+
+            if (imgfinal) {
+                var front_panel = children[0];
+                front_panel.setAttribute("points",
+                    imgfinal.slice(0, 4 * 2).reduce(function (x, y) {
+                        return String(x) + "," + y;
+                    })
+                )
+
+
+
+                for (var i = 0; i < 4; ++i) {
+                    var line = children[1 + i];
+                    line.setAttribute("x1", imgfinal[(4 + i) * 2]);
+                    line.setAttribute("y1", imgfinal[(4 + i) * 2 + 1]);
+                    line.setAttribute("x2", imgfinal[(4 + (i + 1) % 4) * 2]);
+                    line.setAttribute("y2", imgfinal[(4 + (i + 1) % 4) * 2 + 1]);
                 }
 
-                var imgfinal = box_to_2d_points(box, calib[this.name]);
 
-                if (!imgfinal) {
-                    //box may go out of image
-                    return;
+                for (var i = 0; i < 4; ++i) {
+                    var line = children[5 + i];
+                    line.setAttribute("x1", imgfinal[i * 2]);
+                    line.setAttribute("y1", imgfinal[i * 2 + 1]);
+                    line.setAttribute("x2", imgfinal[(i + 4) * 2]);
+                    line.setAttribute("y2", imgfinal[(i + 4) * 2 + 1]);
                 }
-
-                var imgfinal = imgfinal.map(function (x, i) {
-                    if (i % 2 == 0) {
-                        return Math.round(x * trans_ratio.x);
-                    } else {
-                        return Math.round(x * trans_ratio.y);
-                    }
-                })
-
-                if (imgfinal) {
-                    var front_panel = children[0];
-                    front_panel.setAttribute("points",
-                        imgfinal.slice(0, 4 * 2).reduce(function (x, y) {
-                            return String(x) + "," + y;
-                        })
-                    )
-
-
-
-                    for (var i = 0; i < 4; ++i) {
-                        var line = children[1 + i];
-                        line.setAttribute("x1", imgfinal[(4 + i) * 2]);
-                        line.setAttribute("y1", imgfinal[(4 + i) * 2 + 1]);
-                        line.setAttribute("x2", imgfinal[(4 + (i + 1) % 4) * 2]);
-                        line.setAttribute("y2", imgfinal[(4 + (i + 1) % 4) * 2 + 1]);
-                    }
-
-
-                    for (var i = 0; i < 4; ++i) {
-                        var line = children[5 + i];
-                        line.setAttribute("x1", imgfinal[i * 2]);
-                        line.setAttribute("y1", imgfinal[i * 2 + 1]);
-                        line.setAttribute("x2", imgfinal[(i + 4) * 2]);
-                        line.setAttribute("y2", imgfinal[(i + 4) * 2 + 1]);
-                    }
-                }
+            }
         }
     }
 
     draw_svg() {
         // draw picture
 
-            var img = this.world.cameras.getImageByName(this.name);
+        var img = this.world.cameras.getImageByName(this.name);
 
-            if (!img || img.width == 0) {
-                this.hide_canvas();
-                return;
-            }
+        if (!img || img.width == 0) {
+            this.hide_canvas();
+            return;
+        }
 
-            // this.show_canvas();
+        // this.show_canvas();
 
-            var trans_ratio = this.get_trans_ratio();
+        var trans_ratio = this.get_trans_ratio();
 
-            var calib = this.getCalib();
+        var calib = this.getCalib();
 
-            let svg = this.parentUi.querySelector(`#svg-${this.name}-boxes`);
+        let svg = this.parentUi.querySelector(`#svg-${this.name}-boxes`);
 
-            // draw boxes
-            this.world.annotation.boxes.forEach((box) => {
-                if (box.draw && calib[this.name]) {
-                    var imgfinal = box_to_2d_points(box, calib[this.name]);
-                    if (imgfinal) {
-                        var box_svg = this.box_to_svg(box, imgfinal, trans_ratio, this.get_selected_box() == box);
-                        svg.appendChild(box_svg);
-                    }
+        // draw boxes
+        this.world.annotation.boxes.forEach((box) => {
+            if (box.draw && calib[this.name]) {
+                var imgfinal = box_to_2d_points(box, calib[this.name]);
+                if (imgfinal) {
+                    var box_svg = this.box_to_svg(box, imgfinal, trans_ratio, this.get_selected_box() == box);
+                    svg.appendChild(box_svg);
                 }
-            });
-
-            svg = this.parentUi.querySelector(`#svg-${this.name}-points`);
-
-            // draw radar points
-            if (this.cfg.projectRadarToImage) {
-                this.world.radars.radarList.forEach(radar => {
-                    let pts = radar.get_unoffset_radar_points();
-                    let ptsOnImg = points3d_to_image2d(pts, calib[this.name]);
-
-                    // there may be none after projecting
-                    if (ptsOnImg && ptsOnImg.length > 0) {
-                        let pts_svg = this.points_to_svg(ptsOnImg, trans_ratio, radar.cssStyleSelector);
-                        // svg0.appendChild(pts_svg);
-                        svg.appendChild(pts_svg);
-                    }
-                });
             }
+        });
 
-            // project lidar points onto camera image
-            if (this.cfg.projectLidarToImage) {
-                let pts = this.world.lidar.get_all_points();
-                let ptsOnImg = points3d_to_image2d(pts, calib[this.name], true, this.img_lidar_point_map, img.width, img.height);
+        svg = this.parentUi.querySelector(`#svg-${this.name}-points`);
+
+        // draw radar points
+        if (this.cfg.projectRadarToImage) {
+            this.world.radars.radarList.forEach(radar => {
+                let pts = radar.get_unoffset_radar_points();
+                let ptsOnImg = points3d_to_image2d(pts, calib[this.name]);
 
                 // there may be none after projecting
                 if (ptsOnImg && ptsOnImg.length > 0) {
-                    let pts_svg = this.points_to_svg(ptsOnImg, trans_ratio);
+                    let pts_svg = this.points_to_svg(ptsOnImg, trans_ratio, radar.cssStyleSelector);
                     // svg0.appendChild(pts_svg);
                     svg.appendChild(pts_svg);
                 }
+            });
+        }
+
+        // project lidar points onto camera image
+        if (this.cfg.projectLidarToImage) {
+            let pts = this.world.lidar.get_all_points();
+            let ptsOnImg = points3d_to_image2d(pts, calib[this.name], true, this.img_lidar_point_map, img.width, img.height);
+
+            // there may be none after projecting
+            if (ptsOnImg && ptsOnImg.length > 0) {
+                let pts_svg = this.points_to_svg(ptsOnImg, trans_ratio);
+                // svg0.appendChild(pts_svg);
+                svg.appendChild(pts_svg);
             }
+        }
     }
 
     hide() {
@@ -629,13 +639,13 @@ class ImageContext { // 2D视图区
     } */
 
     show_image() {
-            var board = document.querySelector(`#svg-${this.name}-image`);
+        var board = document.querySelector(`#svg-${this.name}-image`);
 
-            var img = this.world.cameras.getImageByName(this.name);
+        var img = this.world.cameras.getImageByName(this.name);
 
-            if (img == undefined) return;
+        if (img == undefined) return;
 
-            board.setAttribute("href", img.src);
+        board.setAttribute("href", img.src);
     }
 
     points_to_svg(points, trans_ratio, cssclass, radius = 2) {
@@ -975,8 +985,6 @@ class ImageEditor { // 图片编辑器
         })
         console.log(this.annotation_2d.psr);
     }
-    // 输出处理完的annotation_2d看看都存了什么东西, 应该是错的
-    // 如果对, 那么ann_2d在world和本地应该是一致的, 但是现在保存后this.world里的annotation_2d不是最新
 
     allRect_find(allRect, rect) { // allRect没有数组方法
         let target = false;
@@ -1329,7 +1337,7 @@ class ImageContextManager { // 图片管理器
     addAllImage() {
         innerDOMString(imageManagerUiTemplate, this.parentUi)
 
-        for(let i = 0; i < this.cameras.length; i++) {
+        for (let i = 0; i < this.cameras.length; i++) {
             this.addImage(this.cameras[i], false);
         }
     }
@@ -1340,6 +1348,7 @@ class ImageContextManager { // 图片管理器
             name = this.bestCamera;
 
         let image = new ImageContext(this.parentUi, name, this.cfg);
+        console.log('addImage: ', name)
 
         this.images.push(image);
 
@@ -1352,22 +1361,19 @@ class ImageContextManager { // 图片管理器
             image.render_2d_image();
         }
 
-        /* let selectorName = autoSwitch ? "auto" : name;
-
-        let ui = this.selectorUi.querySelector("#camera-item-" + selectorName);
-        if (ui)
-            ui.className = "camera-item camera-selected"; */
-
+        this.parentUi.querySelector(`#img-manager-${name}`).style.display = 'block';
 
         return image;
     }
 
-    removeImage(image) {
+    removeImage(vector) {
+        // 移除该context, 去除DOM;
+        console.log('removeImage: ', vector)
+        this.images = this.images.filter(context => {
+            return context.name !== vector
+        });
 
-        let selectorName = image.autoSwitch ? "auto" : image.name;
-        // this.selectorUi.querySelector("#camera-item-" + selectorName).className = "camera-item";
-        this.images = this.images.filter(x => x != image);
-        image.remove();
+        this.parentUi.querySelector(`#img-manager-${vector}`).style.display = 'none';
     }
 
     setBestCamera(camera) {
@@ -1554,7 +1560,7 @@ function all_points_in_image_range(p) {
 
 function choose_best_camera_for_point(scene_meta, center) {
 
-  // console.log('任务参数',scene_meta)
+    // console.log('任务参数',scene_meta)
 
     if (!scene_meta.calib) {
         return null;

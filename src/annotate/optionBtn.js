@@ -46,7 +46,6 @@ const OptionButtons = function (data, frameManager) {
   this.fnDisqfButton = document.getElementById('fn-disqf-button')
   this.fnResumeButton = document.getElementById('fn-resume-button')
 
-  this.cameraImgContainerToggleBtn = document.getElementById('camera-img-container-toggle')
   this.qcCommentContainerToggleBtn = document.getElementById('qc-comment-container-toggle')
 
   this.classObj = {
@@ -228,19 +227,6 @@ const OptionButtons = function (data, frameManager) {
   // 单张作业验收接口
   this.acceptWork = ({ homeworkId, type }) => {
     return POST('/admin/accept/at-homework', { homeworkId, type, projectId: '', rejectCause: '' })
-  }
-  // header工具栏：显示/隐藏相机视图按钮
-  this.cameraImgContainerToggleBtn.onclick = (e) => {
-    if (this.cameraImgContainerToggleBtn.getElementsByTagName('span')[0].innerText === '显示相机') {
-      document.getElementById('image-manager-wrapper').style.display = 'block'
-      this.cameraImgContainerToggleBtn.getElementsByTagName('span')[0].innerText = '隐藏相机'
-      return false
-    }
-    if (this.cameraImgContainerToggleBtn.getElementsByTagName('span')[0].innerText === '隐藏相机') {
-      document.getElementById('image-manager-wrapper').style.display = 'none'
-      this.cameraImgContainerToggleBtn.getElementsByTagName('span')[0].innerText = '显示相机'
-      return false
-    }
   }
   // header工具栏：显示/隐藏质检批注按钮
   this.qcCommentContainerToggleBtn.onclick = (e) => {
