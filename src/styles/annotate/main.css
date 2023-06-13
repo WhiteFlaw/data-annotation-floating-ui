@@ -105,27 +105,13 @@ canvas {
 #scene-selector,
 #object-selector,
 #camera-selector,
-#obj-ids-of-scene {
-	background-color: inherit;
-	color: inherit;
-	border-width: 0;
+#obj-ids-of-scene,
+#object-points-info {
 	display: inline-block;
-}
-
-#category-selector,
-#attribute-selector {
-	border: none;
-	color: inherit;
-	display: inline-flex;
-	background-color: var(--widget-background-color);
-}
-
-#object-trunk-selector {
-	width: 98px;
-}
-
-#object-occlusion-selector {
 	width: 70px;
+	border-width: 0;
+	color: inherit;
+	background-color: inherit;
 }
 
 #if-default-attribute-label,
@@ -171,8 +157,7 @@ canvas {
 	background-color: var(--highlight-background-color);
 }
 
-
-#object-track-id-editor,
+#object-category-selector,
 #object-trunk-selector,
 #object-occlusion-selector {
 	border-bottom-width: 1px;

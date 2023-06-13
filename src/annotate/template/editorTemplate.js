@@ -228,6 +228,10 @@ export const editorTemplate = `
                         <label for="object-occlusion-selector">遮挡</label>
                         <select title="occlusion" id="object-occlusion-selector"></select>
                     </div>
+                    <div class="obj-editor-row">
+                        <label for="object-points-info">点数</label>
+                        <input title="points" id="object-points-info" readonly/>
+                    </div>
                 </div>
             </div>
             <div id="main-box-editor-wrapper"></div>
