@@ -40,32 +40,47 @@
               <el-button plain @click="resetSearchCondition">重置</el-button>
             </el-form-item>
           </el-col>
-          <el-col v-if="!itemListFlag && roles === 'teamLeader'">
-            <el-tabs v-model="teamId" type="card" @tab-click="handleClick">
-              <el-tab-pane v-for="item in tabsList" :key="item.id" :label="item.name" :name="item.id" />
-            </el-tabs>
+          <el-col v-if="recordOfRejectionVisible">
+            <el-form-item label="任务状态">
+              <el-select v-model="taskStatus" @change="changeTaskStatus">
+                <el-option value="" label="全部" />
+                <el-option value="4" label="一检驳回" />
+                <el-option value="8" label="验收驳回" />
+              </el-select>
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
     </template>
     <template slot="content">
+      <el-tabs v-if="(!itemListFlag && roles === 'teamLeader') || recordOfRejectionVisible" v-model="teamId" type="card" @tab-click="handleClick">
+        <el-tab-pane v-for="item in tabsList" :key="item.id" :label="item.name" :name="item.id" />
+      </el-tabs>
       <item-list
         v-if="itemListFlag"
         :table-data="tableData"
         :table-loading="tableLoading"
         @open-details-page="detailedInformation"
+        @open-record-of-rejection="openRecordOfRejection"
       />
       <team-list
-        v-if="!itemListFlag && roles === 'manager'"
+        v-if="!itemListFlag && roles === 'manager' && !recordOfRejectionVisible"
         :table-data="tableData"
         :table-loading="tableLoading"
       />
       <member-list
-        v-if="!itemListFlag && roles === 'teamLeader'"
+        v-if="!itemListFlag && roles === 'teamLeader' && !recordOfRejectionVisible"
         :table-data="tableData"
         :table-loading="tableLoading"
         :row-data="rowData"
         @update-role="updateRole"
+      />
+      <record-of-rejection-list
+        v-if="!itemListFlag && recordOfRejectionVisible"
+        :row-data="rowData"
+        :table-data="tableData"
+        :table-loading="tableLoading"
+        :task-status="taskStatus"
       />
       <pagination-component
         v-if="total > 0"
@@ -93,13 +108,16 @@ import PageContainer from '@/components/PageContainer'
 import ItemList from '@/views/dashboard/components/itemList'
 import TeamList from '@/views/dashboard/components/teamList'
 import MemberList from '@/views/dashboard/components/memberList'
-import {queryItemList, queryItemTeamList, queryMemberList, queryTeamList} from '@/api/myWorkbench'
+import {queryItemList, queryItemTeamList, queryMemberList, queryTaskStatus, queryTeamList} from '@/api/myWorkbench'
 import PaginationComponent from '@/components/PaginationComponent'
 import UpdateRoleDialog from '@/views/dashboard/components/updateRoleDialog'
+import RecordOfRejectionList from '@/views/dashboard/components/recordOfRejectionList'
 
 export default {
   name: 'Dashboard',
-  components: {UpdateRoleDialog, PaginationComponent, MemberList, TeamList, ItemList, PageContainer},
+  components: {
+    RecordOfRejectionList,
+    UpdateRoleDialog, PaginationComponent, MemberList, TeamList, ItemList, PageContainer},
   data() {
     return {
       tableData: [],
@@ -123,7 +141,9 @@ export default {
       status: '', // 团队是否有效
       taskCount: 0, // 总任务数
       updateRoleVisible: false,
-      updateRoleObject: {} // 角色列表选中数据
+      updateRoleObject: {}, // 角色列表选中数据
+      recordOfRejectionVisible: false, // 驳回记录页面显示隐藏
+      taskStatus: '' // 任务状态
     }
   },
   computed: {
@@ -172,10 +192,12 @@ export default {
       this.limit = val.limit
       if (this.itemListFlag) {
         this.searchItemListData()
-      } else if (!this.itemListFlag && this.roles === 'manager') {
+      } else if (!this.itemListFlag && this.roles === 'manager' && !this.recordOfRejectionVisible) {
         this.searchTeamList()
-      } else if (!this.itemListFlag && this.roles === 'teamLeader') {
+      } else if (!this.itemListFlag && this.roles === 'teamLeader' && !this.recordOfRejectionVisible) {
         this.searchMemberList(this.teamId)
+      } else if (this.recordOfRejectionVisible) {
+        this.searchTaskStatus(this.taskStatus)
       }
     },
     detailedInformation(val1, val2, val3) { // 项目列表表格操作
@@ -211,6 +233,7 @@ export default {
       this.limit = 20
       this.search()
       this.itemListFlag = true
+      this.recordOfRejectionVisible = false
     },
     async searchMemberList(val) { // 查询成员列表
       this.tableLoading = true
@@ -251,11 +274,52 @@ export default {
     handleClick() { // 切换tabs
       this.page = 1
       this.limit = 20
-      this.searchMemberList(this.teamId)
+      if (!this.recordOfRejectionVisible) {
+        this.searchMemberList(this.teamId)
+      } else {
+        this.searchTaskStatus(this.taskStatus)
+      }
     },
     updateRole(val1, val2) {
       this.updateRoleVisible = val1
       this.updateRoleObject = val2
+    },
+    async openRecordOfRejection(val1, val2) { // 打开驳回记录列表
+      this.itemListFlag = false
+      this.rowData = val1
+      this.taskCount = val2
+      this.taskStatus = ''
+      this.tableData = []
+      try {
+        const row = await queryItemTeamList(val1.id)
+        row.data.forEach(item => {
+          item.id = String(item.id)
+        })
+        this.tabsList = row.data
+        this.teamId = this.tabsList.length ? this.tabsList[0].id : ''
+        this.searchTaskStatus(this.taskStatus)
+      } catch {
+        this.tabsList = []
+        this.teamId = ''
+      }
+      this.recordOfRejectionVisible = true
+    },
+    changeTaskStatus(val) { // 改变任务状态触发
+      this.page = 1
+      this.limit = 20
+      this.searchTaskStatus(val)
+    },
+    searchTaskStatus(val) { // 查询驳回记录
+      this.tableLoading = true
+      queryTaskStatus({pageIndex: this.page, pageSize: this.limit, projectId: this.rowData.id, teamId: this.teamId, status: val}).then(res => {
+        this.tableLoading = false
+        this.tableData = res.data.records
+        this.total = res.data.total
+      }).catch(() => {
+        this.tableLoading = false
+        this.tableData = []
+        this.total = 0
+      })
     }
   }
 }

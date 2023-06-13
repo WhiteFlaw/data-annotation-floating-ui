@@ -9,10 +9,10 @@
       <el-form inline>
         <el-row>
           <el-col :span="18">
-            <el-form-item label="成员:">
+            <el-form-item label="姓名:">
               <el-input
                 v-model="searchCondition.name"
-                placeholder="输入成员"
+                placeholder="输入姓名"
                 clearable
               />
             </el-form-item>
@@ -45,7 +45,7 @@
         :max-height="tableMaxHeight"
       >
         <el-table-column align="center" prop="id" label="ID" width="100" />
-        <el-table-column align="center" prop="nickname" label="用户名称" min-width="160" />
+        <el-table-column align="center" prop="nickname" label="姓名" min-width="160" />
         <el-table-column align="center" prop="email" label="邮箱" width="200" />
         <el-table-column align="center" label="加入时间" width="160">
           <template slot-scope="scope">

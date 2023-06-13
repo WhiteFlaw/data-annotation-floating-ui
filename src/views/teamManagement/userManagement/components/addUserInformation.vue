@@ -35,12 +35,12 @@
           </el-form-item>
         </el-col>
         <el-col>
-          <el-form-item label="成员名称" prop="nickname">
+          <el-form-item label="姓名" prop="nickname">
             <el-input v-model="addUserData.nickname" clearable />
           </el-form-item>
         </el-col>
         <el-col>
-          <el-form-item label="成员邮箱" prop="email">
+          <el-form-item label="邮箱" prop="email">
             <el-input
               v-model="addUserData.email"
               clearable

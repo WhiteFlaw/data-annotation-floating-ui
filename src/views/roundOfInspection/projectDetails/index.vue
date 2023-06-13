@@ -76,12 +76,13 @@
           </template>
         </el-table-column>
         <el-table-column prop="userNickname" align="center" label="标注员" width="100" />
-        <el-table-column min-width="100" align="center" label="任务执行进度">
+        <el-table-column width="120" align="center" label="任务执行进度">
           <template slot-scope="scope">
             {{ scope.row.doneCount + '/' + scope.row.totalCount }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" min-width="200">
+        <el-table-column align="center" prop="recheckRejectCount" label="二检驳回次数" width="120" />
+        <el-table-column align="center" label="操作" width="250" fixed="right">
           <template slot-scope="scope">
             <el-button v-if="activeName === '2' && !scope.row.checkUserId" type="text" :disabled="!!scope.row.checkUserId" @click="receiveQualityInspection(scope.row)">领取质检</el-button>
             <el-button v-if="activeName === '2' && scope.row.checkUserId" type="text" :disabled="!scope.row.checkUserId || scope.row.checkUserId !== userId" @click="continuedQualityInspection(scope.row)">继续质检</el-button>

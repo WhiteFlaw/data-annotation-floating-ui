@@ -68,7 +68,7 @@
         <el-table-column align="center" prop="recheckUserNickname" label="二检质检员" />
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="acceptanceTask(scope.row)">验收任务</el-button>
+            <el-button type="text" :disabled="changeStatus(scope.row.status) === '未通过'" @click="acceptanceTask(scope.row)">验收任务</el-button>
           </template>
         </el-table-column>
       </el-table>

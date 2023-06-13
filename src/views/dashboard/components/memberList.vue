@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     initPageData() { // 初始化
-      this.getTableMaxHeight()
+      this.getTableMaxHeight(true)
     },
     updateRole(val) { // 修改角色
       this.$emit('update-role', true, val)

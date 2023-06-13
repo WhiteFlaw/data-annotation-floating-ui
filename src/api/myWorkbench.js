@@ -38,3 +38,12 @@ export function queryMemberList(data) {
 export function queryItemTeamList(projectId) {
   return POST(`/admin/user/listTeamCase/${projectId}`)
 }
+
+/**
+ * 查看项目内任务状态
+ * @param data
+ * @returns {*}
+ */
+export function queryTaskStatus(data) {
+  return POST(`/admin/user/pageTeamTaskWorkCase`, data)
+}

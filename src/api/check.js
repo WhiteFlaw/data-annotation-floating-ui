@@ -59,3 +59,12 @@ export function checkProject(data) {
 export function getRandomDataList(data) {
   return POST(`/admin/accept/batch-reject`, data)
 }
+
+/**
+ * 验收验证
+ * @param projectId 项目id
+ * @returns {*}
+ */
+export function acceptanceVerification(projectId) {
+  return GET(`/admin/accept/check-accept/${projectId}`)
+}

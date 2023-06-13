@@ -199,7 +199,7 @@ export const asyncRoutes = [
     path: '/myTask',
     name: 'myTask',
     component: Layout,
-    meta: { title: '我的任务', icon: 'task-manange', roles: ['manager', 'teamLeader', 'qc', 'tagger'] },
+    meta: { title: '我的任务', icon: 'task-manange', roles: ['teamLeader', 'qc', 'tagger'] },
     redirect: '/myTask/taggingTask',
     alwaysShow: true,
     children: [

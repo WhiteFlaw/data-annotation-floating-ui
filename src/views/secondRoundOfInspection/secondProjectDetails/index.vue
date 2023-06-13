@@ -74,6 +74,7 @@
             {{ scope.row.doneCount + '/' + scope.row.totalCount }}
           </template>
         </el-table-column>
+        <el-table-column align="center" prop="acceptRejectCount" label="验收驳回次数" width="120" />
         <el-table-column min-width="200" align="center" label="操作">
           <template slot-scope="scope">
             <el-button v-if="!scope.row.recheckUserId" type="text" :disabled="!!scope.row.recheckUserId" @click="receiveQualityInspection(scope.row)">领取质检</el-button>
