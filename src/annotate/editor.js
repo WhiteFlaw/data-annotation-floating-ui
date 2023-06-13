@@ -414,7 +414,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
                 //self.autoAdjust.mark_bbox(self.selected_box);
                 //event.currentTarget.blur();
                 let id = objIdManager.generateNewUniqueId();
-                self.fastToolBox.setValue(self.selected_box.obj_type, id, self.selected_box.obj_trunk, self.selected_box.obj_occlu);
+                self.fastToolBox.setValue(self.selected_box.obj_type, id, self.selected_box.obj_trunk, self.selected_box.obj_occlu, self.selected_box.world.lidar.get_box_points_number(self.selected_box));
 
                 self.setObjectId(id);
                 break;
@@ -790,7 +790,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
                     this.selected_box.obj_type,
                     this.selected_box.obj_track_id,
                     this.selected_box.obj_trunk,
-                    this.selected_box.obj_occlu
+                    this.selected_box.obj_occlu,
+                    this.selected_box.world.lidar.get_box_points_number(this.selected_box)
                 );
 
                 break;
@@ -817,7 +818,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
                     this.selected_box.obj_type,
                     this.selected_box.obj_track_id,
                     this.selected_box.obj_trunk,
-                    this.selected_box.obj_occlu
+                    this.selected_box.obj_occlu,
+                    this.selected_box.world.lidar.get_box_points_number(this.selected_box)
                 );
 
                 break;
@@ -1534,7 +1536,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
             this.boxOp.auto_rotate_xyz(box, () => {
                 box.obj_type = globalObjectCategory.guess_obj_type_by_dimension(box.scale);
                 this.floatLabelManager.set_object_type(box.obj_local_id, box.obj_type);
-                this.fastToolBox.setValue(box.obj_type, box.obj_track_id, box.obj_trunk, box.obj_occlu);
+                this.fastToolBox.setValue(box.obj_type, box.obj_track_id, box.obj_trunk, box.obj_occlu, box.world.lidar.get_box_points_number(box));
                 this.on_box_changed(box);
             });
         }
@@ -1766,7 +1768,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
             //this.floatLabelManager.select_box(this.selected_box.obj_local_id);
 
             this.fastToolBox.setPos(this.floatLabelManager.getLabelEditorPos(this.selected_box.obj_local_id));
-            this.fastToolBox.setValue(object.obj_type, object.obj_track_id, object.obj_trunk, object.obj_occlu);
+            this.fastToolBox.setValue(object.obj_type, object.obj_track_id, object.obj_trunk, object.obj_occlu, object.world.lidar.get_box_points_number(object));
             this.fastToolBox.show();
 
             this.boxOp.highlightBox(this.selected_box);
@@ -2765,7 +2767,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         if (this.selected_box) {
             //this.floatLabelManager.select_box(this.selected_box.obj_local_id)
             this.fastToolBox.show();
-            this.fastToolBox.setValue(this.selected_box.obj_type, this.selected_box.obj_track_id, this.selected_box.obj_trunk, this.selected_box.obj_occlu);
+            this.fastToolBox.setValue(this.selected_box.obj_type, this.selected_box.obj_track_id, this.selected_box.obj_trunk, this.selected_box.obj_occlu, this.selected_box.world.lidar.get_box_points_number(this.selected_box));
         }
     };
 

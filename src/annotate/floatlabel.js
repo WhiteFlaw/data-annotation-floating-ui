@@ -67,7 +67,7 @@ class FastToolBox {
         this.ui.style.display = "inline-block";
     }
 
-    setValue(obj_type, obj_track_id, obj_trunk, obj_occlu) {
+    setValue(obj_type, obj_track_id, obj_trunk, obj_occlu, obj_points) {
         this.ui.querySelector("#object-category-selector").value = obj_type;
 
         this.setOcclOptions();
@@ -82,6 +82,8 @@ class FastToolBox {
         }
 
         this.ui.querySelector("#object-occlusion-selector").value = obj_occlu;
+        
+        this.ui.querySelector("#object-points-info").value = obj_points;
     }
 
     setPos(pos) {
