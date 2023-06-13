@@ -201,47 +201,45 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
   }
 
   this.moveCommentsBody = function () {
-
     let isDragging = false
     const commentBody = document.getElementById('comment-manager-wrapper')
 
+    let mX = 0
+    let mY = 0
+    let eX = 0
+    let eY = 0
+
+    const move = (event) => {
+      event.preventDefault()
+      const dX = mX - event.clientX
+      const dY = mY - event.clientY
+      commentBody.style.left = eX - dX + 'px'
+      commentBody.style.top = eY - dY + 'px'
+    }
+
+    const stop = (event) => {
+      event.preventDefault()
+      event.target.style.cursor = ''
+      isDragging = false
+      document.removeEventListener('mousemove', move)
+      document.removeEventListener('mouseup', stop)
+    }
+
     const startDrag = (e) => {
       e.preventDefault()
-      let mX = 0
-      let mY = 0
-      let eX = 0
-      let eY = 0
-
-      const move = (e) => {
-        e.preventDefault()
-        const dX = mX - e.clientX
-        const dY = mY - e.clientY
-        commentBody.style.left = eX - dX + 'px'
-        commentBody.style.top = eY - dY + 'px'
-      }
-
-      const stop = (e) => {
-        e.preventDefault()
-        document.removeEventListener('mousemove',move)
-        isDragging = false
-        e.target.style.cursor = ''
-        clearTimeout(startTimer)
-        document.removeEventListener('mouseup',stop)
-      }
-
       if (isDragging) {
         stop(e)
+        return false
       }
-      const startTimer = setTimeout(() => {
-          isDragging = true
-          e.target.style.cursor = 'move'
-          mX = e.clientX
-          mY = e.clientY
-          eX = commentBody.offsetLeft
-          eY = commentBody.offsetTop
-          document.addEventListener('mouseup',stop)
-          document.addEventListener('mousemove', move)
-      }, 300)
+
+      isDragging = true
+      e.target.style.cursor = 'move'
+      mX = e.clientX
+      mY = e.clientY
+      eX = commentBody.offsetLeft
+      eY = commentBody.offsetTop
+      document.addEventListener('mouseup', stop)
+      document.addEventListener('mousemove', move)
     }
     commentBody.addEventListener('mousedown', startDrag)
   }

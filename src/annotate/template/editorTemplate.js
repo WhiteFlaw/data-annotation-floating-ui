@@ -64,6 +64,7 @@ export const editorTemplate = `
             </div>
             <!-- <text id="box"></text> -->
             <!-- <text id="ref-obj"></text> -->
+            <div id="frame-name-container" class="frame-name-container"></div>
             <div id="buttons" class="header-right-buttons">
                 <input type="checkbox" id="if-default-attribute-use" name="if-default-attribute-use" />
                 <label for="if-default-attribute-use" id="if-default-attribute-label" value="y">属性预设</label>
