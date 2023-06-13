@@ -25,6 +25,12 @@ const initOptionBtn = () => {
       document.getElementById('tester-buttons').style.display = 'none'
       document.getElementById('accepter-buttons').style.display = 'flex'
     }
+     // leader查看
+     if (taskType === '4') {
+      document.getElementById('marker-buttons').style.display = 'none'
+      document.getElementById('tester-buttons').style.display = 'none'
+      document.getElementById('accepter-buttons').style.display = 'none'
+    }
   }
 }
 

@@ -108,11 +108,37 @@ canvas {
 #obj-ids-of-scene,
 #object-points-info {
 	display: inline-block;
+	border-width: 0;
+	color: inherit;
+	background-color: inherit;
+  outline: none;
+}
+
+#object-category-selector,
+#object-track-id-editor,
+#object-trunk-selector,
+#object-occlusion-selector,
+#object-points-info{
+  width:90px;
+  margin:0 10px;
+}
+
+#category-selector,
+#attribute-selector {
+	border: none;
 	width: 70px;
 	border-width: 0;
 	color: inherit;
 	background-color: inherit;
 }
+
+/* #object-trunk-selector {
+	width: 98px;
+} */
+
+/* #object-occlusion-selector {
+	width: 70px;
+} */
 
 #if-default-attribute-label,
 #if-default-category-label {
@@ -158,8 +184,10 @@ canvas {
 }
 
 #object-category-selector,
+#object-track-id-editor,
 #object-trunk-selector,
-#object-occlusion-selector {
+#object-occlusion-selector,
+#object-points-info {
 	border-bottom-width: 1px;
 }
 
@@ -305,6 +333,19 @@ canvas {
 }
 
 
+.frame-name-container{
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size:14px;
+}
+
+.frame-name-container > span:first-child{
+  color:rgb(173, 173, 173);
+  margin-right:10px;
+}
+
 #header #tools {
 	display: flex;
 	width: auto;
@@ -332,7 +373,7 @@ canvas {
 }
 #header #tools > .header-selector-container> label{
   margin-right:5px;
-  color:#808080
+  color:rgb(173, 173, 173)
 }
 
 #header #tools > .header-selector-container> select{
@@ -529,7 +570,7 @@ dynamic set obj-type css has higher priority than this one.
 	/*color: #ff00ff; */
 	background-color: var(--widget-background-color);
 	font-size: inherit;
-	padding: 0px;
+	padding: 4px;
 	box-sizing: border-box;
 	text-align: left;
 	display: none;
