@@ -83,6 +83,7 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
   }
 
   this.editCommentListItem = function (event) {
+    this.commentAddDialog.addEventListener('keydown', (e) => e.stopPropagation())
     if (event.target.innerText !== '修改' && event.target.innerText !== '查看') return
     const id = event.target.getAttribute('id').split('-')[2]
     this.commentObj = this.commentsList.find((item) => Number(item.id) === Number(id))
@@ -122,9 +123,11 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
     this.commonCommentRadio.checked = true
     this.singleItemCommentRadio.checked = false
     this.commentAddDialog.style.display = 'none'
+    this.commentAddDialog.removeEventListener('keydown', (e) => e.stopPropagation())
   }
 
   this.resetCommentAddForm = function (event) {
+    this.commentObj = {}
     this.commentAddFormCommon.querySelector('#comment-add-text-common').value = ''
     this.commentAddFormSingle.querySelector('#object-list').value = ''
     this.commentAddFormSingle.querySelector('#comment-add-text-single').value = ''
@@ -203,6 +206,8 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
   this.moveCommentsBody = function () {
     let isDragging = false
     const commentBody = document.getElementById('comment-manager-wrapper')
+    const commentTittle = document.getElementById('comment-manager-title')
+
 
     let mX = 0
     let mY = 0
@@ -241,7 +246,7 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
       document.addEventListener('mouseup', stop)
       document.addEventListener('mousemove', move)
     }
-    commentBody.addEventListener('mousedown', startDrag)
+    commentTittle.addEventListener('mousedown', startDrag)
   }
 
   this.addCommentBtn.onclick = this.addCommentListItem.bind(this)

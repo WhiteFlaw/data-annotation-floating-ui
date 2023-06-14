@@ -7,7 +7,7 @@
   left: 5px;
   top: calc(100vh - 350px);
   height: 300px;
-  max-height: 300px;
+  /* max-height: 300px; */
   width: 300px;
   overflow: hidden;
   background-color: rgb(57, 59, 62);
@@ -24,11 +24,11 @@
   background-color: #242525;
 }
 .comment-manager-content {
-  flex-grow: 1;
+  height:calc(100% - 30px);
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  overflow-y: auto;
+  overflow: hidden;
 }
 ul#comment-list-title,
 ul#comment-list-items {
@@ -41,6 +41,7 @@ ul#comment-list-title {
   flex-shrink: 0;
 }
 ul#comment-list-items {
+  height: 100%;
   flex-grow: 1;
   overflow-y: auto;
 }
