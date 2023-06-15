@@ -72,7 +72,7 @@ main {
         height: 100%;
         .el-col {
           &:nth-child(n + 2) {
-            margin-top: 46px;
+            margin-top: 38px;
             @media only screen and (max-width: 1366px) {
               margin-top: 32px;
             }

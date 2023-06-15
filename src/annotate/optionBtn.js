@@ -1,7 +1,7 @@
 import { getPathParams, getClickDom } from './getPathParams'
 import { POST } from '@/utils/http-client.js'
 // import { saveWorldList } from "./save.js"
-import { objIdManager } from './obj_id_list.js'
+// import { objIdManager } from './obj_id_list.js'
 import { Message, MessageBox } from 'element-ui'
 
 const initOptionBtn = () => {
@@ -25,8 +25,8 @@ const initOptionBtn = () => {
       document.getElementById('tester-buttons').style.display = 'none'
       document.getElementById('accepter-buttons').style.display = 'flex'
     }
-     // leader查看
-     if (taskType === '4') {
+    // leader查看
+    if (taskType === '4') {
       document.getElementById('marker-buttons').style.display = 'none'
       document.getElementById('tester-buttons').style.display = 'none'
       document.getElementById('accepter-buttons').style.display = 'none'
@@ -91,61 +91,64 @@ const OptionButtons = function (data, frameManager) {
   }
 
   this.exitTask = () => {
-    const host = document.referrer
-    const fromPath = localStorage.getItem('fromPath')
-    window.location.href = `${host}#${fromPath}`
+    const taskType = getPathParams()['taskType']
+    if(taskType === '0'){
+      const host = document.referrer
+      const fromPath = localStorage.getItem('fromPath')
+      window.location.href = `${host}#${fromPath}`
+    }else{
+      window.opener =null
+      window.open('','_self')
+      window.close()
+    }
   }
 
   //标注 保存或挂起
   this.ssWork = (type) => {
     let scene = this.data.world.frameInfo.scene
     buttonLoading = true
-    objIdManager.load_obj_ids_of_scene(scene, (objs) => {
-      const data = {
-        boxCount: objs.reduce((a, b) => a + b.count, 0),
-        homeworkId: this.data.sceneAllData.homework_list.find((f) => f.name === this.data.world.frameInfo.frame)['id'],
-        tagTime: '',
-        type: type
-      }
-      this.suspendOrSubmitWork({ ...data })
-        .then((res) => {
-          buttonLoading = false
-          if (res.success) {
-            if (res.msg === 'T') {
-              Message.success('当前作业操作成功！')
-              this.markSingleFrameStatus(
-                this.getFrameDomByName(this.data.world.frameInfo.frame),
-                `${type === 0 ? this.classObj.complete : this.classObj.suspend}`
-              )
-              this.nextWork()
-            }
-            if (res.msg === 'C') {
-              this.optionCompleteMessageBox('已完成所有任务的标注操作，是否返回到任务列表？')
-            }
-          } else {
-            Message.error(res.msg)
+    // objIdManager.load_obj_ids_of_scene(scene, (objs) => {
+    const data = {
+      boxCount: this.data?.world?.active ? this.data?.world.annotation.boxes.length : 0,
+      homeworkId: this.data.sceneAllData.homework_list.find((f) => f.name === this.data.world.frameInfo.frame)['id'],
+      tagTime: '',
+      type: type
+    }
+    this.suspendOrSubmitWork({ ...data })
+      .then((res) => {
+        buttonLoading = false
+        if (res.success) {
+          if (res.msg === 'T') {
+            Message.success('当前作业操作成功！')
+            this.markSingleFrameStatus(
+              this.getFrameDomByName(this.data.world.frameInfo.frame),
+              `${type === 0 ? this.classObj.complete : this.classObj.suspend}`
+            )
+            this.nextWork()
           }
-        })
-        .catch(() => {
-          buttonLoading = false
-        })
-    })
+          if (res.msg === 'C') {
+            this.optionCompleteMessageBox('已完成所有任务的标注操作，是否返回到任务列表？')
+          }
+        } else {
+          Message.error(res.msg)
+        }
+      })
+      .catch(() => {
+        buttonLoading = false
+      })
+    // })
   }
   //一检和二检 通过或驳回
   this.tsWork = (type) => {
-    // const data = {
-    //   homeworkId: this.data.sceneAllData.homework_list.find((f) => f.name === this.data.world.frameInfo.frame)['id'],
-    //   type: type
-    // }
     let scene = this.data.world.frameInfo.scene
     buttonLoading = true
-    objIdManager.load_obj_ids_of_scene(scene, (objs) => {
-      const data = {
-        boxCount: objs.reduce((a, b) => a + b.count, 0),
-        homeworkId: this.data.sceneAllData.homework_list.find((f) => f.name === this.data.world.frameInfo.frame)['id'],
-        tagTime: '',
-        type: type
-      }
+    // objIdManager.load_obj_ids_of_scene(scene, (objs) => {
+    const data = {
+      boxCount: this.data?.world?.active ? this.data?.world.annotation.boxes.length : 0,
+      homeworkId: this.data.sceneAllData.homework_list.find((f) => f.name === this.data.world.frameInfo.frame)['id'],
+      tagTime: '',
+      type: type
+    }
     this.testWork({ ...data })
       .then((res) => {
         buttonLoading = false
@@ -168,7 +171,7 @@ const OptionButtons = function (data, frameManager) {
       .catch(() => {
         buttonLoading = false
       })
-    })
+    // })
   }
   //验收 合格或不合格
   this.acptWork = (type) => {
@@ -227,8 +230,8 @@ const OptionButtons = function (data, frameManager) {
     return POST('/admin/tagging/tag-homework', { boxCount, homeworkId, tagTime, type })
   }
   // 单张作业质检接口
-  this.testWork = ({ homeworkId, type }) => {
-    return POST(`/admin/qc/qc-homework/${homeworkId}/${type}`)
+  this.testWork = ({ boxCount, homeworkId, tagTime = '', type }) => {
+    return POST('/admin/qc/qc-homework', { boxCount, homeworkId, tagTime, type })
   }
   // 单张作业验收接口
   this.acceptWork = ({ homeworkId, type }) => {

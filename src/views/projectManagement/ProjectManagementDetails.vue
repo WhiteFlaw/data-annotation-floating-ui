@@ -2,49 +2,57 @@
   <page-container has-search>
     <template slot="search">
       <el-form :model="searchForm" inline class="search-form">
-        <el-row :gutter="24">
-          <el-col :span="12">
+        <el-row :gutter="12">
+          <el-col :span="fromRole ? 8 : 12" :lg="8" :xl="6">
             <el-form-item label="项目名称：">
-              <el-select v-model="searchForm.projectId" filterable placeholder="按项目名称查询" @change="changeProject">
+              <el-select v-if="!fromRole" v-model="searchForm.projectId" filterable placeholder="按项目名称查询" @change="changeProject">
                 <el-option v-for="project of projectList" :key="project.id" :value="project.id" :label="project.name" />
               </el-select>
+              <span v-else> {{ projectInfoEditForm.name }} </span>
             </el-form-item>
           </el-col>
-          <el-col :span="12" style="text-align: end">
-            <el-form-item>
+          <el-col :md="12" :lg="8" :xl="6">
+            <el-form-item label="任务名称：">
+              <el-input v-model="searchForm.taskName" placeholder="按任务名称进行查询" clearable>
+                <el-button slot="append" icon="el-icon-search" @click="queryChildTasksData" />
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col v-if="!fromRole" :md="24" :lg="8" :xl="12" style="text-align: right; padding-right: 0">
+            <el-form-item class="project-detail-option-btns">
               <el-button type="primary" @click="showEditProjectDialog()"> 编辑项目 </el-button>
               <el-button type="success" @click="showAssignToGroupDialog()"> 分配团队 </el-button>
               <el-button type="warning" @click="releaseProject()"> 释放项目 </el-button>
               <el-button type="danger" @click="deleteProject()"> 删除项目 </el-button>
             </el-form-item>
           </el-col>
-          <el-col :md="12" :lg="8" :xl="6">
+          <el-col :md="8" :lg="8" :xl="6">
             <el-form-item label="客户名称：">
               <span> {{ projectInfoEditForm.customerName }} </span>
             </el-form-item>
           </el-col>
-          <el-col :md="12" :lg="8" :xl="6">
+          <el-col :md="8" :lg="8" :xl="6">
             <el-form-item label="项目经理："> {{ projectInfoEditForm.managerNickname }} </el-form-item>
           </el-col>
-          <el-col :md="12" :lg="8" :xl="6">
+          <el-col :md="8" :lg="8" :xl="6">
             <el-form-item label="验收员："> {{ projectInfoEditForm.atNickname || '' }} </el-form-item>
           </el-col>
-          <el-col :md="12" :lg="8" :xl="6">
+          <el-col :md="8" :lg="8" :xl="6">
             <el-form-item label="项目类型："> {{ filterProjectType(projectInfoEditForm.type) }} </el-form-item>
           </el-col>
-          <el-col :md="12" :lg="8" :xl="6">
+          <el-col :md="8" :lg="8" :xl="6">
             <el-form-item label="创建时间："> {{ projectInfoEditForm.createdTime }} </el-form-item>
           </el-col>
-          <el-col :md="12" :lg="8" :xl="6">
+          <el-col :md="8" :lg="8" :xl="6">
             <el-form-item label="项目团队："> {{ projectInfoEditForm.teamsName }} </el-form-item>
           </el-col>
-          <el-col :md="12" :lg="8" :xl="6">
+          <el-col :md="8" :lg="8" :xl="6">
             <el-form-item label="任务总数："> {{ projectInfoEditForm.taskCount }} </el-form-item>
           </el-col>
-          <el-col :md="12" :lg="8" :xl="6">
+          <el-col :md="8" :lg="8" :xl="6">
             <el-form-item label="作业总数："> {{ projectInfoEditForm.workCount }} </el-form-item>
           </el-col>
-          <el-col :md="12" :lg="8" :xl="6">
+          <el-col :md="8" :lg="8" :xl="6">
             <el-form-item label="项目状态：">
               <el-tag v-if="projectInfoEditForm.status" :type="projectInfoEditForm.status === 3 ? 'success' : ''">{{
                 filterProjectStatus(projectInfoEditForm.status)
@@ -52,14 +60,8 @@
             </el-form-item>
           </el-col>
 
-          <el-col :md="12" :lg="8" :xl="6">
+          <el-col :md="24" :lg="24" :xl="18">
             <el-form-item label="项目描述："> {{ projectInfoEditForm.description }} </el-form-item>
-          </el-col>
-          <el-col :md="12" :lg="12" :xl="10">
-            <el-form-item label="任务名称：">
-              <el-input v-model="searchForm.taskName" placeholder="输入任务名称进行搜索" clearable />
-            </el-form-item>
-            <el-button type="primary" size="small" @click="queryChildTasksData">查询</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -67,9 +69,9 @@
     <template slot="content">
       <el-table v-loading="taskListLoading" :data="taskList" border stripe highlight-current-row :max-height="tableMaxHeight">
         <el-table-column type="selection" width="40" align="center" />
-        <el-table-column label="任务ID" prop="id" align="center" width="100" />
-        <el-table-column label="任务名称" prop="name" align="center" min-width="120" />
-        <el-table-column label="团队进度(待领取/标注中/一检/二检/待验收)" align="center" width="290">
+        <el-table-column label="任务ID" prop="id" align="center" width="120" />
+        <el-table-column label="任务名称" prop="name" align="center" min-width="160" />
+        <el-table-column label="团队进度(待领取/标注中/一检/二检/待验收)" align="center" width="300">
           <template slot-scope="scope">
             {{
               `${scope.row.toBeClaimedCount}/${scope.row.allAnnotatedCount}/${scope.row.firstInspectionCount}/${scope.row.secondInspectionCount}/${scope.row.atCount}`
@@ -78,10 +80,11 @@
         </el-table-column>
         <el-table-column label="标注数据统计(2D/3D框数)" prop="boxCount" align="center" width="190" />
         <el-table-column label="驳回次数" prop="rejectCount" align="center" min-width="70" />
-        <el-table-column label="操作" align="left" header-align="center" fixed="right" width="100">
+        <el-table-column label="操作" align="left" header-align="center" fixed="right" width="140">
           <template slot-scope="scope">
             <el-button type="text" @click="viewTaskDetail(scope.row)"> 查看 </el-button>
-            <el-button type="text" @click="viewTaskLog(scope.row)"> 日志 </el-button>
+            <el-button type="text" @click="toAnnotation(scope.row)"> 标注 </el-button>
+            <el-button v-if="!fromRole" type="text" @click="viewTaskLog(scope.row)"> 日志 </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -136,7 +139,11 @@ export default {
       }
     }
   },
-  computed: {},
+  computed: {
+    fromRole() {
+      return this.$route.name === 'DashboardProjectDetails'
+    }
+  },
   mounted() {
     this.initPage()
   },
@@ -273,7 +280,7 @@ export default {
     queryChildTasksData() {
       if (!this.searchForm.projectId) return false
       this.taskListLoading = true
-      getProjectChildTaskDetail({ pageIndex: this.pageIndex, pageSize: this.pageSize, projectId: this.searchForm.projectId, taskName: this.searchForm.taskName }).then((res) => {
+      getProjectChildTaskDetail({ pageIndex: this.pageIndex, pageSize: this.pageSize, ...this.searchForm }).then((res) => {
         if (res.success) {
           this.total = res.data.total
           res.data.records.forEach((item) => {
@@ -297,7 +304,11 @@ export default {
       this.queryChildTasksData()
     },
     viewTaskDetail(row) {
-      this.$router.push({ name: 'jobDetailForAdmin', params: { projectId: row.projectId, taskId: row.id } })
+      if (!this.fromRole) {
+        this.$router.push({ name: 'jobDetailForAdmin', params: { projectId: row.projectId, taskId: row.id } })
+      } else {
+        this.$router.push({ name: 'jobDetailForDashboard', params: { projectId: row.projectId, taskId: row.id } })
+      }
     },
     viewTaskLog(row) {
       this.selectedTask = {
@@ -325,9 +336,25 @@ export default {
     shutDownDialog(val) {
       this.editProjectDialogShow = false
       this.changeProject(val)
+    },
+    toAnnotation(row) {
+      this.$router.push({
+        name: 'Annotation',
+        query: {
+          taskId: row.id,
+          type: row.status > 0 && row.status < 4 ? Number(row.status) - 1 : '4'
+        }
+      })
     }
   }
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.project-detail-option-btns {
+  margin-right: 0;
+  .el-button {
+    padding: 12px 8px;
+  }
+}
+</style>

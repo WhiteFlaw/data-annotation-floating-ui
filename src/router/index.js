@@ -84,6 +84,20 @@ export const asyncRoutes = [
         name: 'MyDashboard',
         component: () => import('@/views/dashboard/index'),
         meta: { title: '我的工作台', icon: 'dashboad-index', roles: ['manager', 'teamLeader'] }
+      },
+      {
+        path: 'dashboard-project-details',
+        name: 'DashboardProjectDetails',
+        component: () => import('@/views/projectManagement/ProjectManagementDetails'),
+        meta: { title: '项目详情', icon: '', roles: ['manager', 'teamLeader'] },
+        hidden: true
+      },
+      {
+        path: 'dashboard-job-detail/:projectId/:taskId',
+        name: 'jobDetailForDashboard',
+        component: () => import('@/views/myTask/jobDetail/index'),
+        meta: { title: '作业列表' },
+        hidden: true
       }
     ]
   },
@@ -110,7 +124,7 @@ export const asyncRoutes = [
         path: 'details',
         name: 'ProjectManagementDetails',
         component: () => import('@/views/projectManagement/ProjectManagementDetails'),
-        meta: { title: '项目详情', icon: '', roles: ['admin'] }
+        meta: { title: '项目详情', icon: '', roles: ['admin', 'manager', 'teamLeader'] }
       },
       {
         path: 'jobDetail/:projectId/:taskId',
