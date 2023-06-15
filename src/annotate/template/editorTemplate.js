@@ -101,7 +101,11 @@ export const editorTemplate = `
                             </div>
                         </div>
                         <div id="changed-world-list-wrapper">
-                            <div>保存所有世界</br>当前未保存: </div>
+                            <div id="save-doc">
+                                <p>保存所有世界</p>
+                                <div>?</div>
+                            </div>
+                                当前未保存: 
                             <div id='changed-world-list'></div>
                         </div>
                     </div>

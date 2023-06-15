@@ -246,11 +246,34 @@ canvas {
 	position: absolute;
 	top: 100%;
 	right: 0%;
-	width: 100px;
+	width: 120px;
 	display: none;
 	z-index: 1;
 	line-height: 1.5;
 	background-color: var(--background-color);
+}
+
+#save-doc {
+	display: flex;
+	justify-content: space-between;
+}
+
+#save-doc p {
+	margin-top: 0
+}
+
+#save-doc div {
+	min-width: 15px;
+	margin: 3px 3px 0 0;
+	height: 15px;
+	line-height: 15px;
+	border-radius: 15px;
+	text-align: center;
+	background-color: var(--widget-background-color);
+}
+
+#save-doc div:hover {
+	background-color: var(--widget-color);
 }
 
 .modified-world-item {

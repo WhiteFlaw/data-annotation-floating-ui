@@ -222,6 +222,15 @@ var Header = function (
     this.ui.querySelector('#changed-world-list').innerHTML = items;
   }
 
+  this.changedMarkUi.querySelector('#save-doc').onclick = () => {
+    window.editor.infoBox.show(`保存按钮`, `
+    保存所有帧, 开销较大, 非必要勿使用.</br>
+    系统内存在自动保存机制.</br>
+    按钮变红请等待.</br>
+    报错请重启/重试 : )
+    `);
+  }
+
   this.changedMarkUi.onmouseleave = () => {
     this.ui.querySelector('#changed-world-list-wrapper').style.display = 'none'
   }

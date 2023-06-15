@@ -70,7 +70,7 @@ function saveWorldList(worldList, isManual = false) {
         clearTimeout(saveDelayTimer);
     }
 
-    saveDelayTimer = setTimeout(() => { // 节流?
+    saveDelayTimer = setTimeout(() => { // 防抖
         saveToBackup(worldList[0]);
 
         logger.log("save delay expired.");
