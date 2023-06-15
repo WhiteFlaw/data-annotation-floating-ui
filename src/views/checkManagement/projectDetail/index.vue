@@ -187,13 +187,14 @@ export default {
       return status
     },
     acceptanceTask(val) { // 验收任务
-      this.$router.push({
+      const routeUrl = this.$router.resolve({
         name: 'Annotation',
         query: {
           taskId: val.id,
           type: 3
         }
       })
+      window.open(routeUrl.href, '_blank')
     },
     // 重置
     resetSearchCondition() {

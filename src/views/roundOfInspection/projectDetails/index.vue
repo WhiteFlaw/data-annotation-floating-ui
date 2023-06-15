@@ -260,13 +260,14 @@ export default {
         if (res.msg === 'success') {
           this.$message.success('操作成功！')
           this.searchData()
-          this.$router.push({
+          const routeUrl = this.$router.resolve({
             name: 'Annotation',
             query: {
               taskId: val.id,
               type: 1
             }
           })
+          window.open(routeUrl.href, '_blank')
         }
       })
     },
@@ -291,22 +292,24 @@ export default {
       })
     },
     updateTask(val) { // 修改任务
-      this.$router.push({
+      const routeUrl = this.$router.resolve({
         name: 'Annotation',
         query: {
           taskId: val.id,
           type: 1
         }
       })
+      window.open(routeUrl.href, '_blank')
     },
     continuedQualityInspection(val) { // 继续质检
-      this.$router.push({
+      const routeUrl = this.$router.resolve({
         name: 'Annotation',
         query: {
           taskId: val.id,
           type: 1
         }
       })
+      window.open(routeUrl.href, '_blank')
     },
     batchCompletion() { // 批量完成
       if (!this.selectList.length) {
