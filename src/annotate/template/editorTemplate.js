@@ -97,11 +97,11 @@ export const editorTemplate = `
                             <svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false" class="svg-button"> <g> <path d="M 4 4 L 18 4 L 20 6 L 20 20 L 4 20 Z M 8 4 h 8 v 2 h -8 z M 6 10 h 12 V 18 h -12 z "> </path> </g> </svg>
                             <div id="save-feedback">
                                 <div id="save-triangle"></div>
-                                <div id="save-content">保存成功</div>
+                                <div id="save-content">成功</div>
                             </div>
                         </div>
                         <div id="changed-world-list-wrapper">
-                            <div> All modified frames, click to save them all</div>
+                            <div>保存所有世界</br>当前未保存: </div>
                             <div id='changed-world-list'></div>
                         </div>
                     </div>

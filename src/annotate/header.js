@@ -170,17 +170,17 @@ var Header = function (
       /* var pos = box.position;
           var rotation = box.rotation;
           var points_number = box.world.lidar.get_box_points_number(box);
-          let distance = Math.sqrt(pos.x * pos.x + pos.y * pos.y).toFixed(2); */
+          let distance = Math.sqrt(pos.x * pos.x + pos.y * pos.y).toFixed(2);
 
-      /* this.boxUi.innerHTML = "<span>" + box.obj_type + "-" + box.obj_track_id +
-              (box.annotator ? ("</span> | <span title='annotator'>" + box.annotator) : "") +
-              "</span> | <span title='distance'>" + distance +
-              "</span> | <span title='position'>" + pos.x.toFixed(2) + " " + pos.y.toFixed(2) + " " + pos.z.toFixed(2) +
-              "</span> | <span title='scale'>" + scale.x.toFixed(2) + " " + scale.y.toFixed(2) + " " + scale.z.toFixed(2) +
-              "</span> | <span title='rotation'>" +
-              (rotation.x * 180 / Math.PI).toFixed(2) + " " + (rotation.y * 180 / Math.PI).toFixed(2) + " " + (rotation.z * 180 / Math.PI).toFixed(2) +
-              "</span> | <span title = 'points'>" +
-              points_number + "</span> "; */
+          this.boxUi.innerHTML = "<span>" + box.obj_type + "-" + box.obj_track_id +
+          (box.annotator ? ("</span> | <span title='annotator'>" + box.annotator) : "") +
+          "</span> | <span title='distance'>" + distance +
+          "</span> | <span title='position'>" + pos.x.toFixed(2) + " " + pos.y.toFixed(2) + " " + pos.z.toFixed(2) +
+          "</span> | <span title='scale'>" + scale.x.toFixed(2) + " " + scale.y.toFixed(2) + " " + scale.z.toFixed(2) +
+          "</span> | <span title='rotation'>" +
+          (rotation.x * 180 / Math.PI).toFixed(2) + " " + (rotation.y * 180 / Math.PI).toFixed(2) + " " + (rotation.z * 180 / Math.PI).toFixed(2) +
+          "</span> | <span title = 'points'>" +
+          points_number + "</span> "; */
       document.getElementById('sub-views-size-top-val').innerHTML = `宽：${scale.y.toFixed(2)} 长：${scale.x.toFixed(2)}`
       document.getElementById('sub-views-size-left-val').innerHTML = `长：${scale.x.toFixed(2)} 高：${scale.z.toFixed(2)}`
       document.getElementById('sub-views-size-front-val').innerHTML = `宽：${scale.y.toFixed(2)} 高：${scale.z.toFixed(2)}`
@@ -192,16 +192,12 @@ var Header = function (
           this.refObjUi.innerHTML = "| Ref: " + marked_object.scene + "/" + marked_object.frame + ": " + marked_object.ann.obj_type + "-" + marked_object.ann.obj_id;
       }, */
 
-      /* this.clear_frame_info = function (scene, frame) {
-  
-      }, */
-
       (this.updateModifiedStatus = function () {
         let frames = this.data.worldList.filter((w) => w.annotation.modified)
         if (frames.length > 0) {
-          this.ui.querySelector('#changed-mark').className = 'ui-button alarm-mark'
+          this.changedMarkUi.className = 'ui-button alarm-mark'
         } else {
-          this.ui.querySelector('#changed-mark').className = 'ui-button'
+          this.changedMarkUi.className = 'ui-button'
         }
       })
 
@@ -211,20 +207,22 @@ var Header = function (
     setTimeout(() => (feedback.style.display = 'none'), 2000)
   }
 
-  this.ui.querySelector('#changed-mark').onmouseenter = () => {
+  this.changedMarkUi.onmouseenter = () => {
     let items = ''
+    this.ui.querySelector('#changed-world-list-wrapper').style.display = 'inherit'
     let frames = this.data.worldList.filter((w) => w.annotation.modified).map((w) => w.frameInfo)
     frames.forEach((f) => {
       items += "<div class='modified-world-item'>" + f.frame + '</div>'
     })
 
-    if (frames.length > 0) {
-      this.ui.querySelector('#changed-world-list').innerHTML = items
-      this.ui.querySelector('#changed-world-list-wrapper').style.display = 'inherit'
+    if(frames.length === 0) {
+      this.ui.querySelector('#changed-world-list').innerHTML = '无';
+      return;
     }
+    this.ui.querySelector('#changed-world-list').innerHTML = items;
   }
 
-  this.ui.querySelector('#changed-mark').onmouseleave = () => {
+  this.changedMarkUi.onmouseleave = () => {
     this.ui.querySelector('#changed-world-list-wrapper').style.display = 'none'
   }
 

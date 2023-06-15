@@ -111,8 +111,7 @@ class Data {
 
   _createWorld(sceneName, frame, on_preload_finished) {
     let [x, y, z] = this.allocateOffset()
-    // console.log('create world', x, y, z,this)
-    console.log(frame);
+    // console.log('create world', x, y, z, this)
     let world = new World(this, sceneName, frame, [this.worldGap * x, this.worldGap * y, this.worldGap * z], on_preload_finished)
     world.offsetIndex = [x, y, z]
     this.createWorldIndex++
@@ -248,7 +247,12 @@ class Data {
     let startIndex = Math.max(0, currentWorldIndex - this.MaxWorldNumber / 2)
     let endIndex = Math.min(meta.frames.length, startIndex + this.MaxWorldNumber)
 
-    this._doPreload(sceneName, startIndex, endIndex)
+    const initialAction = {
+      name: 'initialWorld',
+      params: copyWorld(this.world)
+    }
+    backupManager.initManager(initialAction)
+    // this._doPreload(sceneName, startIndex, endIndex)
 
     logger.log(`${endIndex - startIndex} frames created`)
   }
@@ -280,21 +284,9 @@ class Data {
       numLoaded++
     }
 
-    let pendingFrames = meta.frames.slice(startIndex, endIndex).filter(_need_create)
-
-    logger.log(`preload ${meta.scene} ${pendingFrames}`)
-    // if (numLoaded > 0){
-    //     meta.frames.slice(endIndex, Math.min(endIndex+5, meta.frames.length)).forEach(_do_create);
-    //     meta.frames.slice(Math.max(0, startIndex-5), startIndex).forEach(_do_create);
-    // }
-
-    pendingFrames.forEach(_do_create)
-
-    const initialAction = {
-      name: 'initialWorld',
-      params: copyWorld(this.world)
-    }
-    backupManager.initManager(initialAction)
+    let pendingFrames = meta.frames.slice(startIndex, endIndex).filter(_need_create); // 世界预加载
+    logger.log(`preload ${meta.scene} ${pendingFrames}`);
+    pendingFrames.forEach(_do_create);
   }
 
   reloadAllAnnotation = function (done) {

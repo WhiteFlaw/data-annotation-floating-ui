@@ -455,7 +455,7 @@ function World(data, sceneName, frame, coordinatesOffset, on_preload_finished) {
     (this.destroy_old_world = null), //todo, this can be a boolean
     (this.on_finished = null),
     (this.activate = function (scene, destroy_old_world, on_finished) {
-      // data.js--word_active--world.active, data从editor--set_webglScene拿到mainscene,即该处scene, 完成回调即on_load_world_finished
+      // data.js--activate_world--world.active, data从editor--set_webglScene拿到mainscene,即该处scene, 完成回调即on_load_world_finished
       this.scene = scene
       this.active = true
       this.destroy_old_world = destroy_old_world

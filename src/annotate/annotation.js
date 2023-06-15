@@ -509,7 +509,6 @@ function Annotation(sceneMeta, world, frameInfo) {
         let pendingBoxList = [];
 
         boxes.forEach(nb => {  // nb is annotation format, not a true box
-            console.log(nb)
             let old_box = this.boxes.find(function (x) {
                 return x.obj_track_id == nb.obj_id && x.obj_track_id != "" && nb.obj_id != "" && x.obj_type == nb.obj_type;;
             });

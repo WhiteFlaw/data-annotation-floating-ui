@@ -1014,12 +1014,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         var frame = event.target.attributes.value.value;
 
         document.getElementById('frame-name-container').innerHTML = `<span>作业名称:</span><span>${frame}</span>`;
-        // this.imageContextManager.images[0].imageEditor.annotate_pic_clear();
         this.load_world(sceneName, frame); // editor.js 2313
         event.currentTarget.blur();
-
-        const frame_index = this.data.getFrameIndex();
-        const frame_length = this.data.getFrameList().length;
     };
 
 

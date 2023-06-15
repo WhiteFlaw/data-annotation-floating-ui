@@ -1466,7 +1466,6 @@ class ProjectiveViewOps{
 
     isActive()
     {
-        console.trace();
         return !!this.box;
     }
 

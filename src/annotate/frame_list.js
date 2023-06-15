@@ -72,8 +72,8 @@ const FrameManager = function (parentUi, data, onFrameChanged, toPreviousFrame, 
     }
 
     this.update_frame_list = function () {
-        let target = null;
         if(this.eventList.length === 0) return;
+        let target = null;
         if(this.eventList.length === 1) {
             target = this.frameManagerListUi.querySelector(`#frame-list-${this.eventList[0]}`);
         } else {
