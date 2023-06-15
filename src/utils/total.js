@@ -1,3 +1,4 @@
+import * as XLSX from 'xlsx'
 /**
  * 输入框限制
  * @param val 输入值
@@ -20,4 +21,58 @@ export function inputRestriction(val, limitLength, restrictedChinese, limitingCh
     newVal = newVal.replace(/[^\w]/g, '')
   }
   return newVal
+}
+
+/**
+ * @description 导出表格数据
+ * @author Yu Yang
+ * @date 2023-06-14
+ * @param data 导出数据
+ * @param fileName 导出文件名
+ */
+export function downloadExcelData(data, fileName) {
+  const worksheet = XLSX.utils.aoa_to_sheet(data)
+  const workbook = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
+  XLSX.writeFile(workbook, fileName)
+}
+
+/**
+ * @description 计算日期差 精确到秒
+ * @author 杨鹏飞
+ * @date 2023-06-14
+ * @param startTime 开始时间
+ * @param endTime 结束时间
+ */
+export function getDateDiff(startTime, endTime) {
+  let diffStr = ''
+  const data1 = new Date(startTime)
+  const data2 = new Date(endTime)
+  const diffTime = data2.getTime() - data1.getTime()
+  const days = Math.floor(diffTime / (24 * 3600 * 1000))
+  // 计算出小时数
+  const leave1 = diffTime % (24 * 3600 * 1000) // 计算天数后剩余的毫秒数
+  const hours = Math.floor(leave1 / (3600 * 1000))
+  // 计算相差分钟数
+  const leave2 = leave1 % (3600 * 1000) // 计算小时数后剩余的毫秒数
+  const minutes = Math.floor(leave2 / (60 * 1000))
+  // 计算相差秒数
+  const leave3 = leave2 % (60 * 1000) // 计算分钟数后剩余的毫秒数
+  const seconds = Math.round(leave3 / 1000)
+  if (days !== 0) {
+    diffStr = days + '天 '
+  }
+  if (days >= 1) {
+    diffStr += days + '天'
+  }
+  if (hours >= 1) {
+    diffStr += hours + '小时'
+  }
+  if (minutes > 0) {
+    diffStr += minutes + '分钟'
+  }
+  if (seconds > 0) {
+    diffStr += seconds + '秒'
+  }
+  return diffStr
 }

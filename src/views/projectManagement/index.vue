@@ -99,7 +99,7 @@
           </template>
         </el-table-column> -->
         <!-- <el-table-column label="创建人" prop="userNickname" align="center" header-align="center" min-width="100" /> -->
-        <!-- <el-table-column label="任务总数" prop="taskCount" align="center" header-align="center" min-width="80" /> -->
+        <!-- <el-table-column label="任务总数" prop="TaggerStatistics" align="center" header-align="center" min-width="80" /> -->
         <!-- <el-table-column label="作业总数" prop="workCount" align="center" header-align="center" min-width="80" /> -->
         <el-table-column label="项目创建时间" prop="createdTime" align="center" width="160" />
         <!-- <el-table-column label="开始日期" prop="startDate" align="center" header-align="center" min-width="100" /> -->
