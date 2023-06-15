@@ -64,8 +64,8 @@ const getProjectDetail = (id) => {
  * }
  * @return {*}
  */
-const getProjectChildTaskDetail = ({ pageIndex = 0, pageSize = 0, projectId = 0 }) => {
-  return POST('/admin/project/tasks', { pageIndex, pageSize, projectId })
+const getProjectChildTaskDetail = ({ pageIndex = 0, pageSize = 0, projectId = 0, taskName = '' }) => {
+  return POST('/admin/project/tasks', { pageIndex, pageSize, projectId, taskName})
 }
 /**
  * 获取项目团队成员详情

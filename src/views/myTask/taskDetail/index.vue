@@ -39,7 +39,15 @@
               {{ projectInformation.userNickname }}
             </el-form-item>
           </el-col>
-          <el-col :span="2">
+          <el-col v-if="searchNameVisiable" :span="6">
+            <el-form-item label="任务名称：">
+              <el-input v-model="recordQueryCondition.taskName" placeholder="输入任务名称进行搜索" clearable />
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item>
+              <el-button v-if="searchNameVisiable" type="primary" size="small" @click="searchTaskList">查询</el-button>
+            </el-form-item>
             <el-form-item>
               <el-button type="primary" size="small" @click="claimTask">领取任务</el-button>
             </el-form-item>
@@ -155,11 +163,13 @@ export default {
       recordQueryCondition: {
         pageIndex: 1,
         pageSize: 20,
-        total: 0
+        total: 0,
+        taskName: ''
       },
       loading: false,
       info: {}, // 接收路由传递数据
       activeName: '0', // TAB选中项
+      searchNameVisiable: false,
       markTableData: [], // 标注中表格数据
       repairTableData: [], // 待返修表格数据
       recordTableData: [], // 我的标注记录表格数据
@@ -189,14 +199,17 @@ export default {
     async searchTaskList() {
       this.loading = true
       if (this.activeName === '0') {
+        this.searchNameVisiable = false
         const obj = await this.searchTaskDataList(this.markQueryCondition, this.markTableData, [1, 5])
         this.markTableData = obj.data
         this.markQueryCondition.total = obj.total
       } else if (this.activeName === '1') {
+        this.searchNameVisiable = false
         const obj = await this.searchTaskDataList(this.repairQueryCondition, this.repairTableData, [4])
         this.repairTableData = obj.data
         this.repairQueryCondition.total = obj.total
       } else if (this.activeName === '2') {
+        this.searchNameVisiable = true
         const obj = await this.searchTaskDataList(this.recordQueryCondition, this.recordTableData, [2, 3, 6, 7, 8])
         this.recordTableData = obj.data
         this.recordQueryCondition.total = obj.total

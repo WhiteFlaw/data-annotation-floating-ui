@@ -52,8 +52,14 @@
             </el-form-item>
           </el-col>
 
-          <el-col>
+          <el-col :md="12" :lg="8" :xl="6">
             <el-form-item label="项目描述："> {{ projectInfoEditForm.description }} </el-form-item>
+          </el-col>
+          <el-col :md="12" :lg="12" :xl="10">
+            <el-form-item label="任务名称：">
+              <el-input v-model="searchForm.taskName" placeholder="输入任务名称进行搜索" clearable />
+            </el-form-item>
+            <el-button type="primary" size="small" @click="queryChildTasksData">查询</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -109,7 +115,8 @@ export default {
   data() {
     return {
       searchForm: {
-        projectId: ''
+        projectId: '',
+        taskName: ''
       },
       projectList: [],
       projectTypeList: [],
@@ -266,7 +273,7 @@ export default {
     queryChildTasksData() {
       if (!this.searchForm.projectId) return false
       this.taskListLoading = true
-      getProjectChildTaskDetail({ pageIndex: this.pageIndex, pageSize: this.pageSize, projectId: this.searchForm.projectId }).then((res) => {
+      getProjectChildTaskDetail({ pageIndex: this.pageIndex, pageSize: this.pageSize, projectId: this.searchForm.projectId, taskName: this.searchForm.taskName }).then((res) => {
         if (res.success) {
           this.total = res.data.total
           res.data.records.forEach((item) => {

@@ -286,6 +286,27 @@ export const asyncRoutes = [
         ]
       }
     ]
+  },
+  {
+    path: '/dataStatistics',
+    name: 'dataStatistics',
+    component: Layout,
+    meta: { title: '数据统计', icon: 'task-manange', roles: ['manager', 'teamLeader', 'qc', 'tagger'] },
+    alwaysShow: true,
+    children: [
+      {
+        path: 'manager-statistics',
+        name: 'ManagerStatistics',
+        component: () => import('@/views/dataStatistics/managerStatistics'),
+        meta: { title: '项目经理数据', roles: ['manager']}
+      },
+      {
+        path: 'tagger-statistics',
+        name: 'TaggerStatistics',
+        component: () => import('@/views/dataStatistics/TaggerStatistics'),
+        meta: { title: '标注员数据', roles: ['manager', 'teamLeader', 'tagger'] }
+      }
+    ]
   }
 ]
 
