@@ -25,7 +25,11 @@
         </el-form-item>
         <el-form-item label="导入数据" prop="selectedProjectData">
           <el-select v-model="dataForm.selectedProjectData" filterable placeholder="请选择要导入的项目数据">
-            <el-option v-for="project of projectDataList" :key="project.projectFolderName" :value="project.projectFolderName" :label="project.projectFolderName" />
+            <el-option
+              v-for="project of projectDataList"
+              :key="project.projectFolderName"
+              :value="project.projectFolderName"
+              :label="project.projectFolderName" />
           </el-select>
         </el-form-item>
         <el-form-item label="项目类型" prop="type">
@@ -35,7 +39,11 @@
         </el-form-item>
         <el-form-item label="验收员" prop="atInfo">
           <el-select v-model="dataForm.atInfo" placeholder="请选择验收员">
-            <el-option v-for="acceptanceOfficer in acceptanceOfficerDataList" :key="acceptanceOfficer.id" :value="acceptanceOfficer.id + ':' + acceptanceOfficer.nickname" :label="acceptanceOfficer.nickname" />
+            <el-option
+              v-for="acceptanceOfficer in acceptanceOfficerDataList"
+              :key="acceptanceOfficer.id"
+              :value="acceptanceOfficer.id + ':' + acceptanceOfficer.nickname"
+              :label="acceptanceOfficer.nickname" />
           </el-select>
         </el-form-item>
         <!-- <el-form-item label="项目周期" prop="selectedDataRange">
@@ -57,7 +65,7 @@
           </div>
         </el-form-item>
         <el-form-item label="分包大小" prop="chunkSize">
-          <el-input-number v-model="dataForm.chunkSize" :min="1" />
+          <el-input-number v-model="dataForm.chunkSize" :min="1" :max="50" />
         </el-form-item>
         <el-form-item label="项目描述">
           <el-input v-model="dataForm.description" type="textarea" placeholder="请输入项目描述" :rows="8" resize="none" show-word-limit maxlength="300" />
@@ -75,7 +83,7 @@
 import PageContainer from '@/components/PageContainer'
 import { getProjectDataList, confirmInitData } from '@/api/dataManagement'
 import { getCustomersOptions, getGroupOptions, projectTypeOptions, getProjectManagerOptions, getAcceptanceOfficerList } from '@/api/common'
-import {EFFECTIVE_MANAGER_LIST} from '@/utils/constant'
+import { EFFECTIVE_MANAGER_LIST } from '@/utils/constant'
 export default {
   name: 'DataManagement',
   components: { PageContainer },
@@ -168,7 +176,7 @@ export default {
           this.$message.error(res.msg)
         }
       })
-      getAcceptanceOfficerList().then(res => {
+      getAcceptanceOfficerList().then((res) => {
         this.acceptanceOfficerDataList = res.data
       })
     },
@@ -195,19 +203,21 @@ export default {
       }
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          confirmInitData(postData).then((res) => {
-            if (res.success) {
-              this.$message.success(res.msg)
-              this.initPageData()
-              this.$refs[formName].resetFields()
-              this.dataForm.selectedGroup = []
-            } else {
-              this.$message.error(res.msg)
-            }
-            this.confirmLoading = false
-          }).catch(() => {
-            this.confirmLoading = false
-          })
+          confirmInitData(postData)
+            .then((res) => {
+              if (res.success) {
+                this.$message.success(res.msg)
+                this.initPageData()
+                this.$refs[formName].resetFields()
+                this.dataForm.selectedGroup = []
+              } else {
+                this.$message.error(res.msg)
+              }
+              this.confirmLoading = false
+            })
+            .catch(() => {
+              this.confirmLoading = false
+            })
         } else {
           this.confirmLoading = false
           return false

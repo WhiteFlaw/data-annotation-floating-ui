@@ -1,7 +1,7 @@
 /*
  * @Author: M.Ming
  * @Date: 2023-03-28 17:14:28
- * @LastEditTime: 2023-05-22 11:23:44
+ * @LastEditTime: 2023-06-15 09:00:02
  * @FilePath: \3d-data-admin\src\api\projectManagement.js
  * @Description: 项目管理功能接口API
  */
@@ -65,7 +65,7 @@ const getProjectDetail = (id) => {
  * @return {*}
  */
 const getProjectChildTaskDetail = ({ pageIndex = 0, pageSize = 0, projectId = 0, taskName = '' }) => {
-  return POST('/admin/project/tasks', { pageIndex, pageSize, projectId, taskName})
+  return POST('/admin/project/tasks', { pageIndex, pageSize, projectId, taskName })
 }
 /**
  * 获取项目团队成员详情

@@ -2447,7 +2447,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         this.select_locked_object();
 
         //load_obj_ids_of_scene(world.frameInfo.scene);
-        objIdManager.setCurrentScene(world.frameInfo.scene);
+        objIdManager.setCurrentScene(world.frameInfo.scene,world.frameInfo.sceneMeta.taskName);
 
         // preload after the first world loaded
         // otherwise the loading of the first world would be too slow

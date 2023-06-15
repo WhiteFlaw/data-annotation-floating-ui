@@ -1,5 +1,6 @@
 import { innerDOMString } from './util.js';
 import { frameManagerUiTemplate } from './template/frameManagerUiTemplate';
+import { objIdManager } from "./obj_id_list.js";
 
 const FrameManager = function (parentUi, data, onFrameChanged, toPreviousFrame, toNextFrame, toCertainFrame) {
     innerDOMString(frameManagerUiTemplate, parentUi)
@@ -81,6 +82,18 @@ const FrameManager = function (parentUi, data, onFrameChanged, toPreviousFrame, 
         }
         target.classList.toggle('frame-manager-choosen', true);
         this.frame = target.getAttribute('value');
+
+        // 获取单张作业的object列表，并调用objIdManager内部方法，更新objectId列表
+        const frameObjectList = this.data.world.annotation.boxes.map(b=>{
+          return{
+            category:b.obj_type,
+            id:b.obj_track_id,
+            count:1
+          }
+        }).sort(function (x, y) {
+          return parseInt(x.id) - parseInt(y.id)
+        })
+        objIdManager.setObjdIdListOptions(frameObjectList)
     }
 
     this.update_event_list = function(frameIndex) {
