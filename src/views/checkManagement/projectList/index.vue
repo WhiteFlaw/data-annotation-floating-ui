@@ -79,7 +79,7 @@
 import PageContainer from '@/components/PageContainer'
 import tableMixin from '@/utils/tableMixin'
 import PaginationComponent from '@/components/PaginationComponent'
-import {checkProject, queryItemDataList} from '@/api/check'
+import {acceptanceVerification, checkProject, queryItemDataList} from '@/api/check'
 import AcceptancePercentage from '@/views/checkManagement/components/AcceptancePercentage'
 export default {
   name: 'ItemList',
@@ -162,22 +162,34 @@ export default {
       this.searchData()
     },
     acceptProject(info) {
-      this.$confirm(`确认一键验收此项目吗？`, '温馨提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        checkProject({
-          projectId: info.id,
-          type: 0
-        }).then(res => {
-          if (res.success) {
-            this.$message.success(res.msg)
-            this.search()
-          }
+      let msg = ''
+      acceptanceVerification(info.id).then(res => {
+        if (res.msg === 'T') {
+          msg = '确认一键验收此项目吗？'
+        } else if (res.msg === 'F') {
+          msg = '当前项目有未通过任务，是否一键验收此项目？'
+        } else if (res.msg === 'N') {
+          msg = '当前项目未验收，是否一键验收此项目？'
+        } else if (res.msg === 'C') {
+          msg = '当前项目还有任务未验收，是否一键验收此项目？'
+        }
+        this.$confirm(msg, '温馨提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          checkProject({
+            projectId: info.id,
+            type: 0
+          }).then(res => {
+            if (res.success) {
+              this.$message.success(res.msg)
+              this.search()
+            }
+          })
+        }).catch(() => {
+          this.$message.info('验收已取消')
         })
-      }).catch(() => {
-        this.$message.info('验收已取消')
       })
     },
     rejectProject(info) {

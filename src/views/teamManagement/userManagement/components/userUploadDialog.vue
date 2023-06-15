@@ -81,8 +81,8 @@ export default {
       const columnMap = {
         'name': '账号',
         'password': '密码',
-        'nickname': '成员名称',
-        'email': '成员邮箱',
+        'nickname': '姓名',
+        'email': '邮箱',
         'gender': '性别',
         'age': '年龄',
         'education': '学历',
@@ -96,6 +96,12 @@ export default {
         this.uploadDataObject.header.forEach(key => {
           obj[Object.keys(columnMap).find(k => columnMap[k] === key)] = item[key]
         })
+        obj.age = this.changeAge(obj.age)
+        obj.gender = this.changeGender(obj.gender)
+        obj.education = this.changeEducation(obj.education)
+        obj.socialSeniority = this.changeSocialSeniority(obj.socialSeniority)
+        obj.labelProExp = this.changeLabelProExp(obj.labelProExp)
+        obj.englishLevel = this.changeEnglishLevel(obj.englishLevel)
         return obj
       })
       this.uploadLoading = true
@@ -111,6 +117,104 @@ export default {
       }).catch(() => {
         this.uploadLoading = false
       })
+    },
+    changeGender(val) { // 判断性别
+      let gender
+      switch (val) {
+        case '男' : gender = 1
+          break
+        case '女' : gender = 2
+          break
+        default:gender = 0
+          break
+      }
+      return gender
+    },
+    changeAge(val) { // 判断年龄
+      let age
+      switch (val) {
+        case '20岁及以下' : age = 1
+          break
+        case '21-25岁' : age = 2
+          break
+        case '26-30岁' : age = 3
+          break
+        case '31-35岁' : age = 4
+          break
+        case '36岁及以上' : age = 5
+          break
+        default:age = 0
+          break
+      }
+      return age
+    },
+    changeEducation(val) { // 判断学历
+      let education
+      switch (val) {
+        case '中专' : education = 1
+          break
+        case '大专' : education = 2
+          break
+        case '本科' : education = 3
+          break
+        case '硕士' : education = 4
+          break
+        case '博士' : education = 5
+          break
+        default:education = 0
+          break
+      }
+      return education
+    },
+    changeSocialSeniority(val) { // 判断社会工龄
+      let socialSeniority
+      switch (val) {
+        case '0-5年' : socialSeniority = 1
+          break
+        case '6-10年' : socialSeniority = 2
+          break
+        case '10年以上' : socialSeniority = 3
+          break
+        default:socialSeniority = 0
+          break
+      }
+      return socialSeniority
+    },
+    changeLabelProExp(val) { // 判断标注项目经验
+      let labelProExp
+      switch (val) {
+        case '文本类标注经验' : labelProExp = 1
+          break
+        case '图片类标注经验' : labelProExp = 2
+          break
+        case '视频类标注经验' : labelProExp = 3
+          break
+        case '音频类标注经验' : labelProExp = 4
+          break
+        default:labelProExp = 0
+          break
+      }
+      return labelProExp
+    },
+    changeEnglishLevel(val) { // 判断英语水平
+      let englishLevel
+      switch (val) {
+        case 'CET-4' : englishLevel = 1
+          break
+        case 'CET-6' : englishLevel = 2
+          break
+        case '专4' : englishLevel = 3
+          break
+        case '专8' : englishLevel = 4
+          break
+        case '托福' : englishLevel = 5
+          break
+        case '雅思' : englishLevel = 6
+          break
+        default:englishLevel = 0
+          break
+      }
+      return englishLevel
     }
   }
 }

@@ -57,10 +57,11 @@
         </span>
       </template>
     </el-table-column>
-    <el-table-column v-if="roles.indexOf('manager') !== -1 || roles.indexOf('teamLeader') !== -1" align="center" label="操作" min-width="100">
+    <el-table-column v-if="roles.indexOf('manager') !== -1 || roles.indexOf('teamLeader') !== -1" align="center" label="操作" min-width="150">
       <template slot-scope="scope">
         <el-button v-if="roles.indexOf('manager') !== -1" type="text" @click="openDetailsPage(scope.row, 'manager', scope.row.taskCount)">团队详情</el-button>
         <el-button v-if="roles.indexOf('teamLeader') !== -1" type="text" @click="openDetailsPage(scope.row, 'teamLeader', scope.row.taskCount)">成员列表</el-button>
+        <el-button type="text" @click="recordOfRejection(scope.row, scope.row.taskCount)">驳回记录</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -117,6 +118,9 @@ export default {
     },
     openDetailsPage(val1, val2, val3) { // 打开成员列表
       this.$emit('open-details-page', val1, val2, val3)
+    },
+    recordOfRejection(val1, val2) {
+      this.$emit('open-record-of-rejection', val1, val2)
     }
   }
 }

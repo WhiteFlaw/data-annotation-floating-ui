@@ -92,6 +92,7 @@
           <el-table :data="repairTableData" style="width: 100%" :max-height="tableMaxHeight" border stripe highlight-current-row>
             <el-table-column align="center" prop="id" label="任务ID" min-width="120" />
             <el-table-column align="center" prop="name" label="任务名称" min-width="120" />
+            <el-table-column align="center" prop="checkRejectCount" label="一检驳回次数" min-width="120" />
             <el-table-column align="center" label="操作" min-width="180">
               <template slot-scope="scope">
                 <el-button type="text" size="small" @click="continueTaggingTask(scope.row)">继续标注</el-button>
