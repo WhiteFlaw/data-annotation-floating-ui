@@ -2447,7 +2447,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
         // preload after the first world loaded
         // otherwise the loading of the first world would be too slow
-        this.data.preloadScene(world.frameInfo.scene, world);
+        // this.data.preloadScene(world.frameInfo.scene, world); // 预加载阻止
     };
     this.moveAxisHelper = function (world) {
         world.webglGroup.add(this.axis);

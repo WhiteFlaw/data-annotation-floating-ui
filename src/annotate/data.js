@@ -252,7 +252,7 @@ class Data {
       params: copyWorld(this.world)
     }
     backupManager.initManager(initialAction)
-    // this._doPreload(sceneName, startIndex, endIndex)
+    this._doPreload(sceneName, startIndex, endIndex)
 
     logger.log(`${endIndex - startIndex} frames created`)
   }
