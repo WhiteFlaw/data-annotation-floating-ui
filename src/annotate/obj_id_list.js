@@ -88,6 +88,8 @@ class ObjectIdManager {
     if (this.maxId < 0)
       // this is -infinity if there is no ids.
       this.maxId = 0
+
+      if (done) done(this.objectList)
     // var xhr = new XMLHttpRequest()
     // // we defined the xhr
     // let self = this
