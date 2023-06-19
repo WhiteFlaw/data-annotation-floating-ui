@@ -313,8 +313,6 @@ class ImageContext { // 2D视图区
     }
 
     clear_main_canvas() {
-
-
         var boxes = this.parentUi.querySelector(`#svg-${this.name}-boxes`).children;
 
         if (boxes.length > 0) {
@@ -346,7 +344,6 @@ class ImageContext { // 2D视图区
             }
         })
 
-
         var svg = document.createElementNS("http://www.w3.org/2000/svg", 'g');
         svg.setAttribute("id", "svg-box-local-" + box.obj_local_id);
 
@@ -361,7 +358,6 @@ class ImageContext { // 2D视图区
                 svg.setAttribute("class", box.obj_type + " box-svg");
             }
         }
-
 
         var front_panel = document.createElementNS("http://www.w3.org/2000/svg", 'polygon');
         svg.appendChild(front_panel);
@@ -1316,7 +1312,7 @@ class ImageContextManager { // 图片管理器
         this.on_img_click = on_img_click;
         this.cameras = ['front', 'left', 'right'];
 
-        this.addAllImage();
+        this.initImageManagerUi();
 
     }
 
@@ -1334,13 +1330,15 @@ class ImageContextManager { // 图片管理器
         }
     }
 
-    addAllImage() {
+    initImageManagerUi() {
         innerDOMString(imageManagerUiTemplate, this.parentUi)
+    }
 
+    /* addAllImage() {
         for (let i = 0; i < this.cameras.length; i++) {
             this.addImage(this.cameras[i], false);
         }
-    }
+    } */
 
     addImage(name, autoSwitch) {
 
@@ -1362,7 +1360,7 @@ class ImageContextManager { // 图片管理器
         }
 
         this.parentUi.querySelector(`#img-manager-${name}`).style.display = 'block';
-
+        
         return image;
     }
 

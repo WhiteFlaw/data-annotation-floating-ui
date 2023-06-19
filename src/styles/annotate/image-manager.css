@@ -11,6 +11,7 @@
     border: 0px;
 	padding: 0px;
     resize: both;
+    display: none;
     overflow: hidden;
     background-color: rgb(57, 59, 62);
 }

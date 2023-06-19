@@ -22,9 +22,9 @@ var Header = function (
   this.data = data
   this.cfg = cfg
 
-  this.showCameraFront = true;
-  this.showCameraLeft = true;
-  this.showCameraRight = true;
+  this.showCameraFront = false;
+  this.showCameraLeft = false;
+  this.showCameraRight = false;
   this.showImageEditor = true;
 
   this.boxUi = ui.querySelector('#box')
