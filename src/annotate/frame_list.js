@@ -87,7 +87,6 @@ const FrameManager = function (parentUi, data, onFrameChanged, toPreviousFrame, 
       return {
         category: b.obj_type,
         id: b.obj_track_id,
-        count: 1
       }
     })
     // .sort(function (x, y) {

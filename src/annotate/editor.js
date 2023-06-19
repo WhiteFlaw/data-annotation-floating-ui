@@ -718,7 +718,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = 'editor') {
           objIdManager.load_obj_ids_of_scene(scene, (objs) => {
             let info = {
               objects: objs.length,
-              boxes: objs.reduce((a, b) => a + b.count, 0),
+              // boxes: objs.reduce((a, b) => a + b.count, 0),
+              boxes: objs.length,
               frames: this.data.world.frameInfo.sceneMeta.frames.length
             }
 
@@ -2292,19 +2293,17 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = 'editor') {
 
     this.select_locked_object()
     // 获取单张作业的object列表，并调用objIdManager内部方法，更新objectId列表
-    const frameObjectList = world?.annotation?.boxes
-      .map((b) => {
-        return {
-          category: b.obj_type,
-          id: b.obj_track_id,
-          count: 1
-        }
-      })
-      // .sort(function (x, y) {
-      //   return parseInt(x.id) - parseInt(y.id)
-      // })
+    const frameObjectList = world?.annotation?.boxes.map((b) => {
+      return {
+        category: b.obj_type,
+        id: b.obj_track_id
+      }
+    })
+    // .sort(function (x, y) {
+    //   return parseInt(x.id) - parseInt(y.id)
+    // })
 
-      objIdManager.objectList = frameObjectList ? [...frameObjectList] : []
+    objIdManager.objectList = frameObjectList ? [...frameObjectList] : []
     //load_obj_ids_of_scene(world.frameInfo.scene);
     objIdManager.setCurrentScene(world.frameInfo.scene, world.frameInfo.sceneMeta.taskName)
 
@@ -2478,17 +2477,15 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = 'editor') {
 
     box.world.annotation.setModified()
     // 获取单张作业的object列表，并调用objIdManager内部方法，更新objectId列表
-    const frameObjectList = box.world.annotation.boxes
-      .map((b) => {
-        return {
-          category: b.obj_type,
-          id: b.obj_track_id,
-          count: 1
-        }
-      })
-      // .sort(function (x, y) {
-      //   return parseInt(x.id) - parseInt(y.id)
-      // })
+    const frameObjectList = box.world.annotation.boxes.map((b) => {
+      return {
+        category: b.obj_type,
+        id: b.obj_track_id
+      }
+    })
+    // .sort(function (x, y) {
+    //   return parseInt(x.id) - parseInt(y.id)
+    // })
 
     objIdManager.objectList = frameObjectList ? [...frameObjectList] : []
     objIdManager.setObjdIdListOptions()

@@ -40,7 +40,6 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
         return {
           category: b.obj_type,
           id: b.obj_track_id,
-          count: 1
         }
       })
       // if (!this.objectsList.length) {
