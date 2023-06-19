@@ -71,7 +71,6 @@ class Data {
   createWorldIndex = 0 // this index shall not repeat, so it increases permanently
 
   async getWorld(sceneName, frame, on_preload_finished) {
-    console.log(frame)
     // find in list
 
     if (!this.meta[sceneName]) {
@@ -129,7 +128,7 @@ class Data {
       return world
     else return null
   }
-  
+
   getFrameIndex() {
     return this.worldList[0].frameInfo.frame_index + 1;
   }

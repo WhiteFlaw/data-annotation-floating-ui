@@ -235,9 +235,9 @@ var Header = function (
     this.ui.querySelector('#changed-world-list-wrapper').style.display = 'none'
   }
 
-  this.ui.querySelector('#save-button').onclick = () => {
-    saveWorldList(this.data.worldList, true)
-  }
+  // this.ui.querySelector('#save-button').onclick = () => {
+  //   saveWorldList(this.data.worldList, true)
+  // } // 去掉保存按钮点击事件
 }
 
 export { Header }

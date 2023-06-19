@@ -105,7 +105,7 @@ export const editorTemplate = `
                                 <p>保存所有世界</p>
                                 <div>?</div>
                             </div>
-                                当前未保存: 
+                                当前未保存:
                             <div id='changed-world-list'></div>
                         </div>
                     </div>
@@ -369,10 +369,10 @@ export const editorTemplate = `
                     <div class="menu-item-icon"></div>
                     <div class="menu-item-text">统计</div>
                 </div>
-                <div class="menu-item" id="cm-check-scene">
+               <!-- <div class="menu-item" id="cm-check-scene">
                     <div class="menu-item-icon"></div>
                     <div class="menu-item-text">Check</div>
-                </div>
+                </div> -->
             </div>
             <div id="object-context-menu">
                 <div class="menu-item" id="cm-modify-obj-type">
@@ -545,10 +545,10 @@ export const editorTemplate = `
                     <div class="menu-item-icon"> </div>
                     <div class="menu-item-text"><u>T</u>rajectory</div>
                 </div>
-                <div class="menu-item" id="cm-check">
+                <!-- <div class="menu-item" id="cm-check">
                     <div class="menu-item-icon"> </div>
                     <div class="menu-item-text">Check</div>
-                </div>
+                </div>-->
             </div>
             <div id="box-editor-manager-context-menu">
                 <div class="menu-item" id="cm-increase-box-editor">

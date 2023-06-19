@@ -1,4 +1,4 @@
-import axios from 'axios'
+// import axios from 'axios'
 import { GET, POST } from '@/utils/http-client.js'
 import { Message } from 'element-ui'
 import { innerDOMString } from './util.js'
@@ -36,14 +36,22 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
 
     if (!this.taskName || this.taskName !== world.sceneMeta.scene) {
       this.taskName = world.sceneMeta.scene
-      if (!this.objectsList.length) {
-        const resObj = await this.getObjectsList(this.taskName)
-        if (resObj.status === 200) {
-          this.objectsList = [...resObj.data]
-        } else {
-          Message.error(resObj.statusText)
+      this.objectsList = world?.annotation?.boxes.map((b) => {
+        return {
+          category: b.obj_type,
+          id: b.obj_track_id,
+          count: 1
         }
-      }
+      })
+      // if (!this.objectsList.length) {
+
+        // const resObj = await this.getObjectsList(this.taskName)
+        // if (resObj.status === 200) {
+        //   this.objectsList = [...resObj.data]
+        // } else {
+        //   Message.error(resObj.statusText)
+        // }
+      // }
       this.renderCommentsList(this.taskId)
     }
   }
@@ -186,9 +194,9 @@ export const CommentManager = function (parentUi, data, onCommentChanged, onComm
     return POST('/admin/qc/comment', [{ taskId, ...comment }])
   }
 
-  this.getObjectsList = function (scene) {
-    return axios.get(`${process.env.VUE_APP_PYTHON_API}/objs_of_scene`, { params: { scene: scene } })
-  }
+  // this.getObjectsList = function (scene) {
+  //   return axios.get(`${process.env.VUE_APP_PYTHON_API}/objs_of_scene`, { params: { scene: scene } })
+  // }
 
   this.findObject = function (objectList, objId) {
     if (objectList.length > 0) {
