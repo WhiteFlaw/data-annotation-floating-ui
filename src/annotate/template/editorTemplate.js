@@ -230,8 +230,16 @@ export const editorTemplate = `
                         <select title="occlusion" id="object-occlusion-selector"></select>
                     </div>
                     <div class="obj-editor-row">
-                        <label for="object-points-info">点数</label>
-                        <input title="points" id="object-points-info" readonly/>
+                        <label for="object-x-info">红X</label>
+                        <input title="x" id="object-x-info" readonly/>
+                        <label for="object-y-info">绿Y</label>
+                        <input title="y" id="object-y-info" readonly/>
+                        <label for="object-z-info">蓝Z</label>
+                        <input title="z" id="object-z-info" readonly/>
+                    </div>
+                    <div class="obj-editor-row">
+                        <label for="object-size-info">合规</label>
+                        <input title="x" id="object-size-info" readonly/>
                     </div>
                 </div>
             </div>

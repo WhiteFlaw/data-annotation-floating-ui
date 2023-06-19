@@ -1,7 +1,7 @@
 // size is the dimension of the object in x/y/z axis, with unit meter.
 
 class ObjectCategory {
-    
+
     obj_type_map = {
         Bus: { color: '#ffff00', size: [13, 3, 3.5] },
         Bicycle: { color: '#fcaafc', size: [1.8, 0.7, 1] },
@@ -68,10 +68,6 @@ class ObjectCategory {
         Unknown: { color: '#008888', size: [4.5, 1.8, 1.5] }, // 该项为必需
     };
 
-    constructor() {
-
-    }
-
     popularCategories = [
         'Bus',
         'Bicycle',
@@ -82,6 +78,53 @@ class ObjectCategory {
         'Truck',
         'Tricycle'
     ];
+
+    obj_occl_options = [-1, 0, 1, 2, 3];
+
+    obj_trunk_options = [-1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1];
+
+    obj_size_standard = {
+        Car: {
+            min_x: 2.2, // length
+            max_x: 6.6,
+            min_y: 1.4, // width
+            max_y: 2.5,
+            min_z: 1.1, // height
+            max_z: 2.5
+        },
+        Trunk: {
+            min_x: 3.0,
+            max_x: 20.0,
+            min_y: 1.5,
+            max_y: 4.0,
+            min_z: 1.5,
+            max_z: 6.0
+        },
+        Pedestrainr: {
+            min_x: 0.2,
+            max_x: 1.5,
+            min_y: 0.2,
+            max_y: 1.5,
+            min_z: 0.5,
+            max_z: 2.0
+        },
+        Cyclist: {
+            min_x: 1.0,
+            max_x: 2.5,
+            min_y: 0.3,
+            max_y: 1.5,
+            min_z: 1.0,
+            max_z: 2.5
+        },
+        Bus: {
+            min_x: 5.0,
+            max_x: 18.0,
+            min_y: 2.0,
+            max_y: 3.5,
+            min_z: 2.0,
+            max_z: 5.0
+        }
+    }
 
     guess_obj_type_by_dimension(scale) {
         let max_name = 0;

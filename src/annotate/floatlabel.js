@@ -65,13 +65,16 @@ class FastToolBox {
 
     show() {
         this.ui.style.display = "inline-block";
+        this.setOcclOptions();
+        if (!document.querySelector("#if-default-attribute-use").checked) {
+            this.setTrunkOptions();
+        }
     }
 
-    setValue(obj_type, obj_track_id, obj_trunk, obj_occlu, obj_points) {
+    setValue(obj_type, obj_track_id, obj_trunk, obj_occlu, obj_position, obj_scale) {
         this.ui.querySelector("#object-category-selector").value = obj_type;
-
-        this.setOcclOptions();
-        if (document.querySelector("#if-default-attribute-use").checked === false) this.setAttrOptions();
+        
+        this.checkObjectSize(obj_type, obj_scale);
 
         this.ui.querySelector("#object-track-id-editor").value = obj_track_id;
 
@@ -82,8 +85,33 @@ class FastToolBox {
         }
 
         this.ui.querySelector("#object-occlusion-selector").value = obj_occlu;
-        
-        this.ui.querySelector("#object-points-info").value = obj_points;
+
+        this.ui.querySelector("#object-x-info").value = obj_position.x.toFixed(1);
+        this.ui.querySelector("#object-y-info").value = obj_position.y.toFixed(1);
+        this.ui.querySelector("#object-z-info").value = obj_position.z.toFixed(1);
+    }
+
+    checkObjectSize(obj_type, obj_scale) {
+        const stan = globalObjectCategory.obj_size_standard;
+        if (!stan[obj_type]) return;
+        if (
+            obj_scale.x < stan[obj_type].min_x ||
+            obj_scale.x > stan[obj_type].max_x ||
+            obj_scale.y < stan[obj_type].min_y ||
+            obj_scale.y > stan[obj_type].max_y ||
+            obj_scale.z < stan[obj_type].min_z ||
+            obj_scale.z > stan[obj_type].max_z
+        ) {
+            this.ui.querySelector("#object-size-info").value = '否';
+            return;
+        }
+        this.ui.querySelector("#object-size-info").value = '是';
+    }
+
+    updateObjectPosition(pos) {
+        this.ui.querySelector("#object-x-info").value = pos.x.toFixed(1);
+        this.ui.querySelector("#object-y-info").value = pos.y.toFixed(1);
+        this.ui.querySelector("#object-z-info").value = pos.z.toFixed(1);
     }
 
     setPos(pos) {
@@ -93,9 +121,9 @@ class FastToolBox {
         }
     }
 
-    setAttrOptions() {
+    setTrunkOptions() {
 
-        let attrs = [ -1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 ]; // object-trunk-selector
+        let attrs = globalObjectCategory.obj_trunk_options;
 
         let items = ``;
 
@@ -110,7 +138,7 @@ class FastToolBox {
 
     setOcclOptions() {
 
-        let attrs = [ -1, 0, 1, 2, 3 ]; // object-trunk-selector
+        let attrs = globalObjectCategory.obj_occl_options; // object-occl-selector
 
         let items = ``;
 
@@ -169,8 +197,6 @@ class FloatLabelManager {
         this.labelsUi = editor_ui.querySelector("#floating-labels");
         this.floatingUi = editor_ui.querySelector("#floating-things");
 
-
-
         this.style = document.createElement('style');
         this.temp_style = document.createElement('style');
         this.on_label_clicked = func_on_label_clicked;
@@ -189,9 +215,6 @@ class FloatLabelManager {
     show() {
         this.floatingUi.style.display = "";
     }
-
-
-
 
     show_id(show) {
 

@@ -120,8 +120,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         );
 
         this.commentManager = new CommentManager(
-          this.editorUi.querySelector('#content'),
-          this.data
+            this.editorUi.querySelector('#content'),
+            this.data
         )
         //
         // that way, the operation speed may be better
@@ -414,7 +414,14 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
                 //self.autoAdjust.mark_bbox(self.selected_box);
                 //event.currentTarget.blur();
                 let id = objIdManager.generateNewUniqueId();
-                self.fastToolBox.setValue(self.selected_box.obj_type, id, self.selected_box.obj_trunk, self.selected_box.obj_occlu, self.selected_box.world.lidar.get_box_points_number(self.selected_box));
+                self.fastToolBox.setValue(
+                    self.selected_box.obj_type,
+                    id,
+                    self.selected_box.obj_trunk,
+                    self.selected_box.obj_occlu,
+                    self.selected_box.position,
+                    self.selected_box.scale
+                );
 
                 self.setObjectId(id);
                 break;
@@ -791,7 +798,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
                     this.selected_box.obj_track_id,
                     this.selected_box.obj_trunk,
                     this.selected_box.obj_occlu,
-                    this.selected_box.world.lidar.get_box_points_number(this.selected_box)
+                    this.selected_box.position,
+                    this.selected_box.scale
                 );
 
                 break;
@@ -819,7 +827,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
                     this.selected_box.obj_track_id,
                     this.selected_box.obj_trunk,
                     this.selected_box.obj_occlu,
-                    this.selected_box.world.lidar.get_box_points_number(this.selected_box)
+                    this.selected_box.position,
+                    this.selected_box.scale
                 );
 
                 break;
@@ -1140,7 +1149,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         this.hideGridLines();
         //this.controlGui.hide();
         this.editorUi.querySelector("#tools").style.display = 'none';
-        this.editorUi.querySelector("#object-selector").style.display='none';
+        this.editorUi.querySelector("#object-selector").style.display = 'none';
         this.currentMainEditor = this.boxEditorManager;
 
         this.boxEditorManager.edit(this.data,
@@ -1538,7 +1547,14 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
             this.boxOp.auto_rotate_xyz(box, () => {
                 box.obj_type = globalObjectCategory.guess_obj_type_by_dimension(box.scale);
                 this.floatLabelManager.set_object_type(box.obj_local_id, box.obj_type);
-                this.fastToolBox.setValue(box.obj_type, box.obj_track_id, box.obj_trunk, box.obj_occlu, box.world.lidar.get_box_points_number(box));
+                this.fastToolBox.setValue(
+                    box.obj_type,
+                    box.obj_track_id,
+                    box.obj_trunk,
+                    box.obj_occlu,
+                    box.position,
+                    box.scale
+                );
                 this.on_box_changed(box);
             });
         }
@@ -1770,7 +1786,14 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
             //this.floatLabelManager.select_box(this.selected_box.obj_local_id);
 
             this.fastToolBox.setPos(this.floatLabelManager.getLabelEditorPos(this.selected_box.obj_local_id));
-            this.fastToolBox.setValue(object.obj_type, object.obj_track_id, object.obj_trunk, object.obj_occlu, object.world.lidar.get_box_points_number(object));
+            this.fastToolBox.setValue(
+                object.obj_type,
+                object.obj_track_id,
+                object.obj_trunk,
+                object.obj_occlu,
+                object.position,
+                object.scale
+            );
             this.fastToolBox.show();
 
             this.boxOp.highlightBox(this.selected_box);
@@ -2259,21 +2282,21 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
     }
 
     this.onFrontCameraClicked = function (isShow) {
-        if(isShow) {
+        if (isShow) {
             this.imageContextManager.removeImage('front');
             return;
         }
         this.imageContextManager.addImage('front', false);
     }
     this.onLeftCameraClicked = function (isShow) {
-        if(isShow) {
+        if (isShow) {
             this.imageContextManager.removeImage('left');
             return
         }
         this.imageContextManager.addImage('left', false);
     }
     this.onRightCameraClicked = function (isShow) {
-        if(isShow) {
+        if (isShow) {
             this.imageContextManager.removeImage('right');
             return;
         }
@@ -2281,7 +2304,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
     }
 
     this.onToggleImageEditor = function (isShow) {
-        if(isShow) {
+        if (isShow) {
             this.imageViewer.hide();
             return;
         }
@@ -2447,7 +2470,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         this.select_locked_object();
 
         //load_obj_ids_of_scene(world.frameInfo.scene);
-        objIdManager.setCurrentScene(world.frameInfo.scene,world.frameInfo.sceneMeta.taskName);
+        objIdManager.setCurrentScene(world.frameInfo.scene, world.frameInfo.sceneMeta.taskName);
 
         // preload after the first world loaded
         // otherwise the loading of the first world would be too slow
@@ -2680,16 +2703,14 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
             this.imageContextManager.boxes_manager.update_box(box);
 
         this.header.update_box_info(box);
+        this.fastToolBox.updateObjectPosition(box.position);
+        this.fastToolBox.checkObjectSize(box.obj_type, box.scale);
         //floatLabelManager.update_position(box, false);  don't update position, or the ui is annoying.
 
         box.world.annotation.setModified();
 
-
-
         this.updateBoxPointsColor(box);
         this.save_box_info(box);
-
-
 
         if (box.boxEditor) {
             box.boxEditor.onBoxChanged();
@@ -2769,7 +2790,14 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         if (this.selected_box) {
             //this.floatLabelManager.select_box(this.selected_box.obj_local_id)
             this.fastToolBox.show();
-            this.fastToolBox.setValue(this.selected_box.obj_type, this.selected_box.obj_track_id, this.selected_box.obj_trunk, this.selected_box.obj_occlu, this.selected_box.world.lidar.get_box_points_number(this.selected_box));
+            this.fastToolBox.setValue(
+                this.selected_box.obj_type,
+                this.selected_box.obj_track_id,
+                this.selected_box.obj_trunk,
+                this.selected_box.obj_occlu,
+                this.selected_box.position,
+                this.selected_box.scale
+            );
         }
     };
 
@@ -2910,27 +2938,27 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
     this.init(editorUi);
 
-    this.clickFrameByWorkId = function(listItems = null){
-      const workId = getPathParams()['workId']
-      if(workId){
-        let clickDom = null
-        for(let i=0; i<listItems.length;i++){
-          if(listItems[i].attributes.value.value === workId){
-            clickDom = listItems[i]
-            break;
-          }
+    this.clickFrameByWorkId = function (listItems = null) {
+        const workId = getPathParams()['workId']
+        if (workId) {
+            let clickDom = null
+            for (let i = 0; i < listItems.length; i++) {
+                if (listItems[i].attributes.value.value === workId) {
+                    clickDom = listItems[i]
+                    break;
+                }
+            }
+            clickDom.onclick = (e) => {
+                this.frameManager.onFrameChanged(e);
+                this.frameManager.after_frame_click(e);
+            };
+            const e = new Event("click", { bubbles: false, cancelable: true })
+            clickDom.dispatchEvent(e)
         }
-        clickDom.onclick = (e)=>{
-          this.frameManager.onFrameChanged(e);
-          this.frameManager.after_frame_click(e);
-        };
-        const e = new Event("click", { bubbles: false, cancelable: true })
-        clickDom.dispatchEvent(e)
-      }
     }
     getClickDom(this.clickFrameByWorkId.bind(this))
 
     initOptionBtn()
-    this.OptionButtons = new OptionButtons(this.data,this.frameManager)
+    this.OptionButtons = new OptionButtons(this.data, this.frameManager)
 };
 export { Editor }
