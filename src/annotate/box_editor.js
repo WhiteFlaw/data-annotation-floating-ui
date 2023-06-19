@@ -3,7 +3,7 @@ import { ml } from "./ml.js";
 import { logger } from "./log.js";
 import { innerDOMString } from './util.js';
 import { BoxImageContext } from "./image.js";
-import { checkScene } from "./error_check.js";
+// import { checkScene } from "./error_check.js";
 import { objIdManager } from "./obj_id_list.js"
 import { ProjectiveViewOps }  from "./side_view_op.js"
 import { saveWorldList, reloadWorldList } from "./save.js"
@@ -18,9 +18,9 @@ import { batchEditorToolsTemplate } from './template/batchEditorToolsTemplate.js
 1) attach/detach
 2) setTarget, tryAttach, resetTarget, this is only for batch-editor-manager
 */
-function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp, 
+function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
     func_on_box_changed, func_on_box_remove, name){
-    
+
     this.boxEditorManager = boxEditorManager;
     this.parentUi = parentUi;
     this.name=name;
@@ -43,7 +43,7 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
         func_on_box_remove);
 
     this.focusImageContext = new BoxImageContext(this.ui.querySelector("#focuscanvas"));
-    
+
     this.pseudoBox = {
         position: {x: 0, y: 0, z: 0},
         rotation: {x: 0, y: 0, z: 0},
@@ -64,7 +64,7 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
         this.pseudoBox.scale.y = b.scale.y;
         this.pseudoBox.scale.z = b.scale.z;
     };
-    
+
     this.isInBatchMode = function(){
         return !!this.boxEditorManager;
     }
@@ -112,7 +112,7 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
         }
 
 
-    }; 
+    };
 
     // this.onContextMenu = (event)=>{
     //     if (this.boxEditorManager)  // there is no manager for box editor in main ui
@@ -145,7 +145,7 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
             }
         }
     };
-    
+
 
     /*
      the projectiveView tiggers zoomratio changing event.
@@ -162,7 +162,7 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
         else{
             this._setViewZoomRatio(viewIndex, ratio);
             this.update();
-            //this.viewManager.render();            
+            //this.viewManager.render();
         }
     };
 
@@ -215,7 +215,7 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
             //this.update();
             this.updateInfo();
             // this.boxView.render();
-            
+
             if (this.isInBatchMode()){
                 this.boxEditorManager.onBoxChanged(this);
             }
@@ -235,9 +235,9 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
             if (this.isInBatchMode()){
                 this.copyPseudoBox(this.box);
                 this.boxView.attachBox(this.pseudoBox);
-                
+
             }
-            
+
             this.focusImageContext.clear_canvas();
             this.box = null;
         }
@@ -257,7 +257,7 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
             this.parentUi.style.display="none";
         }
     }
-    
+
     this.show = function(){
         this.ui.style.display="";//"inline-block";
         if (!this.boxEditorManager){
@@ -266,7 +266,7 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
     }
 
     this.onBoxChanged=function(){
-        
+
         this.projectiveViewOps.update_view_handle();
         this.focusImageContext.updateFocusedImageContext(this.box);
         this.boxView.onBoxChanged();
@@ -275,9 +275,9 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
         delete this.box.annotator; // human annotator doesn't need a name
         delete this.box.follows;
         this.box.changed = true;
-        
+
         // don't mark world's change flag, for it's hard to clear it.
-        
+
         // inform boxEditorMgr to transfer annotation to other frames.
         if (this.boxEditorManager)
             this.boxEditorManager.onBoxChanged(this);
@@ -301,7 +301,7 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
             // this.boxView.updateCameraRange(this.box);
             // this.boxView.updateCameraPose(this.box);
 
-            // if (!dontRender) 
+            // if (!dontRender)
             //     this.boxView.render();
         }
 
@@ -311,11 +311,11 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
             return;
 
         this.projectiveViewOps.update_view_handle();
-        
-        
-        
+
+
+
         // this is not needed somtime
-        this.focusImageContext.updateFocusedImageContext(this.box); 
+        this.focusImageContext.updateFocusedImageContext(this.box);
 
         // should we update info?
         this.updateInfo();
@@ -325,10 +325,10 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
         let info = ""
         if (this.target.world){
             info  += String(this.target.world.frameInfo.frame);
-        
+
             if (this.box && this.box.annotator)
                 info += ","+this.box.annotator;
-            
+
             // if (this.box && this.box.changed)
             //     info += " *";
         }
@@ -369,7 +369,7 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
 
                 let rect = elements[0].contentRect;
                 console.log("sub-views resized.", rect);
-        
+
                 if (rect.height == 0 || rect.width == 0)
                 {
                     return;
@@ -381,7 +381,7 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
                     // so this render is effectiveless.
                     //this.boxView.render();
 
-                    // save                     
+                    // save
 
                     if (this.boxEditorManager)  // there is no manager for box editor in main ui
                     {
@@ -391,16 +391,16 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
                     else{
                         this.boxView.render();
                     }
-                
+
                     //save
                     this.lastSize.width = rect.width;
                     this.lastSize.height = rect.height;
                 }
 
-                
+
 
             });
-        
+
             this.resizeObserver.observe(this.ui);
         }
     }
@@ -411,7 +411,7 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
 
 
 //parentUi  #batch-box-editor
-function BoxEditorManager(parentUi, viewManager, objectTrackView, 
+function BoxEditorManager(parentUi, viewManager, objectTrackView,
                  cfg, boxOp, globalHeader, contextMenu, configMenu,
                  func_on_box_changed, func_on_box_remove, func_on_annotation_reloaded){
     this.viewManager = viewManager;
@@ -427,7 +427,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
     this.boxEditorHeaderUi = parentUi.querySelector("#batch-box-editor-header");
     this.batchSize = cfg.batchModeInstNumber;
     //this.configMenu = configMenu;
-    
+
     this.activeEditorList = function(){
         return this.editorList.slice(0, this.activeIndex);
     };
@@ -439,17 +439,17 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
         frame:"",
         frameIndex: NaN,
     };
-    
+
     this.onExit = null;
     // frame specifies the center frame to edit
-    
-    
+
+
     // this.parentUi.addEventListener("contextmenu", event=>{
     //     this.contextMenu.show("boxEditorManager", event.clientX, event.clientY, this);
     //     event.stopPropagation();
     //     event.preventDefault();
     // })
-    
+
     this.onSubViewsResize = function(width, height)
     {
         this.viewManager.mainView.clearView();
@@ -492,17 +492,17 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             let w = Math.floor(availableWidth/Math.ceil(batchSize/rows));
             let h = Math.floor(availableHeight/rows);
             let cost = Math.abs((w/h) - (defaultBoxWidth/defaultBoxHeight));
-            
+
             if (cost < minCost)
             {
-                minCost = cost;                
+                minCost = cost;
                 bestRows = rows;
             }
             else{
                 break;
             }
-        }        
-    
+        }
+
         //bestRows
         pointsGlobalConfig.batchModeSubviewSize = {
             width: Math.floor(availableWidth/Math.ceil(batchSize/bestRows)),
@@ -517,7 +517,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
         this.batchSize = batchSize;
         if (this.parentUi.style.display != "none")
         {
-            
+
 
             this.edit(  this.editingTarget.data,
                         this.editingTarget.sceneMeta,
@@ -534,7 +534,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
     };
 
     this.edit = function(data, sceneMeta, frame, objTrackId, objType, onExit){
-        
+
         this.show();
         this.reset();
 
@@ -555,14 +555,14 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
         this.editingTarget.sceneMeta = sceneMeta;
         this.editingTarget.objTrackId = objTrackId;
 
-        
+
         this.editingTarget.objType = objType;
 
         this.editingTarget.frame = frame;
 
         // this.parentUi.querySelector("#object-track-id-editor").value=objTrackId;
         // this.parentUi.querySelector("#object-category-selector").value=objType;
-        
+
 
         let centerIndex = sceneMeta.frames.findIndex(f=>f==frame);
         this.editingTarget.frameIndex = centerIndex;
@@ -584,14 +584,14 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
                 {
                     startIndex = 0;
                 }
-            }            
+            }
         }
 
-        
+
 
         let frames = sceneMeta.frames.slice(startIndex, startIndex+this.batchSize);
 
-        
+
         //this.viewManager.mainView.clearView();
 
         frames.forEach(async (frame, editorIndex)=>{
@@ -600,28 +600,28 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             //editor.setTarget(world, objTrackId, objType);
             editor.setIndex(editorIndex);
             editor.resize(pointsGlobalConfig.batchModeSubviewSize.width, pointsGlobalConfig.batchModeSubviewSize.height);
-            
+
             if (this.editingTarget.frame == frame){
                 editor.setSelected(true);
             }
 
-            data.activate_world(world, 
+            data.activate_world(world,
                 ()=>{
                     //editor.tryAttach();
 
                     editor.setTarget(world, objTrackId, objType);
-                    
+
                     //
                     //this.viewManager.render();
                 },
                 true);
         });
 
-        
+
         // set obj selector
         this.globalHeader.setObject(objTrackId);
     };
-    
+
     this.onContextMenu = function(event, boxEditor)
     {
         this.firingBoxEditor = boxEditor;
@@ -694,9 +694,9 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
            if (this.cfg.autoUpdateInterpolatedBoxes){
                 await this.updateInterpolatedBoxes();
            }
-           
+
            await this.updatePseudoBoxes();
-        },        
+        },
         500);
     };
 
@@ -704,8 +704,8 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
 
         let editorList = this.activeEditorList();
         let applyIndList = editorList.map(e=>e.box&&e.box.annotator=="i");
-        
-        let boxList = editorList.map(e=>e.box);        
+
+        let boxList = editorList.map(e=>e.box);
         let worldList = editorList.map(e=>e.target.world);
         await this.boxOp.interpolateAsync(worldList, boxList, applyIndList);
         //this.activeEditorList().forEach(e=>e.tryAttach());
@@ -723,7 +723,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
 
     this.updatePseudoBoxes = async function(){
         let editorList = this.activeEditorList();
-        let boxList = editorList.map(e=>e.box);      
+        let boxList = editorList.map(e=>e.box);
         let anns = boxList.map(b=> b?b.world.annotation.ann_to_vector_global(b):null);
 
         let ret = await ml.interpolate_annotation(anns);
@@ -737,7 +737,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
         });
     };
 
-    
+
 
     // manager
     this.onBoxChanged = function(e){
@@ -758,7 +758,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
     this.finalizeSelectedBoxes = function()
     {
         this.getSelectedEditors().forEach(e=>{
-                
+
             if (e.box){
                 if (e.box.annotator)
                 {
@@ -789,7 +789,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
 
         selectedEditors.forEach(e=>applyIndList[e.index] = true);
         this.interpolate(applyIndList);
-        
+
 
         this.updateAutoGeneratedBoxes();
     };
@@ -804,7 +804,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
                     {
                         func_on_box_remove(e.box, true);
                     }
-                }   
+                }
         });
 
         this.updateAutoGeneratedBoxes();
@@ -823,7 +823,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
                     });
 
                     onBoxChangedInBatchMode(e.box);
-                }   
+                }
         });
     };
 
@@ -842,7 +842,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
                     {
 
                         selectedEditors.forEach(e=>{
-                            if (e.box)  
+                            if (e.box)
                                 func_on_box_remove(e.box, true);
                         });
 
@@ -854,12 +854,12 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
         }
         else{
             selectedEditors.forEach(e=>{
-                if (e.box)  
+                if (e.box)
                     func_on_box_remove(e.box, true)
             });
 
             this.updateAutoGeneratedBoxes();
-        }     
+        }
     };
 
     this.autoAnnotateSelectedFrames = function()
@@ -888,7 +888,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             }
         }
     };
-    
+
 
     this.handleContextMenuEvent = function(event)
     {
@@ -933,9 +933,9 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             this.activeEditorList().forEach(e=> e.setSelected(e.index >= this.firingBoxEditor.index));
             return false;//don't hide context menu
             break
-            
+
         case 'cm-delete':
-            this.deleteSelectedBoxes( {x: event.clientX, y: event.clientY});    
+            this.deleteSelectedBoxes( {x: event.clientX, y: event.clientY});
             break;
         case 'cm-delete-empty-boxes':
             this.deleteEmptyBoxes();
@@ -946,11 +946,11 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
         case 'cm-interpolate':
             this.interpolateSelectedFrames();
             break;
-        
+
         case 'cm-auto-annotate':
             this.autoAnnotateSelectedFrames();
             break;
-        
+
         case 'cm-auto-annotate-wo-rotation':
             {
                 let applyIndList = this.activeEditorList().map(e=>false); //all shoud be applied.
@@ -961,12 +961,12 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
 
         case 'cm-fit-moving-direction':
             this.getSelectedEditors().forEach(e=>{
-                if (!e.box) 
+                if (!e.box)
                     return;
 
                 let currentBox = e.box;
                 let estimatedRot = boxOp.estimate_rotation_by_moving_direciton(currentBox);
-                
+
                 if (estimatedRot){
                     currentBox.rotation.z = estimatedRot.z;
                     func_on_box_changed(currentBox);
@@ -978,7 +978,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             break;
         case 'cm-fit-size':
             this.getSelectedEditors().forEach(e=>{
-                if (!e.box) 
+                if (!e.box)
                     return;
 
                 boxOp.fit_size(e.box, ['x','y']);
@@ -989,10 +989,10 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             break;
         case 'cm-fit-position':
             this.getSelectedEditors().forEach(e=>{
-                if (!e.box) 
+                if (!e.box)
                     return;
-                boxOp.auto_rotate_xyz(e.box, null, 
-                    null,//{x:false, y:false, z:true}, 
+                boxOp.auto_rotate_xyz(e.box, null,
+                    null,//{x:false, y:false, z:true},
                     func_on_box_changed, //onBoxChangedInBatchMode,
                     "noscaling", "dontrotate");
             });
@@ -1001,86 +1001,86 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             break;
         case 'cm-fit-rotation':
             this.getSelectedEditors().forEach(e=>{
-                if (!e.box) 
+                if (!e.box)
                     return;
-                boxOp.auto_rotate_xyz(e.box, null, 
-                    null, 
-                    func_on_box_changed,//onBoxChangedInBatchMode, // 
+                boxOp.auto_rotate_xyz(e.box, null,
+                    null,
+                    func_on_box_changed,//onBoxChangedInBatchMode, //
                     "noscaling");
-                
+
             });
 
             this.updateAutoGeneratedBoxes();
             break;
         case 'cm-fit-bottom':
             this.getSelectedEditors().forEach(e=>{
-                if (!e.box) 
+                if (!e.box)
                     return;
                 boxOp.fit_bottom(e.box);
 
-                func_on_box_changed(e.box);                
+                func_on_box_changed(e.box);
             });
-            
+
             this.updateAutoGeneratedBoxes();
             break;
         case 'cm-fit-top':
             this.getSelectedEditors().forEach(e=>{
-                if (!e.box) 
+                if (!e.box)
                     return;
                 boxOp.fit_top(e.box);
 
-                func_on_box_changed(e.box);                
+                func_on_box_changed(e.box);
             });
-            
+
             this.updateAutoGeneratedBoxes();
             break;
         case 'cm-fit-left':
             this.getSelectedEditors().forEach(e=>{
-                if (!e.box) 
+                if (!e.box)
                     return;
                 boxOp.fit_left(e.box);
 
-                func_on_box_changed(e.box);                
+                func_on_box_changed(e.box);
             });
-            
+
             this.updateAutoGeneratedBoxes();
             break;
         case 'cm-fit-right':
             this.getSelectedEditors().forEach(e=>{
-                if (!e.box) 
+                if (!e.box)
                     return;
                 boxOp.fit_right(e.box);
 
-                func_on_box_changed(e.box);                
+                func_on_box_changed(e.box);
             });
-            
+
             this.updateAutoGeneratedBoxes();
             break;
         case 'cm-fit-rear':
             this.getSelectedEditors().forEach(e=>{
-                if (!e.box) 
+                if (!e.box)
                     return;
                 boxOp.fit_rear(e.box);
 
-                func_on_box_changed(e.box);                
+                func_on_box_changed(e.box);
             });
-            
+
             this.updateAutoGeneratedBoxes();
             break;
         case 'cm-fit-front':
             this.getSelectedEditors().forEach(e=>{
-                if (!e.box) 
+                if (!e.box)
                     return;
                 boxOp.fit_front(e.box);
 
-                func_on_box_changed(e.box);                
+                func_on_box_changed(e.box);
             });
-            
+
             this.updateAutoGeneratedBoxes();
             break;
         case 'cm-reverse-direction':
             this.getSelectedEditors().forEach(e=>{
-                if (!e.box) 
+                if (!e.box)
                     return;
                 if (e.box.rotation.z > 0){
                     e.box.rotation.z -= Math.PI;
@@ -1098,7 +1098,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             break;
         case 'cm-reset-roll-pitch':
             this.getSelectedEditors().forEach(e=>{
-                if (!e.box) 
+                if (!e.box)
                     return;
                 e.box.rotation.x =0;
                 e.box.rotation.y =0;
@@ -1119,8 +1119,8 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
         case 'cm-check':
             {
                 let scene = this.editingTarget.sceneMeta.scene;
-                checkScene(scene);   
-                logger.show();             
+                checkScene(scene);
+                logger.show();
                 logger.errorBtn.onclick();
             }
             break;
@@ -1140,7 +1140,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
                     w.annotation.setModified();
 
                     onBoxChangedInBatchMode(box);
-                }                
+                }
             });
 
             //this.activeEditorList().forEach(e=>e.update('dontrender'));
@@ -1149,7 +1149,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
 
             break;
         case 'cm-reload':
-            
+
             {
                 let selectedEditors = this.getSelectedEditors();
                 this.reloadAnnotation(selectedEditors);
@@ -1160,7 +1160,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             break;
 
         case 'cm-goto-this-frame':
-            {            
+            {
                 this.gotoThisFrame();
             }
             break;
@@ -1171,9 +1171,9 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
                 this.globalHeader.updateModifiedStatus();
 
                 this.activeEditorList().forEach(e=>{
-                    e.tryAttach();                    
+                    e.tryAttach();
                 });
-                
+
                 //this.viewManager.render();
                 this.updateAutoGeneratedBoxes();
 
@@ -1181,7 +1181,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             break;
         };
 
-        
+
 
         return true;
     };
@@ -1191,7 +1191,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             e.setSelected(false);
             e.resetTarget();
         });
-        
+
         this.viewManager.mainView.clearView();
 
         this.activeIndex = 0;
@@ -1203,7 +1203,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
         switch(event.key){
             case 'a':
                 if (event.ctrlKey){
-                    this.activeEditorList().forEach(e=>e.setSelected(true));            
+                    this.activeEditorList().forEach(e=>e.setSelected(true));
                 }
                 break;
 
@@ -1237,7 +1237,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
                             this.onExit();
                     }
                 }
-                break;                
+                break;
             case 'PageUp':
             case '3':
                 this.prevBatch();
@@ -1289,7 +1289,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
         }
     };
 
-    
+
     this._addToolBox = function(){
 
         const dynamicButtonsPlaceHolder = document.getElementById("dynamic-buttons-placeholder");
@@ -1304,7 +1304,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
     this.toolbox = this._addToolBox();
 
     this.reloadAnnotation = function(editorList){
-        
+
         let done = (anns)=>{
             // update editor
             editorList.forEach(e=>{
@@ -1346,11 +1346,11 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
         }
 
 
-        
+
     }
 
     this.interpolate = async function(applyIndList){
-        let boxList = this.activeEditorList().map(e=>e.box);        
+        let boxList = this.activeEditorList().map(e=>e.box);
         let worldList = this.activeEditorList().map(e=>e.target.world);
         await this.boxOp.interpolateAsync(worldList, boxList, applyIndList);
         this.activeEditorList().forEach(e=>e.tryAttach());
@@ -1382,7 +1382,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
 
             this.updateAutoGeneratedBoxes();
         }
-        
+
         await this.boxOp.interpolateAndAutoAdjustAsync(worldList, boxList, onFinishOneBox, applyIndList, dontRotate);
 
         this.globalHeader.updateModifiedStatus();
@@ -1390,7 +1390,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
 
     // this.parentUi.querySelector("#object-track-id-editor").addEventListener("keydown", function(e){
     //     e.stopPropagation();});
-    
+
     // this.parentUi.querySelector("#object-track-id-editor").addEventListener("keyup", function(e){
     //     e.stopPropagation();
     // });
@@ -1421,7 +1421,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
                 ann = w.annotation.boxToAnn(box);
                 ann.psr.position = w.lidarPosToUtm(ann.psr.position);
                 ann.psr.rotation = w.lidarRotToUtm(ann.psr.rotation);
-            } 
+            }
             return [w.frameInfo.frame, ann, false];
         });
 
@@ -1445,15 +1445,15 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
     this.toolbox.querySelector("#reload").onclick = (e)=>{
 
         let selectedEditors = this.activeEditorList();
-        this.reloadAnnotation(selectedEditors);  
+        this.reloadAnnotation(selectedEditors);
     };
 
     this.toolbox.querySelector("#interpolate").onclick = async ()=>{
         //this.boxOp.interpolate_selected_object(this.editingTarget.scene, this.editingTarget.objTrackId, "");
-        
+
         let applyIndList = this.activeEditorList().map(e=>true); //all shoud be applied.
         this.interpolate(applyIndList);
-        
+
     };
 
     this.toolbox.querySelector("#auto-annotate").onclick = async ()=>{
@@ -1495,11 +1495,11 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             {
                 this.nextObj();
             }
-            else 
+            else
             {
                 window.editor.infoBox.show("Info", "This is the last batch of frames.");
             }
-            
+
         }
         else
         {
@@ -1523,11 +1523,11 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             {
                 this.prevObj();
             }
-            else 
+            else
             {
                 window.editor.infoBox.show("Info", "This is the first batch  of frames");
             }
-            
+
         }
         else
         {
@@ -1551,7 +1551,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
 
         let obj = objIdManager.objectList[idx];
 
-        
+
 
         this.edit(
             this.editingTarget.data,
@@ -1572,7 +1572,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
         if (objId != this.editingTarget.objTrackId)
         {
             let obj = objIdManager.getObjById(objId);
-    
+
             this.edit(
                 this.editingTarget.data,
                 this.editingTarget.sceneMeta,
@@ -1590,7 +1590,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
         let idx = objIdManager.objectList.findIndex(x=>x.id==this.editingTarget.objTrackId && x.category == this.editingTarget.objType);
 
         let objNum = objIdManager.objectList.length;
-        
+
         idx = (idx + 1) % objNum;
 
         let obj = objIdManager.objectList[idx];
@@ -1662,7 +1662,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             editorList.push(e);
         });
 
-       
+
         saveWorldList(worldList);
     }
 
@@ -1687,14 +1687,14 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
     this.allocateEditor = function(){
         if (this.activeIndex >= this.editorList.length){
             let editor = new BoxEditor(this.boxEditorGroupUi, this, this.viewManager, cfg, this.boxOp, func_on_box_changed, func_on_box_remove, String(this.activeIndex));
-            
+
             // resizable for the first editor
 
             if (this.editorList.length == 0)
             {
                 editor.setResize("both");
             }
-            
+
             this.editorList.push(editor);
 
             return editor;
@@ -1712,7 +1712,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             return x > rect.left && x < rect.right && y > rect.top && y < rect.bottom;
         })
     };
-    
+
 
     this.parentUi.onmousedown= (event)=>{
 
@@ -1724,24 +1724,24 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
         let select_start_pos={
             x: event.clientX,
             y: event.clientY,
-        } 
+        }
 
         console.log("box editor manager, on mouse down.", select_start_pos);
 
         let select_end_pos={
             x: event.clientX,
             y: event.clientY,
-        } 
+        }
 
         let leftMouseDown = true;
-        
+
         // a1<a2, b1<b2
         function lineIntersect(a1, a2, b1, b2)
         {
             if (a1 > a2) [a1,a2]=[a2,a1];
             if (b1 > b2) [b1,b2]=[b2,b1];
 
-            return (a1 > b1 && a1 < b2) || (a2 > b1 && a2 < b2) || (b1 > a1 && b1 < a2) || (b2 > a1 && b2 < a2) 
+            return (a1 > b1 && a1 < b2) || (a2 > b1 && a2 < b2) || (b1 > a1 && b1 < a2) || (b2 > a1 && b2 < a2)
         }
 
         // a,b: left, right, right, bottom
@@ -1750,7 +1750,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
                     lineIntersect(select_end_pos.y, select_start_pos.y, domRect.top, domRect.bottom))
         }
 
-              
+
 
         this.parentUi.onmousemove = (event)=>{
             select_end_pos.x = event.clientX;
@@ -1759,9 +1759,9 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
             this.editorList.forEach(e=>{
                 let rect = e.ui.getBoundingClientRect();
                 let intersected = intersect(rect, select_start_pos, select_end_pos);
-                
+
                 e.setSelected(intersected, event.ctrlKey?eventId:null);
-                
+
             })
         }
 
@@ -1785,7 +1785,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
                     let selectedEditors = this.getSelectedEditors();
                     if (selectedEditors.length == 0)
                     {
-                        
+
                     }
                     else if (ed.index < selectedEditors[0].index)
                     {
@@ -1801,7 +1801,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
                             if (e.index <= ed.index && e.index > selectedEditors[selectedEditors.length-1].index){
                                 e.setSelected(true);
                             }
-                        });                        
+                        });
                     }
                 }
                 else if (event.ctrlKey)
@@ -1811,8 +1811,8 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
                 else
                 {
                     let selectedEditors = this.getSelectedEditors();
-                    
-                    
+
+
                     if (ed){
                         if (ed.selected &&  selectedEditors.length == 1)
                         {
@@ -1820,7 +1820,7 @@ function BoxEditorManager(parentUi, viewManager, objectTrackView,
                         }
                         else
                         {
-                            selectedEditors.forEach(e=>e.setSelected(false));                            
+                            selectedEditors.forEach(e=>e.setSelected(false));
                             ed.setSelected(true);
                         }
                     }
