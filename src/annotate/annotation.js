@@ -301,7 +301,7 @@ function Annotation(sceneMeta, world, frameInfo) {
     };
 
     this.createCuboid = function (pos, scale, rotation, obj_type, track_id, obj_trunk, obj_occlu) {
-        let mesh = this.new_bbox_cube(parseInt("0x" + globalObjectCategory.get_obj_cfg_by_type(obj_type).color.slice(1)));
+        let mesh = this.new_bbox_cube(parseInt("0x" + globalObjectCategory.get_obj_cfg_by_type(obj_type).color.slice(1))); // 但只返回固定模型
         mesh.position.x = pos.x;
         mesh.position.y = pos.y;
         mesh.position.z = pos.z;

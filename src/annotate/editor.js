@@ -120,8 +120,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         );
 
         this.commentManager = new CommentManager(
-          this.editorUi.querySelector('#content'),
-          this.data
+            this.editorUi.querySelector('#content'),
+            this.data
         )
         //
         // that way, the operation speed may be better
@@ -1140,7 +1140,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         this.hideGridLines();
         //this.controlGui.hide();
         this.editorUi.querySelector("#tools").style.display = 'none';
-        this.editorUi.querySelector("#object-selector").style.display='none';
+        this.editorUi.querySelector("#object-selector").style.display = 'none';
         this.currentMainEditor = this.boxEditorManager;
 
         this.boxEditorManager.edit(this.data,
@@ -1550,8 +1550,9 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
     };
 
     this.create_box_by_points = function (points, rotationZ) {
+        console.trace()
 
-        let localRot = this.data.world.sceneRotToLidar(new THREE.Euler(0, 0, rotationZ, "XYZ"));
+        let localRot = this.data.world.sceneRotToLidar(new THREE.Euler(0, 0, rotationZ, "XYZ")); // 初始标注只围绕Y轴旋转
 
         let transToBoxMatrix = new THREE.Matrix4().makeRotationFromEuler(localRot)
             .setPosition(0, 0, 0)
@@ -1620,7 +1621,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
                 var object = intersects[0].object;
                 if (object.userData.object !== undefined) {
                     // helper
-                    this.selectBox(object.userData.object);
+                    this.selectBox(object.userData.object); // 选中拾取的box
                 } else {
                     this.selectBox(object);
                 }
@@ -1784,6 +1785,8 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
             this.boxEditor.attachBox(object);
             this.onSelectedBoxChanged(object);
 
+            this.getObjectAngle();
+
         }
         else {
             //reselect the same box
@@ -1801,6 +1804,31 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
 
     };
+
+    this.getObjectAngle = function () { // 获取3D对象较坐标轴偏移角度
+        const refer_x = new THREE.Vector3(this.selected_box.position.x, 0, 0);
+        const refer_z = new THREE.Vector3(0, 0, this.selected_box.position.z);
+
+        let angle_x = refer_x.angleTo(new THREE.Vector3(this.selected_box.position.x, 0, this.selected_box.position.z));
+        let angle_z = refer_z.angleTo(new THREE.Vector3(this.selected_box.position.x, 0, this.selected_box.position.z));
+
+        if (this.selected_box.position.z < 0) {
+            angle_x = -angle_x;
+        }
+        if (this.selected_box.position.x < 0) {
+            angle_z = -angle_z;
+        }
+
+        /* angle_x += this.selected_box.rotation.x;
+        angle_z += this.selected_box.rotation.z; */
+
+        const angle = {
+            x: 180 / Math.PI * angle_x,
+            z: 180 / Math.PI * angle_z
+        }
+        console.log(angle);
+        return angle;
+    }
 
     this.adjustContainerSize = function () {
         let editorRect = this.editorUi.getBoundingClientRect();
@@ -2259,21 +2287,21 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
     }
 
     this.onFrontCameraClicked = function (isShow) {
-        if(isShow) {
+        if (isShow) {
             this.imageContextManager.removeImage('front');
             return;
         }
         this.imageContextManager.addImage('front', false);
     }
     this.onLeftCameraClicked = function (isShow) {
-        if(isShow) {
+        if (isShow) {
             this.imageContextManager.removeImage('left');
             return
         }
         this.imageContextManager.addImage('left', false);
     }
     this.onRightCameraClicked = function (isShow) {
-        if(isShow) {
+        if (isShow) {
             this.imageContextManager.removeImage('right');
             return;
         }
@@ -2281,7 +2309,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
     }
 
     this.onToggleImageEditor = function (isShow) {
-        if(isShow) {
+        if (isShow) {
             this.imageViewer.hide();
             return;
         }
@@ -2447,7 +2475,7 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
         this.select_locked_object();
 
         //load_obj_ids_of_scene(world.frameInfo.scene);
-        objIdManager.setCurrentScene(world.frameInfo.scene,world.frameInfo.sceneMeta.taskName);
+        objIdManager.setCurrentScene(world.frameInfo.scene, world.frameInfo.sceneMeta.taskName);
 
         // preload after the first world loaded
         // otherwise the loading of the first world would be too slow
@@ -2593,7 +2621,6 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
 
     this.remove_box = function (box, render = true) { // 检查一下正常分支会不会走到这里
-        console.log("清除box")
         if (box === this.selected_box) {
             this.unselectBox(null, true);
             this.unselectBox(null, true); //twice to safely unselect.
@@ -2910,27 +2937,27 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = "editor") {
 
     this.init(editorUi);
 
-    this.clickFrameByWorkId = function(listItems = null){
-      const workId = getPathParams()['workId']
-      if(workId){
-        let clickDom = null
-        for(let i=0; i<listItems.length;i++){
-          if(listItems[i].attributes.value.value === workId){
-            clickDom = listItems[i]
-            break;
-          }
+    this.clickFrameByWorkId = function (listItems = null) {
+        const workId = getPathParams()['workId']
+        if (workId) {
+            let clickDom = null
+            for (let i = 0; i < listItems.length; i++) {
+                if (listItems[i].attributes.value.value === workId) {
+                    clickDom = listItems[i]
+                    break;
+                }
+            }
+            clickDom.onclick = (e) => {
+                this.frameManager.onFrameChanged(e);
+                this.frameManager.after_frame_click(e);
+            };
+            const e = new Event("click", { bubbles: false, cancelable: true })
+            clickDom.dispatchEvent(e)
         }
-        clickDom.onclick = (e)=>{
-          this.frameManager.onFrameChanged(e);
-          this.frameManager.after_frame_click(e);
-        };
-        const e = new Event("click", { bubbles: false, cancelable: true })
-        clickDom.dispatchEvent(e)
-      }
     }
     getClickDom(this.clickFrameByWorkId.bind(this))
 
     initOptionBtn()
-    this.OptionButtons = new OptionButtons(this.data,this.frameManager)
+    this.OptionButtons = new OptionButtons(this.data, this.frameManager)
 };
 export { Editor }
