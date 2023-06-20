@@ -15,7 +15,7 @@ import { BoxOp } from './box_op.js'
 import { Header } from './header.js'
 import { InfoBox } from './info_box.js'
 import { PlayControl } from './play.js'
-import { vector_range } from './util.js'
+import { vector_range, copyWorld } from './util.js'
 import { ConfigUi } from './config_ui.js'
 import { CropScene } from './crop_scene.js'
 import { Trajectory } from './trajectory.js'
@@ -2306,6 +2306,12 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = 'editor') {
     objIdManager.objectList = frameObjectList ? [...frameObjectList] : []
     //load_obj_ids_of_scene(world.frameInfo.scene);
     objIdManager.setCurrentScene(world.frameInfo.scene, world.frameInfo.sceneMeta.taskName)
+
+    const initialAction = {
+      name: 'initialWorld',
+      params: copyWorld(world)
+    }
+    backupManager.initManager(initialAction)
 
     // preload after the first world loaded
     // otherwise the loading of the first world would be too slow

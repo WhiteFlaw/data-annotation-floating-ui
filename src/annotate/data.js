@@ -3,8 +3,7 @@ import { Message } from 'element-ui'
 import { logger } from './log.js'
 import { World } from './world.js'
 import { Debug } from './debug.js'
-import { backupManager } from './backup/manager.js'
-import { copyWorld, setWorld, replaceWorld } from './util.js'
+import { setWorld, replaceWorld } from './util.js'
 import {getPathParams} from './getPathParams.js'
 
 class Data {
@@ -246,11 +245,6 @@ class Data {
     let startIndex = Math.max(0, currentWorldIndex - this.MaxWorldNumber / 2)
     let endIndex = Math.min(meta.frames.length, startIndex + this.MaxWorldNumber)
 
-    const initialAction = {
-      name: 'initialWorld',
-      params: copyWorld(this.world)
-    }
-    backupManager.initManager(initialAction)
     this._doPreload(sceneName, startIndex, endIndex)
 
     logger.log(`${endIndex - startIndex} frames created`)
