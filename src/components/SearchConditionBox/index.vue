@@ -16,8 +16,8 @@
         <el-form-item v-if="isHasTeamName" label="团队名称">
           <el-input v-model="searchCondition.teamName" placeholder="请输入团队名称" clearable />
         </el-form-item>
-        <el-form-item v-if="isHasAnnotatorName" label="标注员名称">
-          <el-input v-model="searchCondition.annotatorName" placeholder="请输入标注员名称" clearable />
+        <el-form-item v-if="isHasUserNickname" label="标注员名称">
+          <el-input v-model="searchCondition.userNickname" placeholder="请输入标注员名称" clearable />
         </el-form-item>
         <el-form-item v-if="isHasTaskName" label="任务名称">
           <el-input v-model="searchCondition.taskName" placeholder="请输入任务名称" clearable />
@@ -37,14 +37,14 @@
 </template>
 
 <script>
-
+import { getLocalDate } from '@/utils/total'
 export default {
   name: 'SearchCondition',
   props: {
     isHasDate: { type: Boolean, default: false }, // 是否显示时间范围
     isHasProjectName: { type: Boolean, default: false }, // 是否显示项目名称
     isHasTeamName: { type: Boolean, default: false }, // 是否显示团队名称
-    isHasAnnotatorName: { type: Boolean, default: false }, // 是否显示标注员名称
+    isHasUserNickname: { type: Boolean, default: false }, // 是否显示标注员名称
     isHasTaskName: { type: Boolean, default: false }, // 是否显示任务名称
     isHasWorkName: { type: Boolean, default: false } // 是否显示作业名称
   },
@@ -55,7 +55,7 @@ export default {
         endTime: '', // 结束日期
         projectName: '', // 项目名称
         teamName: '', // 团队名称
-        annotatorName: '', // 标注员名称
+        userNickname: '', // 标注员名称
         taskName: '', // 任务名称
         workName: '' // 作业名称
       },
@@ -63,14 +63,7 @@ export default {
     }
   },
   methods: {
-    // 当前日期
-    getLocalDate() {
-      const dateTime = new Date()
-      const year = dateTime.getFullYear()
-      const month = ('0' + (dateTime.getMonth() + 1)).slice(-2)
-      const day = ('0' + dateTime.getDate()).slice(-2)
-      return year + '-' + month + '-' + day + ' 00:00:00'
-    },
+    getLocalDate,
     // 查询条件
     searchData() {
       if (this.dateTime) {
@@ -91,8 +84,8 @@ export default {
       if (!this.isHasTeamName) {
         delete condition['teamName']
       }
-      if (!this.isHasAnnotatorName) {
-        delete condition['annotatorName']
+      if (!this.isHasUserNickname) {
+        delete condition['userNickname']
       }
       if (!this.isHasTaskName) {
         delete condition['taskName']

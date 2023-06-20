@@ -319,6 +319,28 @@ export const asyncRoutes = [
         name: 'TaggerStatistics',
         component: () => import('@/views/dataStatistics/TaggerStatistics'),
         meta: { title: '标注员数据', roles: ['manager', 'teamLeader', 'tagger'] }
+      },
+      {
+        path: 'quality-inspection-box-statictics',
+        name: 'QualityInspectionBoxStatictics',
+        component: () => import('@/views/dataStatistics'),
+        redirect: '/dataStatistics/quality-inspection-box-statictics/quality-inspection-statictics',
+        meta: { title: '质检员数据', roles: ['manager', 'teamLeader', 'tagger', 'qc'] },
+        children: [
+          {
+            path: 'quality-inspection-statictics',
+            name: 'QualityInspectionStatictics',
+            component: () => import('@/views/dataStatistics/qualityInspectionStatistics'),
+            meta: { title: '统计列表', roles: ['manager', 'teamLeader', 'tagger', 'qc'] }
+          },
+          {
+            path: 'job-detail-qc/:projectId/:taskId',
+            name: 'JobDetailQc',
+            component: () => import('@/views/myTask/jobDetail/index'),
+            meta: { title: '作业列表' },
+            hidden: true
+          }
+        ]
       }
     ]
   }

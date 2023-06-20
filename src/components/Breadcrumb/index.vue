@@ -82,7 +82,9 @@ export default {
           this.$router.push(this.getRedirect(redirect))
         }
       } else {
-        this.$router.push(this.pathCompile(path, name))
+        if (name !== 'dataStatistics') {
+          this.$router.push(this.pathCompile(path, name))
+        }
       }
     },
     getRedirect(path) {
