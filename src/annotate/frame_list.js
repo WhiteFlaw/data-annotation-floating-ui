@@ -71,30 +71,30 @@ const FrameManager = function (parentUi, data, onFrameChanged, toPreviousFrame, 
         this.update_frame_list();
     }
 
-    this.update_frame_list = function () {
-        let target = null;
-        if(this.eventList.length === 0) return;
-        if(this.eventList.length === 1) {
-            target = this.frameManagerListUi.querySelector(`#frame-list-${this.eventList[0]}`);
-        } else {
-            this.frameManagerListUi.querySelector(`#frame-list-${this.eventList[0]}`).classList.remove('frame-manager-choosen', true);
-            target = this.frameManagerListUi.querySelector(`#frame-list-${this.eventList[1]}`);
-        }
-        target.classList.toggle('frame-manager-choosen', true);
-        this.frame = target.getAttribute('value');
-
-        // 获取单张作业的object列表，并调用objIdManager内部方法，更新objectId列表
-        const frameObjectList = this.data.world.annotation.boxes.map(b=>{
-          return{
-            category:b.obj_type,
-            id:b.obj_track_id,
-            count:1
-          }
-        }).sort(function (x, y) {
-          return parseInt(x.id) - parseInt(y.id)
-        })
-        objIdManager.setObjdIdListOptions(frameObjectList)
+  this.update_frame_list = function () {
+    if (this.eventList.length === 0) return
+    let target = null
+    if (this.eventList.length === 1) {
+      target = this.frameManagerListUi.querySelector(`#frame-list-${this.eventList[0]}`)
+    } else {
+      this.frameManagerListUi.querySelector(`#frame-list-${this.eventList[0]}`).classList.remove('frame-manager-choosen', true)
+      target = this.frameManagerListUi.querySelector(`#frame-list-${this.eventList[1]}`)
     }
+    target.classList.toggle('frame-manager-choosen', true)
+    this.frame = target.getAttribute('value')
+
+    document.getElementById('frame-name-container').innerHTML = `<span>作业名称:</span><span>${this.frame}</span>`
+    // 获取单张作业的object列表，并调用objIdManager内部方法，更新objectId列表
+    const frameObjectList = this.data?.world?.annotation?.boxes.map((b) => {
+      return {
+        category: b.obj_type,
+        id: b.obj_track_id,
+      }
+    })
+
+    objIdManager.objectList = frameObjectList ? [...frameObjectList] : []
+    objIdManager.setObjdIdListOptions()
+  }
 
     this.update_event_list = function(frameIndex) {
         if(isNaN(frameIndex)) return;

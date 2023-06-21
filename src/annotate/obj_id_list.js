@@ -13,19 +13,21 @@ class ObjectIdManager {
     if (taskName != this.taskName) {
       this.taskName = taskName
       this.scene = scene
-      this.load_obj_ids_of_scene(scene, done)
+      // this.load_obj_ids_of_scene(scene, done)
+      this.load_obj_ids_of_scene()
     }
   }
 
   forceUpdate(done) {
-    this.load_obj_ids_of_scene(this.scene, done)
+    // this.load_obj_ids_of_scene(this.scene, done)
+    this.load_obj_ids_of_scene()
   }
 
   // should just tell  editor
   // don't change html elements directly.
-  setObjdIdListOptions(frameObjectList) {
-    // let objSelOptions = this.objectList
-    let objSelOptions = frameObjectList
+  setObjdIdListOptions() {
+    this.load_obj_ids_of_scene()
+    let objSelOptions = this.objectList
       .map(function (c) {
         return '<option value=' + c.id + '>' + String(c.id) + '-' + c.category + '</option>'
       })
@@ -36,8 +38,7 @@ class ObjectIdManager {
     document.getElementById('object-selector').innerHTML = objSelOptions
     document.getElementById('object-list').innerHTML = objSelOptions
 
-    // let objIdsOptions = this.objectList
-    let objIdsOptions = frameObjectList
+    let objIdsOptions = this.objectList
       .map(function (c) {
         return '<option value=' + c.id + '>' + c.category + '</option>'
       })
@@ -74,38 +75,51 @@ class ObjectIdManager {
   }
 
   load_obj_ids_of_scene(scene, done) {
-    var xhr = new XMLHttpRequest()
-    // we defined the xhr
-    let self = this
-
-    xhr.onreadystatechange = function () {
-      if (this.readyState != 4) return
-
-      if (this.status == 200) {
-        var ret = JSON.parse(this.responseText)
-        self.objectList = ret
-        self.sortObjIdList()
-        const resultArray = []
-        self.objectList.forEach(function (x) {
-          var numId = parseInt(x.id)
-          if (!isNaN(numId)) {
-            resultArray.push(numId)
-          }
-        })
-        self.maxId = Math.max(...resultArray)
-
-        if (self.maxId < 0)
-          // this is -infinity if there is no ids.
-          self.maxId = 0
-
-        // self.setObjdIdListOptions()
-
-        if (done) done(ret)
+    this.sortObjIdList()
+    const resultArray = []
+    this.objectList.forEach(function (x) {
+      var numId = parseInt(x.id)
+      if (!isNaN(numId)) {
+        resultArray.push(numId)
       }
-    }
+    })
+    this.maxId = Math.max(...resultArray)
 
-    xhr.open('GET', '/dev-ann-api/objs_of_scene?scene=' + scene, true)
-    xhr.send()
+    if (this.maxId < 0)
+      // this is -infinity if there is no ids.
+      this.maxId = 0
+    // var xhr = new XMLHttpRequest()
+    // // we defined the xhr
+    // let self = this
+
+    // xhr.onreadystatechange = function () {
+    //   if (this.readyState != 4) return
+
+    //   if (this.status == 200) {
+    //     var ret = JSON.parse(this.responseText)
+    //     self.objectList = ret
+    //     self.sortObjIdList()
+    //     const resultArray = []
+    //     self.objectList.forEach(function (x) {
+    //       var numId = parseInt(x.id)
+    //       if (!isNaN(numId)) {
+    //         resultArray.push(numId)
+    //       }
+    //     })
+    //     self.maxId = Math.max(...resultArray)
+
+    //     if (self.maxId < 0)
+    //       // this is -infinity if there is no ids.
+    //       self.maxId = 0
+
+    //     // self.setObjdIdListOptions()
+
+    //     if (done) done(ret)
+    //   }
+    // }
+
+    // xhr.open('GET', '/dev-ann-api/objs_of_scene?scene=' + scene, true)
+    // xhr.send()
   }
 
   getObjById(id) {
