@@ -22,10 +22,10 @@ var Header = function (
   this.data = data
   this.cfg = cfg
 
-  this.showCameraFront = true;
-  this.showCameraLeft = true;
-  this.showCameraRight = true;
-  this.showImageEditor = true;
+  this.showCameraFront = true
+  this.showCameraLeft = true
+  this.showCameraRight = true
+  this.showImageEditor = true
 
   this.boxUi = ui.querySelector('#box')
   this.refObjUi = ui.querySelector('#ref-obj')
@@ -36,10 +36,10 @@ var Header = function (
   this.categoryUseUi = ui.querySelector('#if-default-category-use')
   this.attributeUseUi = ui.querySelector('#if-default-attribute-use')
   this.usePreviousFrameUi = ui.querySelector('#use-previous-frame')
-  this.cameraFrontImgContainerToggleBtn = ui.querySelector('#camera-front-img-container-toggle');
-  this.cameraLeftImgContainerToggleBtn = ui.querySelector('#camera-left-img-container-toggle');
-  this.cameraRightImgContainerToggleBtn = ui.querySelector('#camera-right-img-container-toggle');
-  this.imageEditorToggleBtn = ui.querySelector('#img-editor-toggle');
+  this.cameraFrontImgContainerToggleBtn = ui.querySelector('#camera-front-img-container-toggle')
+  this.cameraLeftImgContainerToggleBtn = ui.querySelector('#camera-left-img-container-toggle')
+  this.cameraRightImgContainerToggleBtn = ui.querySelector('#camera-right-img-container-toggle')
+  this.imageEditorToggleBtn = ui.querySelector('#img-editor-toggle')
   this.undoUi = ui.querySelector('#undo')
   this.redoUi = ui.querySelector('#redo')
 
@@ -69,12 +69,11 @@ var Header = function (
   // update scene selector ui
 
   this.updateSceneList = function (sceneDescList) {
-    let scene_selector_str = "<option>--scene--</option>";
+    let scene_selector_str = '<option>--scene--</option>'
 
-    if (sceneDescList) scene_selector_str = `<option value="${sceneDescList}">${this.data.sceneAllData.taskName}</option>`;
+    if (sceneDescList) scene_selector_str = `<option value="${sceneDescList}">${this.data.sceneAllData.taskName}</option>`
     this.ui.querySelector('#scene-selector').innerHTML = scene_selector_str
     document.getElementById('scene-selector-name').innerText = this.data.sceneAllData.taskName
-
   }
 
   this.updateSceneList(this.data.sceneDescList)
@@ -116,7 +115,7 @@ var Header = function (
     } else {
       this.cameraFrontImgContainerToggleBtn.querySelector('span').innerHTML = '隐藏前相机'
     }
-    this.showCameraFront = !this.showCameraFront;
+    this.showCameraFront = !this.showCameraFront
   } // show/hide front camera.
 
   this.cameraLeftImgContainerToggleBtn.onclick = () => {
@@ -126,7 +125,7 @@ var Header = function (
     } else {
       this.cameraLeftImgContainerToggleBtn.querySelector('span').innerHTML = '隐藏左相机'
     }
-    this.showCameraLeft = !this.showCameraLeft;
+    this.showCameraLeft = !this.showCameraLeft
   } // show/hide left camera.
 
   this.cameraRightImgContainerToggleBtn.onclick = () => {
@@ -136,17 +135,17 @@ var Header = function (
     } else {
       this.cameraRightImgContainerToggleBtn.querySelector('span').innerHTML = '隐藏右相机'
     }
-    this.showCameraRight = !this.showCameraRight;
+    this.showCameraRight = !this.showCameraRight
   } // show/hide right camera.
 
   this.imageEditorToggleBtn.onclick = () => {
-    this.onToggleImageEditor(this.showImageEditor);
+    this.onToggleImageEditor(this.showImageEditor)
     if (this.showImageEditor) {
       this.imageEditorToggleBtn.querySelector('span').innerHTML = '显示编辑器'
     } else {
       this.imageEditorToggleBtn.querySelector('span').innerHTML = '隐藏编辑器'
     }
-    this.showImageEditor = !this.showImageEditor;
+    this.showImageEditor = !this.showImageEditor
   } // show/hide right camera.
 
   this.undoUi.onclick = () => {
@@ -161,18 +160,17 @@ var Header = function (
     this.objectSelectorUi.value = id
   }
 
-    /* this.clear_box_info = function () {
+  /* this.clear_box_info = function () {
           this.boxUi.innerHTML = '';
       }; */
-
-    ; (this.update_box_info = function (box) {
-      var scale = box.scale
-      /* var pos = box.position;
+  ;(this.update_box_info = function (box) {
+    var scale = box.scale
+    /* var pos = box.position;
           var rotation = box.rotation;
           var points_number = box.world.lidar.get_box_points_number(box);
           let distance = Math.sqrt(pos.x * pos.x + pos.y * pos.y).toFixed(2); */
 
-      /* this.boxUi.innerHTML = "<span>" + box.obj_type + "-" + box.obj_track_id +
+    /* this.boxUi.innerHTML = "<span>" + box.obj_type + "-" + box.obj_track_id +
               (box.annotator ? ("</span> | <span title='annotator'>" + box.annotator) : "") +
               "</span> | <span title='distance'>" + distance +
               "</span> | <span title='position'>" + pos.x.toFixed(2) + " " + pos.y.toFixed(2) + " " + pos.z.toFixed(2) +
@@ -181,29 +179,29 @@ var Header = function (
               (rotation.x * 180 / Math.PI).toFixed(2) + " " + (rotation.y * 180 / Math.PI).toFixed(2) + " " + (rotation.z * 180 / Math.PI).toFixed(2) +
               "</span> | <span title = 'points'>" +
               points_number + "</span> "; */
-      document.getElementById('sub-views-size-top-val').innerHTML = `宽：${scale.y.toFixed(2)} 长：${scale.x.toFixed(2)}`
-      document.getElementById('sub-views-size-left-val').innerHTML = `长：${scale.x.toFixed(2)} 高：${scale.z.toFixed(2)}`
-      document.getElementById('sub-views-size-front-val').innerHTML = `宽：${scale.y.toFixed(2)} 高：${scale.z.toFixed(2)}`
-      if (box.follows) {
-        this.boxUi.innerHTML += '| F:' + box.follows.obj_track_id
-      }
-    }),
-      /* this.set_ref_obj = function (marked_object) {
+    document.getElementById('sub-views-size-top-val').innerHTML = `宽：${scale.y.toFixed(2)} 长：${scale.x.toFixed(2)}`
+    document.getElementById('sub-views-size-left-val').innerHTML = `长：${scale.x.toFixed(2)} 高：${scale.z.toFixed(2)}`
+    document.getElementById('sub-views-size-front-val').innerHTML = `宽：${scale.y.toFixed(2)} 高：${scale.z.toFixed(2)}`
+    if (box.follows) {
+      this.boxUi.innerHTML += '| F:' + box.follows.obj_track_id
+    }
+  }),
+    /* this.set_ref_obj = function (marked_object) {
           this.refObjUi.innerHTML = "| Ref: " + marked_object.scene + "/" + marked_object.frame + ": " + marked_object.ann.obj_type + "-" + marked_object.ann.obj_id;
       }, */
 
-      /* this.clear_frame_info = function (scene, frame) {
-  
+    /* this.clear_frame_info = function (scene, frame) {
+
       }, */
 
-      (this.updateModifiedStatus = function () {
-        let frames = this.data.worldList.filter((w) => w.annotation.modified)
-        if (frames.length > 0) {
-          this.ui.querySelector('#changed-mark').className = 'ui-button alarm-mark'
-        } else {
-          this.ui.querySelector('#changed-mark').className = 'ui-button'
-        }
-      })
+    (this.updateModifiedStatus = function () {
+      let frames = this.data.worldList.filter((w) => w.annotation.modified)
+      if (frames.length > 0) {
+        this.ui.querySelector('#changed-mark').className = 'ui-button alarm-mark'
+      } else {
+        this.ui.querySelector('#changed-mark').className = 'ui-button'
+      }
+    })
 
   this.updateSaveFeedback = function () {
     const feedback = this.ui.querySelector('#save-feedback')
@@ -228,9 +226,9 @@ var Header = function (
     this.ui.querySelector('#changed-world-list-wrapper').style.display = 'none'
   }
 
-  this.ui.querySelector('#save-button').onclick = () => {
-    saveWorldList(this.data.worldList, true)
-  }
+  // this.ui.querySelector('#save-button').onclick = () => {
+  //   saveWorldList(this.data.worldList, true)
+  // } // 去掉保存按钮点击事件
 }
 
 export { Header }
