@@ -967,7 +967,6 @@ function Editor(editorUi, wrapperUi, editorCfg, data, name = 'editor') {
     // var frame = event.currentTarget.value;
     var frame = event.target.attributes.value.value
 
-    document.getElementById('frame-name-container').innerHTML = `<span>作业名称:</span><span>${frame}</span>`
     this.load_world(sceneName, frame) // editor.js 2313
     event.currentTarget.blur()
   }
