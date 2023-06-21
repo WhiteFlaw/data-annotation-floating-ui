@@ -82,7 +82,7 @@ const FrameManager = function (parentUi, data, onFrameChanged, toPreviousFrame, 
     }
     target.classList.toggle('frame-manager-choosen', true)
     this.frame = target.getAttribute('value')
-
+    document.getElementById('frame-name-container').innerHTML = `<span>作业名称:</span><span>${this.frame}</span>`
     const frameObjectList = this.data?.world?.annotation?.boxes.map((b) => {
       return {
         category: b.obj_type,
