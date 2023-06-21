@@ -101,14 +101,14 @@ async function doSaveWorldList(worldList, done) {
   const currentFrame = document.getElementById('frame-manager-list').querySelector('.frame-manager-choosen').getAttribute('value')
   let homeworkId = 0
   let ann = worldList.map((w) => {
-    if (w.frameInfo.frame === currentFrame) {
+    /* if (w.frameInfo.frame === currentFrame) { */
       homeworkId = w.sceneMeta.homework_list.find((h) => h.name === currentFrame)['id']
       return {
         scene: w.frameInfo.scene,
         frame: w.frameInfo.frame,
         annotation: w.annotation.toBoxAnnotations()
       }
-    }
+    /* } */
   })
   const res = await postWorldList(homeworkId, ann)
 
