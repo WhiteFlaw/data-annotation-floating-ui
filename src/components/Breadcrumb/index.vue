@@ -78,6 +78,16 @@ export default {
         if (redirect === '/myTask/taggingTask' && this.roles.indexOf('tagger') === -1 && this.roles.indexOf('teamLeader') === -1) {
           // 如果角色不包含是标注员
           this.$router.push(this.getRedirect('/myTask/roundOfInspection'))
+        } else if (redirect === '/dataStatistics/index') {
+          if (this.roles.indexOf('manager') !== -1) {
+            this.$router.push(this.getRedirect('/dataStatistics/manager-statistics'))
+          } else if (this.roles.indexOf('teamLeader') !== -1) {
+            this.$router.push(this.getRedirect('/dataStatistics/tl-statistics/teamLeader-statistics'))
+          } else if (this.roles.indexOf('tagger') !== -1) {
+            this.$router.push(this.getRedirect('/dataStatistics/tagger-statistics'))
+          } else if (this.roles.indexOf('qc') !== -1) {
+            this.$router.push(this.getRedirect('/dataStatistics/quality-inspection-box-statictics/quality-inspection-statictics'))
+          }
         } else {
           this.$router.push(this.getRedirect(redirect))
         }

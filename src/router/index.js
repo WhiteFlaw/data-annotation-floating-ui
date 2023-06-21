@@ -307,6 +307,7 @@ export const asyncRoutes = [
     component: Layout,
     meta: { title: '数据统计', icon: 'task-manange', roles: ['manager', 'teamLeader', 'qc', 'tagger'] },
     alwaysShow: true,
+    redirect: '/dataStatistics/index',
     children: [
       {
         path: 'manager-statistics',
@@ -315,10 +316,62 @@ export const asyncRoutes = [
         meta: { title: '项目经理数据', roles: ['manager']}
       },
       {
+        path: 'tl-statistics',
+        name: 'TlStatistics',
+        component: () => import('@/views/dataStatistics'),
+        meta: { title: 'TL数据', roles: ['teamLeader']},
+        redirect: '/dataStatistics/tl-statistics/teamLeader-statistics',
+        children: [
+          {
+            path: 'teamLeader-statistics',
+            name: 'TeamLeaderStatistics',
+            component: () => import('@/views/dataStatistics/teamLeaderStatistics'),
+            meta: { title: 'TL数据列表', noCache: true, roles: ['teamLeader'] },
+            hidden: true
+          },
+          {
+            path: 'teamLeader-statistics-details',
+            name: 'TeamLeaderStatisticsDetails',
+            component: () => import('@/views/dataStatistics/teamLeaderStatistics/components/details'),
+            meta: { title: 'TL数据详情', roles: ['teamLeader'] },
+            hidden: true
+          },
+          {
+            path: 'job-detail-qc/:projectId/:taskId',
+            name: 'TeamLeaderStatisticsJobDetailQc',
+            component: () => import('@/views/myTask/jobDetail/index'),
+            meta: { title: '作业列表'},
+            hidden: true
+          }
+        ]
+      },
+      {
         path: 'tagger-statistics',
         name: 'TaggerStatistics',
         component: () => import('@/views/dataStatistics/TaggerStatistics'),
-        meta: { title: '标注员数据', roles: ['manager', 'teamLeader', 'tagger'] }
+        meta: { title: '标注员数据', roles: ['tagger'] }
+      },
+      {
+        path: 'quality-inspection-box-statictics',
+        name: 'QualityInspectionBoxStatictics',
+        component: () => import('@/views/dataStatistics'),
+        redirect: '/dataStatistics/quality-inspection-box-statictics/quality-inspection-statictics',
+        meta: { title: '质检员数据', roles: ['qc'] },
+        children: [
+          {
+            path: 'quality-inspection-statictics',
+            name: 'QualityInspectionStatictics',
+            component: () => import('@/views/dataStatistics/qualityInspectionStatistics'),
+            meta: { title: '统计列表', roles: ['qc'] }
+          },
+          {
+            path: 'job-detail-qc/:projectId/:taskId',
+            name: 'JobDetailQc',
+            component: () => import('@/views/myTask/jobDetail/index'),
+            meta: { title: '作业列表' },
+            hidden: true
+          }
+        ]
       }
     ]
   }
