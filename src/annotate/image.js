@@ -645,7 +645,10 @@ class ImageContext { // 2D视图区
 
         if (img == undefined) return;
 
-        board.setAttribute("href", img.src);
+        if (img.src) {
+            board.setAttribute("href", img.src);
+        }
+        
     }
 
     points_to_svg(points, trans_ratio, cssclass, radius = 2) {

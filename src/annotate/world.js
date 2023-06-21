@@ -183,46 +183,56 @@ function Images(sceneMeta, sceneName, frame) {
   this.cameraLeftPath = sceneMeta.homework_list.find((f) => f.name === frame)['cameraLeftPath']
   this.cameraRightPath = sceneMeta.homework_list.find((f) => f.name === frame)['cameraRightPath']
   this.findCameraPath = (cam) => {
-    if (cam === 'front') return `${process.env.VUE_APP_TOOL_STATIC_URL}/${this.cameraFrontPath}`
-    if (cam === 'left') return `${process.env.VUE_APP_TOOL_STATIC_URL}/${this.cameraLeftPath}`
-    if (cam === 'right') return `${process.env.VUE_APP_TOOL_STATIC_URL}/${this.cameraRightPath}`
+    let imgUrl = ''
+    if (cam === 'front' && this.cameraFrontPath) {
+      imgUrl = `${process.env.VUE_APP_TOOL_STATIC_URL}/${this.cameraFrontPath}`;
+    }
+    if (cam === 'left' && this.cameraLeftPath) {
+      imgUrl = `${process.env.VUE_APP_TOOL_STATIC_URL}/${this.cameraLeftPath}`;
+    }
+    if (cam === 'right' && this.cameraRightPath) {
+      imgUrl = `${process.env.VUE_APP_TOOL_STATIC_URL}/${this.cameraRightPath}`;
+    }
+    return imgUrl;
   }
 
-  ;(this.load = function (on_all_loaded, active_name) {
-    this.on_all_loaded = on_all_loaded
+    ; (this.load = function (on_all_loaded, active_name) {
+      this.on_all_loaded = on_all_loaded
 
-    // if global camera not set, use first camera as default.
-    // if (active_name.length > 0)
-    //     this.active_name = active_name;
-    // else if (this.names && this.names.length>0)
-    //     this.active_name = this.names[0];
+      // if global camera not set, use first camera as default.
+      // if (active_name.length > 0)
+      //     this.active_name = active_name;
+      // else if (this.names && this.names.length>0)
+      //     this.active_name = this.names[0];
 
-    var _self = this
+      var _self = this
 
-    if (this.names) {
-      this.names.forEach(function (cam) {
-        _self.content[cam] = new Image()
-        _self.content[cam].onload = function () {
-          _self.loaded_flag[cam] = true
-          _self.on_image_loaded()
-        }
-        _self.content[cam].onerror = function () {
-          _self.loaded_flag[cam] = true
-          _self.on_image_loaded()
-        }
+      if (this.names) {
+        this.names.forEach(function (cam) {
+          _self.content[cam] = new Image()
+          _self.content[cam].onload = function () {
+            _self.loaded_flag[cam] = true
+            _self.on_image_loaded()
+          }
+          _self.content[cam].onerror = function () {
+            _self.loaded_flag[cam] = true
+            _self.on_image_loaded()
+          }
 
-        // _self.content[cam].src = 'data/'+sceneName+'/camera/' + cam + '/'+ frame + sceneMeta.camera_ext;
-        _self.content[cam].src = _self.findCameraPath(cam)
-
-        console.log('image set')
-      })
-    }
-  }),
-    (this.on_image_loaded = function () {
-      if (this.loaded()) {
-        this.on_all_loaded()
+          // _self.content[cam].src = 'data/'+sceneName+'/camera/' + cam + '/'+ frame + sceneMeta.camera_ext;
+          const imgUrl = _self.findCameraPath(cam);
+          if (imgUrl) {
+            _self.content[cam].src = imgUrl
+          }
+          console.log('image set')
+        })
       }
-    })
+    }),
+      (this.on_image_loaded = function () {
+        if (this.loaded()) {
+          this.on_all_loaded()
+        }
+      })
 }
 
 function World(data, sceneName, frame, coordinatesOffset, on_preload_finished) {
@@ -245,20 +255,20 @@ function World(data, sceneName, frame, coordinatesOffset, on_preload_finished) {
   this.aux_lidars = new AuxLidarManager(this.sceneMeta, this, this.frameInfo)
   this.egoPose = new EgoPose(this.sceneMeta, this, this.FrameInfo)
 
-  // todo: state of world could be put in  a variable
-  // but still need mulitple flags.
+    // todo: state of world could be put in  a variable
+    // but still need mulitple flags.
 
-  ;(this.points_loaded = false),
-    (this.preloaded = function () {
-      return (
-        this.lidar.preloaded &&
-        this.annotation.preloaded &&
-        //this.cameras.loaded() &&
-        this.aux_lidars.preloaded() &&
-        this.radars.preloaded() &&
-        this.egoPose.preloaded
-      )
-    })
+    ; (this.points_loaded = false),
+      (this.preloaded = function () {
+        return (
+          this.lidar.preloaded &&
+          this.annotation.preloaded &&
+          //this.cameras.loaded() &&
+          this.aux_lidars.preloaded() &&
+          this.radars.preloaded() &&
+          this.egoPose.preloaded
+        )
+      })
 
   this.create_time = 0
   this.finish_time = 0
@@ -451,21 +461,21 @@ function World(data, sceneName, frame, coordinatesOffset, on_preload_finished) {
     this.egoPose.preload(_preload_cb)
   }
 
-  ;(this.scene = null),
-    (this.destroy_old_world = null), //todo, this can be a boolean
-    (this.on_finished = null),
-    (this.activate = function (scene, destroy_old_world, on_finished) {
-      // data.js--activate_world--world.active, data从editor--set_webglScene拿到mainscene,即该处scene, 完成回调即on_load_world_finished
-      this.scene = scene
-      this.active = true
-      this.destroy_old_world = destroy_old_world
-      this.on_finished = on_finished
-      if (this.preloaded()) {
-        this.go()
-      }
-    })
+    ; (this.scene = null),
+      (this.destroy_old_world = null), //todo, this can be a boolean
+      (this.on_finished = null),
+      (this.activate = function (scene, destroy_old_world, on_finished) {
+        // data.js--activate_world--world.active, data从editor--set_webglScene拿到mainscene,即该处scene, 完成回调即on_load_world_finished
+        this.scene = scene
+        this.active = true
+        this.destroy_old_world = destroy_old_world
+        this.on_finished = on_finished
+        if (this.preloaded()) {
+          this.go()
+        }
+      })
 
-  ;(this.active = false), (this.everythingDone = false)
+    ; (this.active = false), (this.everythingDone = false)
 
   this.go = function () {
     if (this.everythingDone) {

@@ -100,31 +100,36 @@ async function doSaveWorldList(worldList, done) {
   console.log(worldList.length, 'frames')
   const currentFrame = document.getElementById('frame-manager-list').querySelector('.frame-manager-choosen').getAttribute('value')
   let homeworkId = 0
-  let ann = worldList.map((w) => {
-    /* if (w.frameInfo.frame === currentFrame) { */
+  let previousFrameName = ''
+  let ann = worldList.filter(world => world.frameInfo.frame === currentFrame).map((w) => {
       homeworkId = w.sceneMeta.homework_list.find((h) => h.name === currentFrame)['id']
       return {
         scene: w.frameInfo.scene,
         frame: w.frameInfo.frame,
         annotation: w.annotation.toBoxAnnotations()
       }
-    /* } */
   })
-  const res = await postWorldList(homeworkId, ann)
+  if (ann && ann.length > 0) {
+    const res = await postWorldList(homeworkId, ann)
 
-  if (res.msg === 'T') {
-    worldList.forEach((w) => {
-      w.annotation.resetModified()
-    })
-
-    logger.log(`saved: ${worldList[0].frameInfo.scene}: ${worldList.reduce((a, b) => a + ' ' + b.frameInfo.frame, '')}`)
-
-    if (done) {
-      done()
+    if (res.msg === 'T') {
+      worldList.forEach((w) => {
+        w.annotation.resetModified()
+      })
+  
+      logger.log(`saved: ${worldList[0].frameInfo.scene}: ${worldList.reduce((a, b) => a + ' ' + b.frameInfo.frame, '')}`)
+  
+      if (done) {
+        done()
+      }
+    } else if (res.msg === 'F') {
+      window.editor.infoBox.show('Error', `保存失败`)
     }
-  } else if (res.msg === 'F') {
-    window.editor.infoBox.show('Error', `保存失败`)
+  } else {
+    previousFrameName = worldList?.length > 0 ? worldList[0].frameInfo.frame : '';
+    window.editor.infoBox.show('Error', `作业: ${previousFrameName} 保存失败, 请返回该帧重新保存.`)
   }
+  
 
   // var xhr = new XMLHttpRequest()
   // xhr.open('POST', '/dev-ann-api/saveworldlist', true)
