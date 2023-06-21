@@ -80,6 +80,8 @@ export default {
       this.tableLoading = true
       this.searchCondition.pageIndex = this.page
       this.searchCondition.pageSize = this.limit
+      this.searchCondition.startTime = 'startTime' in this.searchCondition ? this.searchCondition.startTime : this.getLocalDate()
+      this.searchCondition.endTime = 'endTime' in this.searchCondition ? this.searchCondition.endTime : this.getLocalDate()
       searchManagerStatisticsDataList(this.searchCondition).then(res => {
         this.tableData = res.data.records
         this.total = Number(res.data.total)

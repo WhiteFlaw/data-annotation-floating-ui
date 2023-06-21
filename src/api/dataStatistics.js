@@ -23,3 +23,12 @@ export function searchManagerStatisticsDataList(data) {
 export function searchTaggerStatisticsDataList(data) {
   return POST(`/admin/statistics/tagger`, data)
 }
+
+/**
+ * 查询质检员数据统计列表
+ * @param data 标注员名称，任务名称，作业名称，开始时间，结束时间
+ * @returns {AxiosPromise}
+ */
+export function searchQualityInspectionStatisticsDataList(data) {
+  return POST('/admin/statistics/qc', data)
+}
