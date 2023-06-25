@@ -92,22 +92,20 @@ const OptionButtons = function (data, frameManager) {
 
   this.exitTask = () => {
     const taskType = getPathParams()['taskType']
-    if(taskType === '0'){
+    if (taskType === '0') {
       const host = document.referrer
       const fromPath = localStorage.getItem('fromPath')
       window.location.href = `${host}#${fromPath}`
-    }else{
-      window.opener =null
-      window.open('','_self')
+    } else {
+      window.opener = null
+      window.open('', '_self')
       window.close()
     }
   }
 
   //标注 保存或挂起
   this.ssWork = (type) => {
-    let scene = this.data.world.frameInfo.scene
     buttonLoading = true
-    // objIdManager.load_obj_ids_of_scene(scene, (objs) => {
     const data = {
       boxCount: this.data?.world?.active ? this.data?.world.annotation.boxes.length : 0,
       homeworkId: this.data.sceneAllData.homework_list.find((f) => f.name === this.data.world.frameInfo.frame)['id'],
@@ -116,7 +114,6 @@ const OptionButtons = function (data, frameManager) {
     }
     this.suspendOrSubmitWork({ ...data })
       .then((res) => {
-        buttonLoading = false
         if (res.success) {
           if (res.msg === 'T') {
             Message.success('当前作业操作成功！')
@@ -132,26 +129,36 @@ const OptionButtons = function (data, frameManager) {
         } else {
           Message.error(res.msg)
         }
+        buttonLoading = true
       })
       .catch(() => {
         buttonLoading = false
       })
-    // })
   }
   //一检和二检 通过或驳回
-  this.tsWork = (type) => {
-    let scene = this.data.world.frameInfo.scene
+  this.tsWork = async (type) => {
     buttonLoading = true
-    // objIdManager.load_obj_ids_of_scene(scene, (objs) => {
+    // 取出 localStorage 缓存的旧数据
+    const oldAnn = JSON.parse(window.localStorage.getItem(this.data.world.frameInfo.frame))
+    // 取得 要保存的新数据
+    const newAnn = this.data?.world.annotation.toBoxAnnotations()
+    // 比较新旧数据获得最终统计数据
+    const { deleteCount, insertCount, updateCount } = await diffAnn(oldAnn, newAnn)
+
     const data = {
       boxCount: this.data?.world?.active ? this.data?.world.annotation.boxes.length : 0,
       homeworkId: this.data.sceneAllData.homework_list.find((f) => f.name === this.data.world.frameInfo.frame)['id'],
       tagTime: '',
-      type: type
+      type: type,
+      deleteCount: deleteCount,
+      insertCount: insertCount,
+      updateCount: updateCount,
+      tagType: Number(getPathParams()['taskType'])
     }
+
     this.testWork({ ...data })
       .then((res) => {
-        buttonLoading = false
+        window.localStorage.setItem(this.data.world.frameInfo.frame, JSON.stringify(newAnn))
         if (res.success) {
           if (res.msg === 'T') {
             Message.success('当前作业操作成功！')
@@ -159,6 +166,15 @@ const OptionButtons = function (data, frameManager) {
               this.getFrameDomByName(this.data.world.frameInfo.frame),
               `${type === 0 ? this.classObj.complete : this.classObj.suspend}`
             )
+
+            // 保存完毕之后，无论成功与否，新数据变旧数据，更新 localStorage 缓存
+
+            // const savedAnn = ann[0].annotation.map((a) => {
+            //   a.obj_occlu = a.obj_occlu || ''
+            //   a.obj_trunk = a.obj_trunk || ''
+            //   return { ...a }
+            // })
+
             this.nextWork()
           }
           if (res.msg === 'S') {
@@ -167,11 +183,11 @@ const OptionButtons = function (data, frameManager) {
         } else {
           Message.error(res.msg)
         }
+        buttonLoading = false
       })
       .catch(() => {
         buttonLoading = false
       })
-    // })
   }
   //验收 合格或不合格
   this.acptWork = (type) => {
@@ -179,7 +195,6 @@ const OptionButtons = function (data, frameManager) {
       homeworkId: this.data.sceneAllData.homework_list.find((f) => f.name === this.data.world.frameInfo.frame)['id'],
       type: type
     }
-    buttonLoading = true
     this.acceptWork({ ...data })
       .then((res) => {
         buttonLoading = false
@@ -198,6 +213,7 @@ const OptionButtons = function (data, frameManager) {
         } else {
           Message.error(res.msg)
         }
+        buttonLoading = true
       })
       .catch(() => {
         buttonLoading = false
@@ -230,8 +246,8 @@ const OptionButtons = function (data, frameManager) {
     return POST('/admin/tagging/tag-homework', { boxCount, homeworkId, tagTime, type })
   }
   // 单张作业质检接口
-  this.testWork = ({ boxCount, homeworkId, tagTime = '', type }) => {
-    return POST('/admin/qc/qc-homework', { boxCount, homeworkId, tagTime, type })
+  this.testWork = ({ boxCount, homeworkId, tagTime = '', type, deleteCount, insertCount, updateCount, tagType }) => {
+    return POST('/admin/qc/qc-homework', { boxCount, homeworkId, tagTime, type, deleteCount, insertCount, updateCount, tagType })
   }
   // 单张作业验收接口
   this.acceptWork = ({ homeworkId, type }) => {
@@ -248,6 +264,70 @@ const OptionButtons = function (data, frameManager) {
       document.getElementById('comment-manager-wrapper').style.display = 'none'
       this.qcCommentContainerToggleBtn.getElementsByTagName('span')[0].innerText = '显示批注'
       return false
+    }
+  }
+
+  // 比较新旧两组数据，取出不同框数
+  const diffAnn = async (oldList, newList) => {
+    let deleteList = [],
+      insertList = [],
+      updateList = [],
+      equalList = []
+    // 先排除极端情况，oldList为空，则新增框数 === newList.length，newList为空，则删除框数 === oldList.length
+    if (!oldList.length) return { deleteCount: 0, insertCount: newList.length, updateCount: 0 }
+    if (!newList.length) return { deleteCount: oldList.length, insertCount: 0, updateCount: 0 }
+    // 取出 oldList 中没有的 newList 中有的框
+    insertList = newList.filter((item) => oldList.findIndex((w) => w.obj_id === item.obj_id) === -1)
+    // 取出 newList 中没有 oldList 中有的框
+    deleteList = oldList.filter((item) => newList.findIndex((w) => w.obj_id === item.obj_id) === -1)
+    // 取出 oldList 和 NewList 中都有的框
+    equalList = oldList.filter((item) => newList.findIndex((w) => w.obj_id === item.obj_id) !== -1).map((x) => x.obj_id)
+
+    if (equalList.length) {
+      for (let k = 0; k < equalList.length; k++) {
+        // 获取新旧数据中 obj_id 相同的框对象
+        const oldOne = oldList.find((o) => Number(o.obj_id) === Number(equalList[k]))
+        const newOne = newList.find((n) => Number(n.obj_id) === Number(equalList[k]))
+        // 处理 undefined 值
+        oldOne.obj_occlu = oldOne.obj_occlu || ''
+        oldOne.obj_trunk = oldOne.obj_trunk || ''
+        newOne.obj_occlu = newOne.obj_occlu || ''
+        newOne.obj_trunk = newOne.obj_trunk || ''
+
+        let isDiff = false // 默认无差异
+        // 判断 obj_type 类型
+        if (oldOne.obj_type !== newOne.obj_type) isDiff = true
+        // 判断 obj_occlu 遮挡
+        if (oldOne.obj_occlu !== newOne.obj_occlu) isDiff = true
+        // 判断 obj_trunk 截断
+        if (oldOne.obj_trunk !== newOne.obj_trunk) isDiff = true
+        // 判断 position x y z 有一个不同则跳出循环
+        for (const key in oldOne.psr.position) {
+          if (oldOne.psr.position[key] !== newOne.psr.position[key]) {
+            isDiff = true
+            break
+          }
+        }
+        // 判断 rotation x y z 有一个不同则跳出循环
+        for (const key in oldOne.psr.rotation) {
+          if (oldOne.psr.rotation[key] !== newOne.psr.rotation[key]) {
+            isDiff = true
+            break
+          }
+        }
+        // 判断 scale x y z 有一个不同则跳出循环
+        for (const key in oldOne.psr.scale) {
+          if (oldOne.psr.scale[key] !== newOne.psr.scale[key]) {
+            isDiff = true
+            break
+          }
+        }
+        // 任何参数不同，则加入 updateList
+        if (isDiff) {
+          updateList.push(equalList[k])
+        }
+      }
+      return { deleteCount: deleteList.length, insertCount: insertList.length, updateCount: updateList.length }
     }
   }
 

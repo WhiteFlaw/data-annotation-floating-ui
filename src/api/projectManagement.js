@@ -1,7 +1,7 @@
 /*
  * @Author: M.Ming
  * @Date: 2023-03-28 17:14:28
- * @LastEditTime: 2023-06-15 09:00:02
+ * @LastEditTime: 2023-06-25 14:54:28
  * @FilePath: \3d-data-admin\src\api\projectManagement.js
  * @Description: 项目管理功能接口API
  */
@@ -95,6 +95,14 @@ const assignToGroup = ({ projectId = 0, teamIds = [] }) => {
 const getTaskLog = (taskId) => {
   return GET(`/admin/tagging/${taskId}`)
 }
+/**
+ * 导出项目下LabelJson数据
+ * @param {*} projectId
+ * @return {*}
+ */
+const exportProjectData = (projectId) => {
+  return POST(`/admin/label/out/${projectId}`)
+}
 
 export {
   getProjectsList,
@@ -105,5 +113,6 @@ export {
   getProjectChildTaskDetail,
   getProjectGroupDetail,
   assignToGroup,
-  getTaskLog
+  getTaskLog,
+  exportProjectData
 }

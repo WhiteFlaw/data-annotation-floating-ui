@@ -50,10 +50,10 @@
     <template slot="content">
       <el-table v-loading="tableLoading" :data="projectList" border stripe highlight-current-row :max-height="tableMaxHeight">
         <el-table-column type="selection" width="40" align="center" header-align="center" />
-        <el-table-column label="项目编号" prop="id" align="center" header-align="center" width="100" />
-        <el-table-column label="项目名称" prop="name" align="center" header-align="center" min-width="140" />
-        <el-table-column label="项目经理" prop="managerNickname" align="center" header-align="center" width="110" />
-        <el-table-column align="center" label="任务状态" width="300">
+        <el-table-column label="项目编号" prop="id" align="center" header-align="center" width="120" />
+        <el-table-column label="项目名称" prop="name" align="center" header-align="center" min-width="180" />
+        <el-table-column label="项目经理" prop="managerNickname" align="center" header-align="center" width="120" />
+        <el-table-column align="center" label="任务状态" width="400">
           <template slot-scope="scope">
             <span class="el-progress-class progress-container">
               <span class="progress-label">待领取：</span>
@@ -104,13 +104,14 @@
         <el-table-column label="项目创建时间" prop="createdTime" align="center" width="160" />
         <!-- <el-table-column label="开始日期" prop="startDate" align="center" header-align="center" min-width="100" /> -->
         <!-- <el-table-column label="结束日期" prop="endDate" align="center" header-align="center" min-width="100" /> -->
-        <el-table-column label="操作" align="center" header-align="center" width="220">
+        <el-table-column label="操作" align="center" header-align="center" min-width="100">
           <template slot-scope="scope">
             <el-button type="text" @click="viewProjectDetail(scope.row)"> 详情 </el-button>
             <el-button type="text" @click="showEditProjectDialog(scope.row)"> 编辑 </el-button>
             <el-button type="text" @click="showAssignToGroupDialog(scope.row)"> 团队 </el-button>
             <el-button type="text" @click="releaseProject(scope.row)"> 释放 </el-button>
             <el-button type="text" @click="deleteProject(scope.row)"> 删除 </el-button>
+            <el-button type="text" :loading="exportLoading" :disabled="Number(scope.row.status) !== 3" @click="exportProject(scope.row)"> 导出 </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -127,9 +128,9 @@ import PaginationComponent from '@/components/PaginationComponent'
 import EditProjectDialog from '@/views/projectManagement/components/EditProjectDialog'
 import AssignToGroupDialog from '@/views/projectManagement/components/AssignToGroupDialog'
 import tableMixin from '@/utils/tableMixin'
-import { getProjectsList, deleteProjectsList, releaseProjectData, getProjectDetail } from '@/api/projectManagement'
+import { getProjectsList, deleteProjectsList, releaseProjectData, getProjectDetail, exportProjectData } from '@/api/projectManagement'
 import { getCustomersOptions, getProjectManagerOptions, getGroupOptions, projectStatusOptions, projectTypeOptions } from '@/api/common'
-import {ALL_PROJECT_MANAGER_LIST} from '@/utils/constant'
+import { ALL_PROJECT_MANAGER_LIST } from '@/utils/constant'
 export default {
   name: 'ProjectManagement',
   components: {
@@ -162,7 +163,8 @@ export default {
       projectGroupEditForm: {
         projectId: 0,
         teamIds: []
-      }
+      },
+      exportLoading: false
     }
   },
   mounted() {
@@ -229,7 +231,7 @@ export default {
             'userNickname',
             'workCount'
           ]
-          res.data.records.forEach(item => {
+          res.data.records.forEach((item) => {
             standardDataKeys.forEach((key) => {
               item[key] = item[key] || ''
               item.createdTime = item.createdTime ? item.createdTime.replace('T', ' ') : ''
@@ -293,19 +295,21 @@ export default {
     },
     // 打开团队编辑弹窗
     showAssignToGroupDialog(row) {
-      getProjectDetail(row.id).then((res) => {
-        if (res.success) {
-          this.editProjectGroupDialogShow = true
-          this.projectGroupEditForm = {
-            projectId: res.data.id,
-            teamIds: res.data.teamInfoList?.map((item) => item.teamId) ?? []
+      getProjectDetail(row.id)
+        .then((res) => {
+          if (res.success) {
+            this.editProjectGroupDialogShow = true
+            this.projectGroupEditForm = {
+              projectId: res.data.id,
+              teamIds: res.data.teamInfoList?.map((item) => item.teamId) ?? []
+            }
+          } else {
+            this.$message.error(res.msg)
           }
-        } else {
-          this.$message.error(res.msg)
-        }
-      }).catch(() => {
-        this.editProjectGroupDialogShow = true
-      })
+        })
+        .catch(() => {
+          this.editProjectGroupDialogShow = true
+        })
     },
     // 释放项目
     releaseProject(row) {
@@ -348,6 +352,21 @@ export default {
         .catch(() => {
           this.$message.info('已取消删除操作')
         })
+    },
+    // 导出验收完成的项目
+    exportProject(row) {
+      if (Number(row.status) !== 3) {
+        return false
+      }
+      this.exportLoading = true
+      exportProjectData(row.id).then((res) => {
+        if (res.success) {
+          this.$message.success(res.msg)
+        } else {
+          this.$message.error(res.msg)
+        }
+        this.exportLoading = false
+      })
     },
     // 跳转数据导入页面
     toImportData() {

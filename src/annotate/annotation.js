@@ -13,10 +13,13 @@ function Annotation(sceneMeta, world, frameInfo) {
   this.frameInfo = frameInfo
 
   this.modified = false
+  this.modifiedTimer = null
+
   this.setModified = function () {
     this.modified = true
     if (pointsGlobalConfig.autoSave) {
-      setTimeout(() => {
+      if(this.modifiedTimer) clearTimeout(this.modifiedTimer)
+      this.modifiedTimer = setTimeout(() => {
         saveWorldList([this.world])
       }, 1000)
     }

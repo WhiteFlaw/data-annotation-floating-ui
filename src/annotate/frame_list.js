@@ -86,7 +86,7 @@ const FrameManager = function (parentUi, data, onFrameChanged, toPreviousFrame, 
     const frameObjectList = this.data?.world?.annotation?.boxes.map((b) => {
       return {
         category: b.obj_type,
-        id: b.obj_track_id,
+        id: b.obj_track_id
       }
     })
     // .sort(function (x, y) {
@@ -95,6 +95,10 @@ const FrameManager = function (parentUi, data, onFrameChanged, toPreviousFrame, 
 
     objIdManager.objectList = frameObjectList ? [...frameObjectList] : []
     objIdManager.setObjdIdListOptions()
+
+    // 获取初始作业标注数据，存储在本地
+    const oldAnn = this.data?.world?.annotation.toBoxAnnotations()
+    window.localStorage.setItem(this.frame, JSON.stringify(oldAnn))
   }
 
   this.update_event_list = function (frameIndex) {
