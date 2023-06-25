@@ -36,9 +36,9 @@ var Header = function (
   this.categoryUseUi = ui.querySelector('#if-default-category-use')
   this.attributeUseUi = ui.querySelector('#if-default-attribute-use')
   this.usePreviousFrameUi = ui.querySelector('#use-previous-frame')
-  this.cameraFrontImgContainerToggleBtn = ui.querySelector('#camera-front-img-container-toggle')
-  this.cameraLeftImgContainerToggleBtn = ui.querySelector('#camera-left-img-container-toggle')
-  this.cameraRightImgContainerToggleBtn = ui.querySelector('#camera-right-img-container-toggle')
+  this.cameraFrontToggle = ui.querySelector('#toggle-front-camera')
+  this.cameraLeftToggle = ui.querySelector('#toggle-left-camera')
+  this.cameraRightToggle = ui.querySelector('#toggle-right-camera')
   this.imageEditorToggleBtn = ui.querySelector('#img-editor-toggle')
   this.undoUi = ui.querySelector('#undo')
   this.redoUi = ui.querySelector('#redo')
@@ -108,34 +108,16 @@ var Header = function (
     this.onUsePreviousFrameClicked()
   } // use previous frame.
 
-  this.cameraFrontImgContainerToggleBtn.onclick = () => {
-    this.onFrontCameraClicked(this.showCameraFront)
-    if (this.showCameraFront) {
-      this.cameraFrontImgContainerToggleBtn.querySelector('span').innerHTML = '显示前相机'
-    } else {
-      this.cameraFrontImgContainerToggleBtn.querySelector('span').innerHTML = '隐藏前相机'
-    }
-    this.showCameraFront = !this.showCameraFront
+  this.cameraFrontToggle.onclick = () => {
+      this.onFrontCameraClicked(this.cameraFrontToggle.checked)
   } // show/hide front camera.
 
-  this.cameraLeftImgContainerToggleBtn.onclick = () => {
-    this.onLeftCameraClicked(this.showCameraLeft)
-    if (this.showCameraLeft) {
-      this.cameraLeftImgContainerToggleBtn.querySelector('span').innerHTML = '显示左相机'
-    } else {
-      this.cameraLeftImgContainerToggleBtn.querySelector('span').innerHTML = '隐藏左相机'
-    }
-    this.showCameraLeft = !this.showCameraLeft
+  this.cameraLeftToggle.onclick = () => {
+    this.onLeftCameraClicked(this.cameraLeftToggle.checked)
   } // show/hide left camera.
 
-  this.cameraRightImgContainerToggleBtn.onclick = () => {
-    this.onRightCameraClicked(this.showCameraRight)
-    if (this.showCameraRight) {
-      this.cameraRightImgContainerToggleBtn.querySelector('span').innerHTML = '显示右相机'
-    } else {
-      this.cameraRightImgContainerToggleBtn.querySelector('span').innerHTML = '隐藏右相机'
-    }
-    this.showCameraRight = !this.showCameraRight
+  this.cameraRightToggle.onclick = () => {
+    this.onRightCameraClicked(this.cameraRightToggle.checked)
   } // show/hide right camera.
 
   this.imageEditorToggleBtn.onclick = () => {

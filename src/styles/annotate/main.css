@@ -111,16 +111,16 @@ canvas {
 	border-width: 0;
 	color: inherit;
 	background-color: inherit;
-  outline: none;
+	outline: none;
 }
 
 #object-category-selector,
 #object-track-id-editor,
 #object-trunk-selector,
 #object-occlusion-selector,
-#object-points-info{
-  width:90px;
-  margin:0 10px;
+#object-points-info {
+	width: 90px;
+	margin: 0 10px;
 }
 
 #category-selector,
@@ -151,13 +151,35 @@ canvas {
 	padding-left: 5px;
 }
 
+#toggle-camera-list {
+	position: relative;
+}
+
+#toggle-camera-list {
+	position: relative;
+}
+
+#toggle-camera-list:hover #camera-list {
+	display: block;
+}
+
 #camera-list {
 	position: absolute;
-	top: 100%;
-	left: 0%;
-	background-color: inherit;
-	width: 250px;
-	z-index: 1;
+	display: none;
+	float: top;
+	top: 45px;
+	z-index: 20;
+	width: 70px;
+	background-color: var(--widget-background-color);
+}
+
+#camera-list div {
+	height: 30px;
+	line-height: 30px;
+}
+
+#camera-list div:hover {
+	background-color: var(--highlight-background-color);
 }
 
 .camera-item {
@@ -270,80 +292,80 @@ canvas {
 	background-color: var(--widget-background-color);
 }
 
-#buttons.header-right-buttons{
-  padding-left:10px;
+#buttons.header-right-buttons {
+	padding-left: 10px;
 }
 
-#buttons.header-right-buttons> input{
-  margin-right:5px;
+#buttons.header-right-buttons>input {
+	margin-right: 5px;
 }
 
-#buttons.header-right-buttons> select{
-  margin-left:5px;
+#buttons.header-right-buttons>select {
+	margin-left: 5px;
 }
 
-#buttons.header-right-buttons> input:nth-of-type(2){
-  margin-left:10px;
+#buttons.header-right-buttons>input:nth-of-type(2) {
+	margin-left: 10px;
 }
 
-#buttons.header-right-buttons> .func-buttons{
-  display: flex;
-  align-items: center;
-  padding:0 10px;
+#buttons.header-right-buttons>.func-buttons {
+	display: flex;
+	align-items: center;
+	padding: 0 10px;
 }
 
-#buttons.header-right-buttons> .func-buttons .marker-buttons,
-#buttons.header-right-buttons> .func-buttons .tester-buttons,
-#buttons.header-right-buttons> .func-buttons .accepter-buttons{
-  width:120px;
-  flex-shrink:0;
-  display:none;
+#buttons.header-right-buttons>.func-buttons .marker-buttons,
+#buttons.header-right-buttons>.func-buttons .tester-buttons,
+#buttons.header-right-buttons>.func-buttons .accepter-buttons {
+	width: 120px;
+	flex-shrink: 0;
+	display: none;
 }
 
-#buttons.header-right-buttons> .func-buttons .marker-buttons{
-  display: flex;
+#buttons.header-right-buttons>.func-buttons .marker-buttons {
+	display: flex;
 }
 
-#buttons.header-right-buttons> .func-buttons .f-button{
-  width:60px;
-  text-align: center;
-  margin:0 2px;
-  cursor: pointer;
+#buttons.header-right-buttons>.func-buttons .f-button {
+	width: 60px;
+	text-align: center;
+	margin: 0 2px;
+	cursor: pointer;
 }
 
-#buttons.header-right-buttons> .func-buttons .f-button:hover{
-  opacity: 0.9;
-  transition: all 300ms ease-in-out;
+#buttons.header-right-buttons>.func-buttons .f-button:hover {
+	opacity: 0.9;
+	transition: all 300ms ease-in-out;
 }
 
-#buttons.header-right-buttons> .func-buttons .btn-primary{
-  background:#526aff;
+#buttons.header-right-buttons>.func-buttons .btn-primary {
+	background: #526aff;
 }
 
-#buttons.header-right-buttons> .func-buttons .btn-success{
-  background:#25976a
+#buttons.header-right-buttons>.func-buttons .btn-success {
+	background: #25976a
 }
 
-#buttons.header-right-buttons> .func-buttons .btn-warning{
-  background:#f2964d
+#buttons.header-right-buttons>.func-buttons .btn-warning {
+	background: #f2964d
 }
 
-#buttons.header-right-buttons> .func-buttons .btn-danger{
-  background:#c0422e
+#buttons.header-right-buttons>.func-buttons .btn-danger {
+	background: #c0422e
 }
 
 
-.frame-name-container{
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size:14px;
+.frame-name-container {
+	flex-grow: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
 }
 
-.frame-name-container > span:first-child{
-  color:rgb(173, 173, 173);
-  margin-right:10px;
+.frame-name-container>span:first-child {
+	color: rgb(173, 173, 173);
+	margin-right: 10px;
 }
 
 #header #tools {
@@ -359,43 +381,44 @@ canvas {
 	background-color: var(--widget-background-color);
 }
 
-#header #tools > div:not(.header-selector-container):hover {
+#header #tools>div:not(.header-selector-container):hover {
 	background-color: var(--highlight-background-color);
 }
 
-#header #tools > .header-selector-container{
-  margin-right:10px;
-  display: flex;
-  align-items: center;
-  justify-content:stretch;
-  color:inherit;
-  background-color: inherit;
-}
-#header #tools > .header-selector-container> label{
-  margin-right:5px;
-  color:rgb(173, 173, 173)
+#header #tools>.header-selector-container {
+	margin-right: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: stretch;
+	color: inherit;
+	background-color: inherit;
 }
 
-#header #tools > .header-selector-container> select{
-  cursor: pointer;
+#header #tools>.header-selector-container>label {
+	margin-right: 5px;
+	color: rgb(173, 173, 173)
+}
+
+#header #tools>.header-selector-container>select {
+	cursor: pointer;
 }
 
 .header-button {
 	display: flex;
-	align-items:center;
+	align-items: center;
 	flex-direction: column;
 	justify-content: flex-end;
-  padding:5px;
-  cursor: pointer;
+	padding: 5px;
+	cursor: pointer;
 }
 
-.header-button svg{
-  flex-grow: 1;
+.header-button svg {
+	flex-grow: 1;
 }
 
-.header-button>span{
-  flex-shrink: 0;
-  line-height:18px;
+.header-button>span {
+	flex-shrink: 0;
+	line-height: 18px;
 }
 
 #config-button {
@@ -465,8 +488,8 @@ canvas {
 }
 
 #header-action div {
-  padding:0 5px;
-  cursor: pointer;
+	padding: 0 5px;
+	cursor: pointer;
 }
 
 #header-action div:hover {
@@ -756,7 +779,8 @@ dynamic set obj-type css has higher priority than this one.
 
 
 .float-label {
-	/* color: #0000ff; */ /* 该项在Vue内需要去除, 会出现样式覆盖导致全部标签为默认色, 目前原因不明 */
+	/* color: #0000ff; */
+	/* 该项在Vue内需要去除, 会出现样式覆盖导致全部标签为默认色, 目前原因不明 */
 	position: absolute;
 	display: inline-flex;
 }
@@ -1260,7 +1284,7 @@ td {
 	display: none;
 }
 
-#log-wrapper #view  {
+#log-wrapper #view {
 	left: 400px;
 	top: 400px;
 	height: 400px;
