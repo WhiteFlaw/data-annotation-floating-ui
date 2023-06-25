@@ -22,9 +22,6 @@ var Header = function (
   this.data = data
   this.cfg = cfg
 
-  this.showCameraFront = true
-  this.showCameraLeft = true
-  this.showCameraRight = true
   this.showImageEditor = true
 
   this.boxUi = ui.querySelector('#box')
