@@ -11,7 +11,6 @@
         :active-text-color="variables.menuActiveText"
         :collapse-transition="false"
         mode="vertical"
-        @select="removeKeepAlive"
       >
         <sidebar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
@@ -20,7 +19,7 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations} from 'vuex'
+import {mapGetters} from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
 import variables from '@/styles/variables.scss'
@@ -48,14 +47,6 @@ export default {
     },
     isCollapse() {
       return !this.sidebar.opened
-    }
-  },
-  methods: {
-    ...mapMutations('teamLeaderStatistics', ['resetState']),
-    removeKeepAlive(key, keyPath) {
-      if (key !== '/dataStatistics/tl-statistics') {
-        this.resetState()
-      }
     }
   }
 }

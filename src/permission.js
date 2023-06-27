@@ -11,6 +11,9 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 const whiteList = ['/login'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
+  if (to.path.indexOf('/dataStatistics/tl-statistics/') === -1) {
+    await store.dispatch('teamLeaderStatistics/reset')
+  }
   // start progress bar
   NProgress.start()
 

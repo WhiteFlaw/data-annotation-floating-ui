@@ -49,7 +49,9 @@ const getters = {
   }
 }
 const actions = {
-
+  reset({ commit, state }) {
+    commit('resetState')
+  }
 }
 
 export default {

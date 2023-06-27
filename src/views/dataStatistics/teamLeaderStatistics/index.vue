@@ -21,7 +21,7 @@
     </template>
     <template v-if="showPageData" slot="content">
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-        <el-tab-pane label="团队信息" name="teamListData" />
+        <el-tab-pane label="标注" name="teamListData" />
         <el-tab-pane label="一检" name="firsInspection" />
         <el-tab-pane label="二检" name="secondInspection" />
       </el-tabs>

@@ -64,7 +64,7 @@ export default {
         taskName: '', // 任务名称
         workName: '' // 作业名称
       },
-      dateTime: [getLocalDate(), getLocalDate()]
+      dateTime: [getLocalDate('start'), getLocalDate('end')]
     }
   },
   watch: {
