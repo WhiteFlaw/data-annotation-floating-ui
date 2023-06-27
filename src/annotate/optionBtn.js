@@ -84,7 +84,7 @@ const OptionButtons = function (data, frameManager) {
 
   this.exitTask = () => {
     const taskType = getPathParams()['taskType']
-    if (taskType === '0') {
+    if (taskType === '0' || taskType === '4') {
       const host = document.referrer
       const fromPath = localStorage.getItem('fromPath')
       window.location.href = `${host}#${fromPath}`
