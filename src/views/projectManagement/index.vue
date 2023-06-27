@@ -58,31 +58,49 @@
             <span class="el-progress-class progress-container">
               <span class="progress-label">待领取：</span>
               <el-progress
-                :percentage="scope.row.taskCount !== 0 ? Number((((scope.row.toBeClaimedCount || 0) / scope.row.taskCount) * 100).toFixed(2)) : 0"
+                :percentage="
+                  scope.row.taskCount ? (scope.row.taskCount !== 0 ? Number((((scope.row.toBeClaimedCount || 0) / scope.row.taskCount) * 100).toFixed(2)) : 0) : 0
+                "
                 :format="format(scope.row.toBeClaimedCount, scope.row.taskCount)" />
             </span>
             <span class="el-progress-class progress-container">
               <span class="progress-label">标注中：</span>
               <el-progress
-                :percentage="scope.row.taskCount !== 0 ? Number((((scope.row.allAnnotatedCount || 0) / scope.row.taskCount) * 100).toFixed(2)) : 0"
-                :format="format(scope.row.allAnnotatedCount, scope.row.taskCount)" />
+                :percentage="
+                  scope.row.taskCount ? (scope.row.taskCount !== 0 ? Number(((((scope.row.taskCount - scope.row.toBeClaimedCount) || 0) / scope.row.taskCount) * 100).toFixed(2)) : 0) : 0
+                "
+                :format="format(((scope.row.taskCount - scope.row.toBeClaimedCount) || 0), scope.row.taskCount)" />
             </span>
             <span class="el-progress-class progress-container">
               <span class="progress-label">一检：</span>
               <el-progress
-                :percentage="scope.row.taskCount !== 0 ? Number((((scope.row.firstInspectionCount || 0) / scope.row.taskCount) * 100).toFixed(2)) : 0"
-                :format="format(scope.row.firstInspectionCount, scope.row.taskCount)" />
+                :percentage="
+                  scope.row.firstInspectionCount
+                    ? scope.row.firstInspectionCount !== 0
+                      ? Number((((scope.row.firstInspectingCount || 0) / (scope.row.firstInspectionCount || 0)) * 100).toFixed(2))
+                      : 0
+                    : 0
+                "
+                :format="format(scope.row.firstInspectingCount, scope.row.firstInspectionCount)" />
             </span>
             <span class="el-progress-class progress-container">
               <span class="progress-label">二检：</span>
               <el-progress
-                :percentage="scope.row.taskCount !== 0 ? Number((((scope.row.secondInspectionCount || 0) / scope.row.taskCount) * 100).toFixed(2)) : 0"
-                :format="format(scope.row.secondInspectionCount, scope.row.taskCount)" />
+                :percentage="
+                  scope.row.secondInspectionCount
+                    ? scope.row.secondInspectionCount !== 0
+                      ? Number((((scope.row.secondInspectingCount || 0) / (scope.row.secondInspectionCount || 0)) * 100).toFixed(2))
+                      : 0
+                    : 0
+                "
+                :format="format(scope.row.secondInspectingCount, scope.row.secondInspectionCount)" />
             </span>
             <span class="el-progress-class progress-container">
               <span class="progress-label">待验收：</span>
               <el-progress
-                :percentage="scope.row.taskCount !== 0 ? Number((((scope.row.atCount || 0) / scope.row.taskCount) * 100).toFixed(2)) : 0"
+                :percentage="
+                  scope.row.taskCount ? (scope.row.taskCount !== 0 ? Number((((scope.row.atCount || 0) / scope.row.taskCount) * 100).toFixed(2)) : 0) : 0
+                "
                 :format="format(scope.row.atCount, scope.row.taskCount)" />
             </span>
           </template>

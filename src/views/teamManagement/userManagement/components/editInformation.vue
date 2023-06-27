@@ -11,9 +11,20 @@
     destroy-on-close
     width="760px"
     class="el-dialog-border"
+    top="10vh"
   >
-    <el-form inline label-width="110px">
+    <el-form ref="updateUserForm" inline label-width="110px" :model="memberData" :rules="updateUserRules">
       <el-row>
+        <el-col>
+          <el-form-item label="姓名" prop="nickname">
+            <el-input v-model="memberData.nickname" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="memberData.email" clearable @input="memberData.email=inputRestriction(memberData.email,'',true)" />
+          </el-form-item>
+        </el-col>
         <el-col>
           <el-form-item label="性别">
             <el-radio-group v-model="memberData.gender">
@@ -92,6 +103,7 @@
 
 <script>
 import {updateUserData} from '@/api/userManagement'
+import {inputRestriction} from '@/utils/total'
 
 export default {
   name: 'EditInformation',
@@ -109,6 +121,8 @@ export default {
     return {
       updateLoading: false,
       memberData: {
+        nickname: '',
+        email: '',
         gender: '',
         age: '',
         education: '',
@@ -128,25 +142,55 @@ export default {
       set(newVal) {
         return this.$emit('update:visible', newVal)
       }
+    },
+    updateUserRules() {
+      const nickname = (rule, value, callback) => {
+        if (!value) {
+          callback('成员名称不能为空')
+        } else {
+          callback()
+        }
+      }
+      const email = (rule, value, callback) => {
+        if (!value) {
+          callback('邮箱不能为空')
+        } else {
+          callback()
+        }
+      }
+      return {
+        nickname: [
+          { required: true, validator: nickname, trigger: 'blur' }
+        ],
+        email: [
+          { required: true, validator: email, trigger: 'blur' },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+        ]
+      }
     }
   },
   mounted() {
     this.memberData = {...this.rowData}
   },
   methods: {
+    inputRestriction,
     updateData() { // 修改信息
       this.updateLoading = true
-      updateUserData(this.memberData).then(res => {
-        this.updateLoading = false
-        if (res.msg === 'success') {
-          this.$message.success('操作成功！')
-          this.$emit('update-success')
-          this.dialogVisible = false
-        } else {
-          this.$message.error('操作失败！')
+      this.$refs['updateUserForm'].validate((valid) => {
+        if (valid) {
+          updateUserData(this.memberData).then(res => {
+            this.updateLoading = false
+            if (res.msg === 'success') {
+              this.$message.success('操作成功！')
+              this.$emit('update-success')
+              this.dialogVisible = false
+            } else {
+              this.$message.error('操作失败！')
+            }
+          }).catch(() => {
+            this.updateLoading = false
+          })
         }
-      }).catch(() => {
-        this.updateLoading = false
       })
     }
   }
@@ -160,6 +204,25 @@ export default {
       text-align: left;
     }
   }
+  .el-row .el-col .el-form-item {
+    margin-bottom: 16px;
+    width: 100%;
+    .el-form-item__content{
+      width: calc(100% - 110px);
+      .el-input{
+        width: 100%;
+        ::-ms-reveal {
+          width: 0;
+          height: 0;
+        }
+        .el-input__inner {
+          width: 100%;
+        }
+      }
+      .el-form-item__error{
+        top: 95%;
+      }
+    }
+  }
 }
-
 </style>
