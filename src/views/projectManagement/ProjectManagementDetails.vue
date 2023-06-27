@@ -151,20 +151,22 @@ export default {
     async initPage() {
       this.projectStatusList = [...projectStatusOptions]
       this.projectTypeList = [...projectTypeOptions]
-      const res = await getProjectsList({
-        customerId: null,
-        managerId: null,
-        pageIndex: 1,
-        pageSize: 9999,
-        projectName: '',
-        status: null,
-        teamId: null,
-        type: null
-      })
-      if (res.success) {
-        this.projectList = [...res.data.records]
-      } else {
-        this.$message.error(res.msg)
+      if (!this.fromRole) {
+        const res = await getProjectsList({
+          customerId: null,
+          managerId: null,
+          pageIndex: 1,
+          pageSize: 9999,
+          projectName: '',
+          status: null,
+          teamId: null,
+          type: null
+        })
+        if (res.success) {
+          this.projectList = [...res.data.records]
+        } else {
+          this.$message.error(res.msg)
+        }
       }
       this.searchForm.projectId = Number(this.$route.query.id) || ''
       this.changeProject(this.searchForm.projectId)
@@ -338,11 +340,12 @@ export default {
       this.changeProject(val)
     },
     toAnnotation(row) {
+      const rowStatus = Number(row.status)
       this.$router.push({
         name: 'Annotation',
         query: {
           taskId: row.id,
-          type: row.status > 0 && row.status < 4 ? Number(row.status) - 1 : '4'
+          type: rowStatus > 1 && rowStatus < 4 ? rowStatus - 1 : '4'
         }
       })
     }
