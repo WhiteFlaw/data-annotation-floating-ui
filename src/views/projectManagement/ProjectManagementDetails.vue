@@ -79,7 +79,11 @@
           </template>
         </el-table-column>
         <el-table-column label="标注数据统计(2D/3D框数)" prop="boxCount" align="center" width="190" />
-        <el-table-column label="驳回次数" prop="rejectCount" align="center" min-width="70" />
+        <el-table-column label="驳回次数" prop="rejectCount" align="center" min-width="70">
+          <template slot-scope="scope">
+            {{ changeCount(scope.row) }}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="left" header-align="center" fixed="right" width="140">
           <template slot-scope="scope">
             <el-button type="text" @click="viewTaskDetail(scope.row)"> 查看 </el-button>
@@ -105,6 +109,7 @@ import TaskLogs from './components/TaskLogs.vue'
 import tableMixin from '@/utils/tableMixin'
 import { getProjectsList, getProjectDetail, getProjectChildTaskDetail, releaseProjectData, deleteProjectsList } from '@/api/projectManagement'
 import { projectStatusOptions, projectTypeOptions } from '@/api/common'
+import {mapState} from 'vuex'
 export default {
   name: 'ProjectManagementDetails',
   components: {
@@ -140,6 +145,7 @@ export default {
     }
   },
   computed: {
+    ...mapState('user', ['roles']),
     fromRole() {
       return this.$route.name === 'DashboardProjectDetails'
     }
@@ -348,6 +354,18 @@ export default {
           type: rowStatus > 1 && rowStatus < 4 ? rowStatus - 1 : '4'
         }
       })
+    },
+    // 判断驳回次数
+    changeCount(val) {
+      let count
+      if (this.roles.indexOf('admin') !== -1) {
+        count = val.acceptRejectCount || 0
+      } else if (this.roles.indexOf('manager') !== -1) {
+        count = val.acceptRejectCount || 0
+      } else if (this.roles.indexOf('teamLeader') !== -1) {
+        count = val.checkRejectCount || 0
+      }
+      return count
     }
   }
 }
