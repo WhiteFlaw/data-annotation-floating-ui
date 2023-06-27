@@ -81,10 +81,14 @@ export function getDateDiff(startTime, endTime) {
  * 当前日期
  * @returns {string}
  */
-export function getLocalDate() {
+export function getLocalDate(type) {
   const dateTime = new Date()
   const year = dateTime.getFullYear()
   const month = ('0' + (dateTime.getMonth() + 1)).slice(-2)
   const day = ('0' + dateTime.getDate()).slice(-2)
-  return year + '-' + month + '-' + day + ' 00:00:00'
+  let time = ' 00:00:00'
+  if (type === 'end') {
+    time = ' 23:59:59'
+  }
+  return year + '-' + month + '-' + day + time
 }
