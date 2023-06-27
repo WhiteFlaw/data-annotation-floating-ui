@@ -1,6 +1,7 @@
 import { innerDOMString } from './util.js'
 import { frameManagerUiTemplate } from './template/frameManagerUiTemplate'
 import { objIdManager } from './obj_id_list.js'
+import { getPathParams} from './getPathParams'
 
 const FrameManager = function (parentUi, data, onFrameChanged, toPreviousFrame, toNextFrame, toCertainFrame) {
   innerDOMString(frameManagerUiTemplate, parentUi)
@@ -97,8 +98,11 @@ const FrameManager = function (parentUi, data, onFrameChanged, toPreviousFrame, 
     objIdManager.setObjdIdListOptions()
 
     // 获取初始作业标注数据，存储在本地
-    const oldAnn = this.data?.world?.annotation.toBoxAnnotations()
-    window.localStorage.setItem(this.frame, JSON.stringify(oldAnn))
+    const taskType = getPathParams()['taskType']
+    if(taskType === '1' || taskType === '2'){
+      const oldAnn = this.data?.world?.annotation.toBoxAnnotations()
+      window.localStorage.setItem(this.frame, JSON.stringify(oldAnn))
+    }
   }
 
   this.update_event_list = function (frameIndex) {
