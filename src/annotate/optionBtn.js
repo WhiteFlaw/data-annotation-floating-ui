@@ -1,7 +1,5 @@
 import { getPathParams, getClickDom } from './getPathParams'
 import { POST } from '@/utils/http-client.js'
-// import { saveWorldList } from "./save.js"
-// import { objIdManager } from './obj_id_list.js'
 import { Message, MessageBox } from 'element-ui'
 
 const initOptionBtn = () => {
@@ -35,12 +33,6 @@ const initOptionBtn = () => {
 }
 
 const OptionButtons = function (data, frameManager) {
-  // this.boxCount = boxCount
-  // this.homeworkId = homeworkId
-  // this.tagTime = tagTime
-  // this.ssType = ssType // 提交 0 / 挂起 1
-  // this.rpType = rpType // 通过 0 / 驳回 1
-  // this.qfType = qfType // 合格 0 / 不合格 1
   this.boxCount = 0
   this.data = data
   this.exitButton = document.getElementById('exit-button')
@@ -105,6 +97,10 @@ const OptionButtons = function (data, frameManager) {
 
   //标注 保存或挂起
   this.ssWork = (type) => {
+    if(!this.data.world){
+      Message.warning('尚无正在进行的作业，请先开始作业！')
+      return false
+    }
     buttonLoading = true
     const data = {
       boxCount: this.data?.world?.active ? this.data?.world.annotation.boxes.length : 0,
@@ -129,7 +125,7 @@ const OptionButtons = function (data, frameManager) {
         } else {
           Message.error(res.msg)
         }
-        buttonLoading = true
+        buttonLoading = false
       })
       .catch(() => {
         buttonLoading = false
@@ -137,6 +133,11 @@ const OptionButtons = function (data, frameManager) {
   }
   //一检和二检 通过或驳回
   this.tsWork = async (type) => {
+    console.log(this.data)
+    if(!this.data.world){
+      Message.warning('尚无正在进行的作业，请先开始作业！')
+      return false
+    }
     buttonLoading = true
     // 取出 localStorage 缓存的旧数据
     const oldAnn = JSON.parse(window.localStorage.getItem(this.data.world.frameInfo.frame))
@@ -168,12 +169,7 @@ const OptionButtons = function (data, frameManager) {
             )
 
             // 保存完毕之后，无论成功与否，新数据变旧数据，更新 localStorage 缓存
-
-            // const savedAnn = ann[0].annotation.map((a) => {
-            //   a.obj_occlu = a.obj_occlu || ''
-            //   a.obj_trunk = a.obj_trunk || ''
-            //   return { ...a }
-            // })
+              window.localStorage.setItem(this.data.world.frameInfo.frame,JSON.stringify(newAnn))
 
             this.nextWork()
           }
@@ -191,13 +187,17 @@ const OptionButtons = function (data, frameManager) {
   }
   //验收 合格或不合格
   this.acptWork = (type) => {
+    if(!this.data.world){
+      Message.warning('尚无正在进行的作业，请先开始作业！')
+      return false
+    }
+    buttonLoading = true
     const data = {
       homeworkId: this.data.sceneAllData.homework_list.find((f) => f.name === this.data.world.frameInfo.frame)['id'],
       type: type
     }
     this.acceptWork({ ...data })
       .then((res) => {
-        buttonLoading = false
         if (res.success) {
           if (res.msg === 'T') {
             Message.success('当前作业操作成功！')
@@ -213,7 +213,7 @@ const OptionButtons = function (data, frameManager) {
         } else {
           Message.error(res.msg)
         }
-        buttonLoading = true
+        buttonLoading = false
       })
       .catch(() => {
         buttonLoading = false
