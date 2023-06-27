@@ -112,6 +112,7 @@
             <el-table-column align="center" prop="id" label="任务ID" min-width="120" />
             <el-table-column align="center" prop="name" label="任务名称" min-width="180" />
             <el-table-column align="center" prop="endTime" label="标注完成时间" min-width="180" />
+            <el-table-column align="center" prop="boxCount" label="标注框数" min-width="100" />
             <el-table-column align="center" label="任务状态" min-width="180">
               <template slot-scope="scope">
                 <el-tag :type="(changeAnnotationRecordStatus(scope.row)=== '一检中'|| changeAnnotationRecordStatus(scope.row)=== '二检中')?'warning' : 'success'">{{ changeAnnotationRecordStatus(scope.row) }}</el-tag>
