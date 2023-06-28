@@ -160,6 +160,43 @@ canvas {
 	z-index: 1;
 }
 
+#subview-x-translate,
+#subview-y-translate,
+#subview-z-translate {
+	position: absolute;
+	display: flex;
+	height: 40px;
+	width: 60px;
+	left: 230px;
+	top: calc(100% - 45px);
+	flex-direction: column;
+	justify-content: center;
+}
+
+#subview-x-translate div,
+#subview-y-translate div,
+#subview-z-translate div {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+}
+
+#subview-x-translate div > div,
+#subview-y-translate div > div,
+#subview-z-translate div > div {
+	width: 20px;
+	margin: 1px;
+	transform: scale(0.9, 0.8);
+	z-index: 1000;
+	background-color: var(--widget-background-color);
+}
+
+#subview-x-translate div > div:hover,
+#subview-y-translate div > div:hover,
+#subview-z-translate div > div:hover {
+	background-color: var(--highlight-background-color);
+}
+
 .camera-item {
 	-webkit-user-select: none;
 	/* Safari */
@@ -382,11 +419,11 @@ canvas {
 
 .header-button {
 	display: flex;
+    padding:5px;
+    cursor: pointer;
 	align-items:center;
 	flex-direction: column;
 	justify-content: flex-end;
-  padding:5px;
-  cursor: pointer;
 }
 
 .header-button svg{
@@ -892,6 +929,7 @@ dynamic set obj-type css has higher priority than this one.
 	width: 320px;
 	height: 100%;
 	resize: both;
+	max-height: 100%;
 	overflow: hidden;
 }
 

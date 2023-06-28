@@ -28,5 +28,5 @@
     height: 30px;
     align-items: center;
     justify-content: space-between;
-    background-color: rgb(36, 37, 37);
+    background-color: var(--widget-background-color);
 }

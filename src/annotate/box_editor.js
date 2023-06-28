@@ -266,7 +266,6 @@ function BoxEditor(parentUi, boxEditorManager, viewManager, cfg, boxOp,
     }
 
     this.onBoxChanged=function(){
-        
         this.projectiveViewOps.update_view_handle();
         this.focusImageContext.updateFocusedImageContext(this.box);
         this.boxView.onBoxChanged();
