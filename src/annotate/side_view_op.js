@@ -287,9 +287,7 @@ class ProjectiveView {
     // when direction handler is draging
     rotate_lines(theta) {
 
-        console.log(theta);
         theta = -theta - Math.PI / 2;
-        console.log(theta);
         // we use rotation matrix
         var trans_matrix = [
             Math.cos(theta), Math.sin(theta), this.view_center.x,
@@ -697,7 +695,6 @@ class ProjectiveView {
                 theta = Math.atan2(
                     handle_center_cur_pos.y - this.view_center.y,
                     handle_center_cur_pos.x - this.view_center.x);
-                console.log(theta);
 
                 this.rotate_lines(theta);
             };
